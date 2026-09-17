@@ -1,0 +1,3 @@
+cm-chessboard 8.14.0
+Published dependency for ChessApps-Pages.
+Source package: https://www.npmjs.com/package/cm-chessboard/v/8.14.0
