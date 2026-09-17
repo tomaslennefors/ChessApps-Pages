@@ -1,11 +1,18 @@
 Program: Test
+
+Virtuell utveckling
 Version: 1
-Datum: 2026-09-17
+Färdig: ej separat tidsstämplad för Version 1
 
-GitHub utveckling, programkod:
-644f09667af3e357efc6d13483957be8c1e0acbc
+GitHub utveckling
+Commit: 644f09667af3e357efc6d13483957be8c1e0acbc
+Tid: 2026-09-17 17:23:06 Europe/Stockholm
 
-GitHub publicering, körbar version:
-5454d474d642c9306b30550148fcdcc7bd71a8fd
+GitHub publicering
+Commit: 5454d474d642c9306b30550148fcdcc7bd71a8fd
+Tid: 2026-09-17 19:12:38 Europe/Stockholm
 
-Komponent: cm-chessboard 8.14.0
+Komponent
+Namn: cm-chessboard
+Version: 8.14.0
+Publicerad: 2026-09-02
