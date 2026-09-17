@@ -1,0 +1,62 @@
+name: Publicera cm-chessboard runtime
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/sync-vendor.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  sync-vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta publiceringsarkivet
+        uses: actions/checkout@v4
+
+      - name: Hämta cm-chessboard 8.14.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://cdn.jsdelivr.net/npm/cm-chessboard@8.14.0"
+
+          mkdir -p vendor/cm-chessboard/src/lib
+          mkdir -p vendor/cm-chessboard/src/model
+          mkdir -p vendor/cm-chessboard/src/view
+          mkdir -p vendor/cm-chessboard/assets/pieces
+
+          curl -fsSL "$BASE/src/Chessboard.js" -o vendor/cm-chessboard/src/Chessboard.js
+          curl -fsSL "$BASE/src/lib/Svg.js" -o vendor/cm-chessboard/src/lib/Svg.js
+          curl -fsSL "$BASE/src/lib/Utils.js" -o vendor/cm-chessboard/src/lib/Utils.js
+          curl -fsSL "$BASE/src/model/ChessboardState.js" -o vendor/cm-chessboard/src/model/ChessboardState.js
+          curl -fsSL "$BASE/src/model/Extension.js" -o vendor/cm-chessboard/src/model/Extension.js
+          curl -fsSL "$BASE/src/model/Position.js" -o vendor/cm-chessboard/src/model/Position.js
+          curl -fsSL "$BASE/src/view/ChessboardView.js" -o vendor/cm-chessboard/src/view/ChessboardView.js
+          curl -fsSL "$BASE/src/view/PositionAnimationsQueue.js" -o vendor/cm-chessboard/src/view/PositionAnimationsQueue.js
+          curl -fsSL "$BASE/src/view/VisualMoveInput.js" -o vendor/cm-chessboard/src/view/VisualMoveInput.js
+          curl -fsSL "$BASE/assets/chessboard.css" -o vendor/cm-chessboard/assets/chessboard.css
+          curl -fsSL "$BASE/assets/pieces/standard.svg" -o vendor/cm-chessboard/assets/pieces/standard.svg
+          curl -fsSL "$BASE/assets/pieces/staunty.svg" -o vendor/cm-chessboard/assets/pieces/staunty.svg
+          curl -fsSL "$BASE/LICENSE" -o vendor/cm-chessboard/LICENSE
+
+          cat > vendor/cm-chessboard/VERSION.txt <<'EOF'
+          cm-chessboard 8.14.0
+          Published dependency for ChessApps-Pages.
+          Source package: https://www.npmjs.com/package/cm-chessboard/v/8.14.0
+          EOF
+
+      - name: Spara runtime-filerna
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor/cm-chessboard
+          if git diff --cached --quiet; then
+            echo "Inga ändringar att spara."
+            exit 0
+          fi
+          git commit -m "Publish cm-chessboard 8.14.0 runtime"
+          git push
