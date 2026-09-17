@@ -1,2 +1,11 @@
-Test version 1
-Published: 2026-09-17
+Program: Test
+Version: 1
+Datum: 2026-09-17
+
+GitHub utveckling, programkod:
+644f09667af3e357efc6d13483957be8c1e0acbc
+
+GitHub publicering, körbar version:
+5454d474d642c9306b30550148fcdcc7bd71a8fd
+
+Komponent: cm-chessboard 8.14.0
