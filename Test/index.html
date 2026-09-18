@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test av cm-chessboard</title>
+    <link rel="stylesheet" href="./vendor/cm-chessboard/assets/chessboard.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<main class="app">
+    <header>
+        <h1>Test av cm-chessboard</h1>
+        <p class="lead">Testprojekt för cm-chessboard 8.14.0. Ändra utseende, vänd brädet och flytta pjäser med mus eller pekskärm.</p>
+    </header>
+
+    <section class="controls" aria-label="Inställningar">
+        <label>
+            Brädtema
+            <select id="theme">
+                <option value="default">Default</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="chess-club">Chess club</option>
+                <option value="chessboard-js">Chessboard.js</option>
+                <option value="black-and-white">Black and white</option>
+            </select>
+        </label>
+
+        <label>
+            Pjäser
+            <select id="pieces">
+                <option value="standard.svg">Standard</option>
+                <option value="staunty.svg">Staunty</option>
+            </select>
+        </label>
+
+        <label>
+            Ram
+            <select id="border">
+                <option value="none">Ingen</option>
+                <option value="thin">Tunn</option>
+                <option value="frame">Bred ram</option>
+            </select>
+        </label>
+
+        <label class="check">
+            <input id="coordinates" type="checkbox" checked>
+            Visa koordinater
+        </label>
+
+        <label class="check">
+            <input id="moveInput" type="checkbox" checked>
+            Tillåt att flytta pjäser
+        </label>
+    </section>
+
+    <section class="buttons" aria-label="Brädkommandon">
+        <button id="flip" type="button">Vänd brädet</button>
+        <button id="start" type="button">Startställning</button>
+        <button id="sample" type="button">Exempelställning</button>
+        <button id="empty" type="button">Tomt bräde</button>
+    </section>
+
+    <section class="workspace">
+        <div class="board-column">
+            <div id="board" aria-label="Schackbräde"></div>
+        </div>
+
+        <aside class="info">
+            <h2>Status</h2>
+            <p id="status">Laddar brädet …</p>
+            <p><strong>Orientering:</strong> <span id="orientation">Vit</span></p>
+            <label for="fen"><strong>Bräd-FEN (pjäsdelen)</strong></label>
+            <textarea id="fen" rows="4" readonly></textarea>
+            <p class="note">Detta är ett komponenttest, inte en schackmotor. Drag kontrolleras därför inte mot schackreglerna.</p>
+        </aside>
+    </section>
+</main>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
