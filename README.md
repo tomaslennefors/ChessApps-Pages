@@ -48,11 +48,7 @@ Exempel:
 ```text
 ChessApps-Pages/
 ├── index.html
-├── Test/
-├── FEN_Skapa/
-├── MattGen/
-├── LenneChess/
-└── ChessAnalys1/
+└── Test/
 ```
 
 Rotens `index.html` fungerar som gemensam meny. En app öppnas sedan via sin egen mapp, till exempel:
