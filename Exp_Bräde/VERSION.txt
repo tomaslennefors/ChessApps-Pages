@@ -1,0 +1,7 @@
+Program: Exp_Bräde
+Programversion: 1
+Virtuell utveckling: 2026-09-18, Europe/Stockholm
+Komponent: cm-chessboard 8.14.0
+Bas: Test/app.js och Test/vendor/cm-chessboard i ChessApps
+Tillägg: Markers och Arrows från Download/cm-chessboard-master
+Utvecklings- och publiceringscommit samt tidpunkter: se RELEASE.md i utvecklingsprojektet.
