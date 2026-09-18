@@ -4,9 +4,9 @@ Här finns ett **menysystem till mina schack-appar** som publiceras med GitHub P
 
 Den gemensamma startsidan ligger i roten och länkar vidare till varje publicerad app. Varje app ligger i en egen mapp så att apparna hålls åtskilda och får tydliga webbadresser.
 
-Körbar startsida:
+## App-meny
 
-`https://tomaslennefors.github.io/ChessApps-Pages/`
+[**Öppna app-menyn**](https://tomaslennefors.github.io/ChessApps-Pages/)
 
 ## Trädstruktur
 
@@ -18,12 +18,15 @@ ChessApps-Pages/                         ← hela området för GitHub publiceri
 │
 └── Test/                                ← egen mapp för appen Test
     │
+    ├── README.md                        ← beskrivning av Test samt länk för att starta appen
     ├── index.html                       ← startfilen som öppnar Test-appen
     ├── app.js                           ← vår JavaScript-kod för Test
     ├── styles.css                       ← vårt utseende för Test
     ├── VERSION.txt                      ← versions- och publiceringsinformation för Test
     │
     └── vendor/                          ← externa komponenter som Test använder
+        │
+        ├── README.md                    ← förklaring av vendor och dess innehåll
         │
         └── cm-chessboard/               ← den externa komponenten cm-chessboard 8.14.0
             │
@@ -43,14 +46,10 @@ ChessApps-Pages/                         ← hela området för GitHub publiceri
 
 Varje ny schack-app ska få en egen mapp direkt under `ChessApps-Pages/`.
 
-Exempel:
-
 ```text
 ChessApps-Pages/
 ├── index.html
 └── Test/
 ```
 
-Rotens `index.html` fungerar som gemensam meny. En app öppnas sedan via sin egen mapp, till exempel:
-
-`https://tomaslennefors.github.io/ChessApps-Pages/Test/`
+Rotens `index.html` fungerar som gemensam meny. Varje appmapp får en egen `README.md` med en direkt länk för att starta appen.
