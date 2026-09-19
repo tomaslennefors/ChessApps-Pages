@@ -25,3 +25,24 @@
 /* Exp_Bräde V3: komponentägarens körbara originaltester */
 .owner-test-card{padding:12px}.owner-test-head{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:4px 4px 12px}.owner-test-head p{font-size:12px;color:var(--muted);margin:4px 0 0}.owner-test-frame{display:block;width:100%;height:650px;border:1px solid var(--line);border-radius:7px;background:#fff}
 @media(max-width:760px){.owner-test-head{flex-direction:column}.owner-test-frame{height:720px}}
+
+/* Exp_Bräde V4: färgade markeringsformer + nya extensions */
+.cm-chessboard .markers .marker.marker-circle-default{stroke:black;stroke-width:3px;opacity:.35}
+.cm-chessboard .markers .marker.marker-frame-default{stroke:black;stroke-width:1.8px;opacity:.45}
+.cm-chessboard .markers .marker.marker-dot-default{fill:black;opacity:.28}
+.cm-chessboard .markers .marker.marker-square-default{fill:black;opacity:.18}
+.cm-chessboard .markers .marker.marker-bevel-default{fill:black;opacity:.28}
+.cm-chessboard .markers .marker.marker-dot-primary,.cm-chessboard .markers .marker.marker-square-primary,.cm-chessboard .markers .marker.marker-bevel-primary{fill:blue;opacity:.32}
+.cm-chessboard .markers .marker.marker-dot-danger,.cm-chessboard .markers .marker.marker-square-danger,.cm-chessboard .markers .marker.marker-bevel-danger{fill:red;opacity:.32}
+.cm-chessboard .markers .marker.marker-dot-success,.cm-chessboard .markers .marker.marker-square-success,.cm-chessboard .markers .marker.marker-bevel-success{fill:green;opacity:.32}
+.cm-chessboard .markers .marker.marker-dot-warning,.cm-chessboard .markers .marker.marker-square-warning,.cm-chessboard .markers .marker.marker-bevel-warning{fill:orange;opacity:.32}
+.cm-chessboard .markers .marker.marker-dot-purple,.cm-chessboard .markers .marker.marker-square-purple,.cm-chessboard .markers .marker.marker-bevel-purple{fill:#7a3fb0;opacity:.32}
+.cm-chessboard .markers .marker.marker-circle-success{stroke:green;stroke-width:3px;opacity:.45}
+.cm-chessboard .markers .marker.marker-circle-warning{stroke:orange;stroke-width:3px;opacity:.45}
+.cm-chessboard .markers .marker.marker-circle-purple{stroke:#7a3fb0;stroke-width:3px;opacity:.45}
+.cm-chessboard .markers .marker.marker-frame-primary{stroke:blue;stroke-width:1.8px;opacity:.45}
+.cm-chessboard .markers .marker.marker-frame-danger{stroke:red;stroke-width:1.8px;opacity:.45}
+.cm-chessboard .markers .marker.marker-frame-success{stroke:green;stroke-width:1.8px;opacity:.45}
+.cm-chessboard .markers .marker.marker-frame-warning{stroke:orange;stroke-width:1.8px;opacity:.45}
+.cm-chessboard .markers .marker.marker-frame-purple{stroke:#7a3fb0;stroke-width:1.8px;opacity:.45}
+.demo-html-layer{position:absolute;inset:8%;display:grid;place-content:center;text-align:center;gap:8px;background:#ffffffd9;border:2px dashed #1d5449;border-radius:14px;color:#1d5449;pointer-events:none;font-size:18px}.demo-html-layer span{font-size:12px}
