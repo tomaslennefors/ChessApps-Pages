@@ -1,48 +1,40 @@
-# Exp_Bräde – version 5
+# Exp_Bräde – version 6
 
-V5 bygger vidare på V4 och använder cm-chessboard 8.14.0.
+V6 bygger vidare på V5 och använder cm-chessboard 8.14.0.
 
-## Nytt i V5
+## Flik 22 – Ångra animation
+Promoveringsscenariot använder nu den riktiga PromotionDialog-rutan. Du väljer själv dam, torn, löpare eller springare. Efter **Ångra** kontrollerar appen automatiskt att:
 
-### Flik 22 – Ångra animation
-Fem scenarier kan utföras och därefter ångras med animation:
+- b7 åter innehåller en vit bonde
+- b8 är tom
+- den valda promoveringspjäsen alltså inte ligger kvar
 
-- vanligt drag
-- slag av pjäs
-- en passant
-- rockad
-- promovering
+Samma flik testar även vanligt drag, slag, en passant och rockad baklänges med positionsanimation.
 
-cm-chessboard har ingen särskild undo-metod. Principen är att appen sparar föregående position och sedan använder `setPosition(föregåendePosition, true)`. Eftersom komponentens animationsmotor jämför två positioner fungerar detta även när flera pjäser flyttas/försvinner samtidigt, till exempel rockad och en passant.
+## Dragkod och protokoll
+cm-chessboard ger `squareFrom` och `squareTo`, vilket räcker för rå koordinatkod som `e1g1`.
 
-### Flik 23 – Dragretur
-Move-input skickar bland annat:
+Att säkert skriva detta som **O-O** eller **O-O-O**, eller skapa korrekt SAN/PGN för slag, schack, matt och promovering, kräver information om spelställningen och schackregler. Det bör ligga i regel-/protokolllagret, exempelvis chess.js eller motsvarande, inte i själva brädkomponenten.
 
-- `event.squareFrom`
-- `event.squareTo`
+## Ljud
+Jag hittade inga inbyggda ljudsignaler eller ljudfiler i cm-chessboard. Dragljud, slag, schack, matt osv. måste därför läggas som ett separat lager i vår app om vi vill ha det senare.
 
-V5 visar hur dessa kan sammanfogas till exempelvis `e2e4`. Det är UCI-liknande koordinatnotation. Själva textsträngen skapas av vår app; cm-chessboard levererar rutorna separat.
+## Flik 10 – Tillgänglighet och pjäslista
+`piecesAsList` är inte en materialräkning. Extensionen listar varje pjäs med sin ruta, separat för vit och svart, till exempel `Knight f3`.
 
-## Mobilstöd
-Flik 6 har förtydligats. cm-chessboard har ingen separat `mobileMode`, men har:
+V6 lägger till knappen **Visa pjäslistan tydligt** och egen CSS så listan går att granska visuellt. Funktionen är ursprungligen främst avsedd för skärmläsare och kan döljas visuellt med `visuallyHidden`.
 
-- `responsive: true`
-- ResizeObserver-baserad storleksanpassning
-- touchstart / touchmove / touchend
-- `style.aspectRatio`
-- AutoBorderNone för att ta bort ram på små bräden
-- appens/containerens CSS och bredd styr den praktiska mobilstorleken
+## Flik 24 – Pedagogik
+Nya visuella demonstrationer:
 
-## Animationer
-Inbyggt finns positionsförflyttning med ease-in/out, fade in/fade out för pjäser som tillkommer/försvinner, brädvändning, PieceRotation och PromotionDialog fade-in.
+- Schack – pil mot kungen + markering
+- Dubbelschack – två pilar från två angripare mot kungen
+- Gaffel – två pilar från samma angripare mot två mål
+- Avdragsschack – visar frigjord schacklinje och flytten som öppnade linjen
 
-Jag hittade inga inbyggda effekter för blinkning, glitter, gungning eller hoppning. V5 lägger därför inte till egna sådana effekter.
+Detta är bara visuella överlägg. Automatisk identifiering av schack, dubbelschack, gaffel, avdragsschack, hot och pjäs-vinsthot kräver en regel-/analysmotor ovanpå cm-chessboard.
 
-## Ett klick när pjäsen bara har ett möjligt drag
-Detta finns inte i cm-chessboard eftersom brädkomponenten inte känner till schackregler eller antal lagliga drag. Funktionen kan byggas ovanpå komponenten om en regelmotor, exempelvis chess.js eller Stockfish, först räknar fram lagliga drag. V5 implementerar inte detta i själva brädkomponenten.
-
-## Flikar
-V5 innehåller totalt 23 flikar. Flik 1–21 från V4 finns kvar oförändrade i huvudsak, med mobilförtydligande i flik 6. Flik 22 och 23 är nya.
+Arrows-extensionen har flera färger men en grundform på pilhuvudet. En särskild dubbelpil eller annan specialsymbol kräver ett eget SVG-/overlay-lager.
 
 ## Licenser
 cm-chessboard av Stefan Haack: MIT, se `vendor/cm-chessboard/LICENSE`.
