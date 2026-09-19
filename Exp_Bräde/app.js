@@ -51,6 +51,12 @@ const UNDO_SCENARIOS={
   castle:{name:'Rockad O-O',before:CASTLE_WHITE_BEFORE,after:CASTLE_WHITE_K},
   promotion:{name:'Promovering b7–b8=D',before:PROMOTION_FEN,after:'1Q2k3/8/8/8/8/8/8/4K3'}
 };
+const PEDAGOGY_SCENARIOS={
+  check:{name:'Schack',fen:'4k3/8/8/8/8/8/8/4R1K1',arrows:[['e1','e8','danger']],markers:[['e8','frame','red']]},
+  doublecheck:{name:'Dubbelschack',fen:'4k3/8/8/1B6/8/8/8/4R1K1',arrows:[['e1','e8','danger'],['b5','e8','danger']],markers:[['e8','frame','red']]},
+  fork:{name:'Gaffel',fen:'4k3/5r2/2q5/4N3/8/8/8/6K1',arrows:[['e5','c6','warning'],['e5','f7','warning']],markers:[['e5','circle','orange'],['c6','frame','purple'],['f7','frame','purple']]},
+  discovered:{name:'Avdragsschack',fen:'4k3/1B6/8/8/8/8/8/4R1K1',arrows:[['e1','e8','danger'],['e4','b7','info']],markers:[['e8','frame','red'],['b7','circle','blue']]}
+};
 let state=readState(), board=null,active='settings',busy=false,playing=false,playTimer=null,generation=0,disposing=false,htmlLayer=null;
 let windows;
 windows=createWindows(id=>{if(id)active=id;render();});
@@ -83,13 +89,14 @@ case 'parameters':return `<section class="card"><h3>Dokumenterade grundparametra
 case 'pointer':return `<section class="card"><h3>enableSquareSelect</h3>${select('pointerEvent','Pekhändelse',[['pointerdown','pointerdown'],['pointerup','pointerup'],['pointermove','pointermove']],t.pointerEvent)}<p class="hint">Rör eller klicka över brädet. pointermove kan ge många händelser.</p><div class="buttons"><button id="clearPointer">Töm logg</button></div></section><section class="card"><h3>Rapporterade rutor</h3><ol class="log" id="pointerLog"></ol>${commonControls()}</section>`;
 case 'rotation':return `<section class="card"><h3>PieceRotation extension</h3><div class="fields">${select('rotationColor','Vilka pjäser?',[['','Alla pjäser'],['w','Endast vita'],['b','Endast svarta']],t.rotationColor)}<div style="align-self:end">${check('rotationAnimated','Animerad rotation',t.rotationAnimated)}</div></div><div class="buttons"><button data-rotate="0">0°</button><button data-rotate="90">90°</button><button data-rotate="180">180°</button><button data-rotate="270">270°</button></div><p class="hint">Pjäsernas symboler roteras på plats; rutor och ställning ändras inte. Du kan fortfarande flytta pjäser.</p>${commonControls()}</section>`;
 case 'annotator':return `<section class="card"><h3>RightClickAnnotator extension</h3><p><strong>Högerklick</strong> = grön cirkel. <strong>Högerdra</strong> = grön pil.</p><p class="hint">Alt/Cmd/AltGr + höger = blå · Shift + höger = röd · Shift+Alt + höger = orange. Samma markering igen tar bort den.</p><div class="buttons"><button id="clearAnnotations">Rensa alla markeringar</button></div>${commonControls()}</section>`;
-case 'accessibility':return `<section class="card"><h3>Accessibility extension</h3><div class="access-grid">${check('brailleNotationInAlt','Braille-notation i alt-text',t.brailleNotationInAlt)}${check('boardAsTable','Visa brädet som HTML-tabell',t.boardAsTable)}${check('movePieceForm','Visa formulär för drag',t.movePieceForm)}${check('piecesAsList','Visa pjäser som lista',t.piecesAsList)}${check('keyboardMoveInput','Tangentbordsnavigering på brädet',t.keyboardMoveInput)}${check('visuallyHidden','Dölj extra utdata visuellt',t.visuallyHidden)}</div><div class="buttons"><button id="focusBoard">Fokusera brädet</button></div><p class="hint">Med tangentbord: piltangenter flyttar fokus, Enter/Space väljer pjäs/målruta och Escape avbryter.</p>${commonControls()}</section>`;
+case 'accessibility':return `<section class="card"><h3>Accessibility extension</h3><div class="access-grid">${check('brailleNotationInAlt','Braille-notation i alt-text',t.brailleNotationInAlt)}${check('boardAsTable','Visa brädet som HTML-tabell',t.boardAsTable)}${check('movePieceForm','Visa formulär för drag',t.movePieceForm)}${check('piecesAsList','Visa pjäser som lista',t.piecesAsList)}${check('keyboardMoveInput','Tangentbordsnavigering på brädet',t.keyboardMoveInput)}${check('visuallyHidden','Dölj extra utdata visuellt',t.visuallyHidden)}</div><div class="buttons"><button id="focusBoard">Fokusera brädet</button><button id="showPieceList">Visa pjäslistan tydligt</button></div><p class="hint"><strong>Pjäslistan är inte en materialräkning.</strong> Den listar varje pjäs och dess ruta, separat för vit och svart, främst för skärmläsare. Exempel: Knight f3. Avmarkera “Dölj extra utdata visuellt” för att se den.</p><p class="hint">Med tangentbord: piltangenter flyttar fokus, Enter/Space väljer pjäs/målruta och Escape avbryter.</p>${commonControls()}</section>`;
 case 'specialMoves':return `<section class="card"><h3>Animerad rockad</h3><div class="buttons"><button id="castleK">Vit O-O</button><button id="castleQ">Vit O-O-O</button><button id="castleReset">Rockadställning</button></div><p class="hint">cm-chessboard känner inte själv schackregeln. Som i ägarens validate-moves-exempel sätts den färdiga ställningen med setPosition(..., true), vilket animerar både kung och torn.</p></section><section class="card"><h3>Klickbar bondepromovering</h3><div class="buttons"><button class="primary" id="promotionReset">Ladda promoveringsställning</button><button id="promotionDemo">Promovera b7–b8</button></div><p class="hint">Du kan också själv klicka eller dra bonden b7 till b8. Därefter visas komponentens PromotionDialog där du klickar på dam, torn, löpare eller springare.</p></section>`;
 case 'htmlLayer':return `<section class="card"><h3>HtmlLayer extension</h3><div class="buttons"><button class="primary" id="addHtmlLayer">Visa HTML-lager</button><button id="removeHtmlLayer">Ta bort lager</button></div><p class="hint">Lagret ligger som vanlig HTML ovanpå SVG-brädet. Det kan användas för instruktioner, status, analysinformation eller egna kontroller.</p>${commonControls()}</section>`;
 case 'autoBorder':return `<section class="card"><h3>AutoBorderNone extension</h3><label>Ta bort ram under <output id="autoBorderValue">${t.autoBorderThreshold} px</output><input id="autoBorderThreshold" type="range" min="280" max="800" step="20" value="${t.autoBorderThreshold}"></label><div class="buttons"><button data-boardwidth="400">Bräde 400 px</button><button data-boardwidth="600">Bräde 600 px</button><button data-boardwidth="800">Bräde 800 px</button></div><p class="hint">När brädets faktiska bredd går under gränsen byter extensionen automatiskt borderType till none.</p></section>`;
 case 'persistence':return `<section class="card"><h3>Persistence extension</h3><p class="hint"><strong>Observera:</strong> komponentägaren skriver själv att denna extension är work in progress och inte bör användas i produktion.</p><div class="buttons"><button id="persistStart">Startställning</button><button id="persistSample">Exempelställning</button><button id="persistEmpty">Tomt bräde</button><button id="persistClear">Glöm sparad position</button></div><p class="hint">Extensionen sparar automatiskt positionen i localStorage-nyckeln <code>chessboard</code> och laddar den igen när fliken skapas.</p></section>`;
-case 'undoAnimations':return `<section class="card"><h3>Animerad utför / ångra</h3>${select('undoScenario','Scenario',Object.entries(UNDO_SCENARIOS).map(([k,v])=>[k,v.name]),t.undoScenario)}<div class="buttons"><button class="primary" id="doScenario">Utför</button><button id="undoScenarioBtn" ${t.undoDone?'':'disabled'}>Ångra</button><button id="resetScenario">Återställ före</button></div><p class="hint">Ångra är inte en separat cm-chessboard-funktion. Vi sparar föregående position och animerar tillbaka med <code>setPosition(föregående, true)</code>. Det fungerar även för flera samtidiga pjäsförändringar.</p></section>`;
-case 'moveReturn':return `<section class="card"><h3>Dragretur</h3><div class="api-values"><code>Senaste dragkod: <strong id="moveCode">${esc(t.lastMoveCode)}</strong></code><code>Byggs av event.squareFrom + event.squareTo</code></div><p class="hint">Flytta valfri pjäs. Exempel: e2 till e4 ger <strong>e2e4</strong>. Detta är koordinatnotation/UCI-liknande text, men cm-chessboard levererar rutorna separat.</p><div class="buttons"><button id="clearMoveCode">Nollställ</button></div>${commonControls()}</section>`;
+case 'undoAnimations':return `<section class="card"><h3>Animerad utför / ångra</h3>${select('undoScenario','Scenario',Object.entries(UNDO_SCENARIOS).map(([k,v])=>[k,v.name]),t.undoScenario)}<div class="buttons"><button class="primary" id="doScenario">Utför</button><button id="undoScenarioBtn" ${t.undoDone?'':'disabled'}>Ångra</button><button id="resetScenario">Återställ före</button></div><div class="api-values"><code>Promoveringsval: ${t.undoPromotionPiece||'—'}</code><code>Kontroll efter ångra: <strong id="undoVerification">${esc(t.undoVerification)}</strong></code></div><p class="hint">Vid scenariot Promovering får du själv välja D/T/L/S i den riktiga PromotionDialog-rutan. Efter Ångra kontrollerar V6 att b7 åter är vit bonde och att b8 är tom — alltså att ingen promoverad pjäs ligger kvar.</p></section>`;
+case 'moveReturn':return `<section class="card"><h3>Dragretur</h3><div class="api-values"><code>Senaste dragkod: <strong id="moveCode">${esc(t.lastMoveCode)}</strong></code><code>Byggs av event.squareFrom + event.squareTo</code></div><p class="hint">Flytta valfri pjäs. Exempel: e2 till e4 ger <strong>e2e4</strong>. För att säkert omvandla exempelvis e1g1 till <strong>O-O</strong> i SAN/PGN behövs spelställning och regelkunskap; det hör hemma i regel-/protokolllagret.</p><div class="buttons"><button id="clearMoveCode">Nollställ</button></div>${commonControls()}</section>`;
+case 'pedagogy':return `<section class="card"><h3>Pedagogiska överlägg</h3><div class="buttons"><button data-pedagogy="check">Schack</button><button data-pedagogy="doublecheck">Dubbelschack</button><button data-pedagogy="fork">Gaffel</button><button data-pedagogy="discovered">Avdragsschack</button><button id="clearPedagogy">Rensa</button></div><p class="hint">Detta är visuella exempel, inte automatisk analys. Dubbelschack visas med två pilar mot kungen. Gaffel visas med två pilar från samma angripare. Automatisk upptäckt kräver regel-/analysmotor ovanpå cm-chessboard.</p><p class="hint">Arrows-extensionen har flera färger men bara en grundform på pilhuvudet. En särskild “dubbelpil”-symbol kräver ett eget SVG-/overlay-lager.</p></section>`;
 }}
 function render(){
   dispose();state=readState();drawTabs();const tab=TABS.find(t=>t.id===active);
@@ -112,7 +119,7 @@ function createBoard(){
   if(active==='rotation')extensions.push({class:PieceRotation,props:{angle:t.rotationAngle||0,animationDuration:s.duration}});
   if(active==='annotator')extensions.push({class:RightClickAnnotator});
   if(active==='accessibility')extensions.push({class:Accessibility,props:{brailleNotationInAlt:t.brailleNotationInAlt,boardAsTable:t.boardAsTable,movePieceForm:t.movePieceForm,piecesAsList:t.piecesAsList,keyboardMoveInput:t.keyboardMoveInput,visuallyHidden:t.visuallyHidden}});
-  if(active==='specialMoves')extensions.push({class:PromotionDialog});
+  if(active==='specialMoves'||active==='undoAnimations')extensions.push({class:PromotionDialog});
   if(active==='htmlLayer')extensions.push({class:HtmlLayer});
   if(active==='autoBorder')extensions.push({class:AutoBorderNone,props:{chessboardBorderType:s.border,borderNoneBelow:t.autoBorderThreshold}});
   if(active==='persistence')extensions.push({class:Persistence,props:{initialPosition:FEN.start}});
@@ -178,6 +185,33 @@ async function runPromotionDemo(){
   await board.movePiece('b7','b8',true);
   showPromotionChoice('b8','w');
 }
+async function runUndoPromotionChoice(){
+  const sc=UNDO_SCENARIOS.promotion;
+  await board.setPosition(sc.before,false);
+  await board.movePiece('b7','b8',true);
+  board.showPromotionDialog('b8','w',result=>{
+    if(result&&result.piece){
+      board.setPiece('b8',result.piece,true).then(()=>{
+        update(s=>{s.tabs.undoAnimations.undoDone=true;s.tabs.undoAnimations.undoPromotionPiece=result.piece;s.tabs.undoAnimations.undoVerification='Väntar på ångra';});
+        updateInfo();
+        if($('undoScenarioBtn'))$('undoScenarioBtn').disabled=false;
+        if($('undoVerification'))$('undoVerification').textContent='Väntar på ångra';
+        message(`Promoverade till ${result.piece}. Klicka Ångra.`);
+      });
+    }else{
+      board.setPosition(sc.before,true).then(()=>message('Promoveringen avbröts.'));
+    }
+  });
+}
+async function showPedagogy(key){
+  const sc=PEDAGOGY_SCENARIOS[key];
+  if(!sc)return;
+  await board.setPosition(sc.fen,true);
+  board.removeArrows();board.removeMarkers();
+  for(const [from,to,type] of sc.arrows)board.addArrow(ARROW_TYPE[type],from,to);
+  for(const [sq,shape,color] of sc.markers)board.addMarker(markerTypeFor(shape,color),sq);
+  updateInfo();message(sc.name+' visas som pedagogiskt överlägg.');
+}
 function drawSteps(){const n=tabState().step;$('steps').innerHTML=moves.map((m,i)=>`<span class="${i+1===n?'current':i<n?'done':''}">${m[2]}</span>`).join('');$('stepInfo').textContent=`${n} av ${moves.length} halvdrag visade`;$('prev').disabled=busy||playing||n===0;$('first').disabled=busy||playing||n===0;$('next').disabled=busy||playing||n===moves.length;$('play').disabled=busy||playing;$('play').textContent=playing?'Spelar…':'Spela sekvens';}
 async function step(n){await boardAction(()=>board.setPosition(positions[n],true),()=>{update(s=>{s.tabs.animation.step=n;s.tabs.animation.fen=positions[n];});message(n?`Visar ${moves[n-1][2]}`:'Startställningen.');});}
 async function play(){if(playing||busy)return;if(tabState().step===moves.length)await step(0);playing=true;drawSteps();const g=generation;async function advance(){if(!playing||g!==generation)return;if(tabState().step>=moves.length){stop();drawSteps();return;}await step(tabState().step+1);if(playing&&g===generation)playTimer=setTimeout(advance,400);}await advance();}
@@ -212,6 +246,7 @@ function bindControls(){
   bind('clearAnnotations','click',()=>{board.removeArrows();board.removeMarkers();message('Alla högerklicksmarkeringar rensades.');});
   for(const id of ['brailleNotationInAlt','boardAsTable','movePieceForm','piecesAsList','keyboardMoveInput','visuallyHidden'])bind(id,'change',()=>{update(s=>s.tabs.accessibility[id]=$(id).checked);render();});
   bind('focusBoard','click',()=>{board.view.svg.focus();message('Brädet har tangentbordsfokus.');});
+  bind('showPieceList','click',()=>{update(s=>{s.tabs.accessibility.piecesAsList=true;s.tabs.accessibility.visuallyHidden=false;s.tabs.accessibility.boardAsTable=false;s.tabs.accessibility.movePieceForm=false;});render();message('Pjäslistan visas nu synligt under brädet.');});
   bind('castleK','click',async()=>{await board.setPosition(CASTLE_WHITE_BEFORE,false);await board.setPosition(CASTLE_WHITE_K,true);updateInfo();message('Vit kort rockad animerad: kung e1–g1 och torn h1–f1.');});
   bind('castleQ','click',async()=>{await board.setPosition(CASTLE_WHITE_BEFORE,false);await board.setPosition(CASTLE_WHITE_Q,true);updateInfo();message('Vit lång rockad animerad: kung e1–c1 och torn a1–d1.');});
   bind('castleReset','click',()=>board.setPosition(CASTLE_WHITE_BEFORE,true).then(()=>{updateInfo();message('Rockadställningen återställd.');}));
@@ -226,11 +261,13 @@ function bindControls(){
   bind('persistSample','click',()=>board.setPosition(SAMPLE,true).then(updateInfo));
   bind('persistEmpty','click',()=>board.setPosition(FEN.empty,true).then(updateInfo));
   bind('persistClear','click',()=>{localStorage.removeItem('chessboard');board.setPosition(FEN.start,true).then(()=>{updateInfo();message('Persistence-lagringen rensad.');});});
-  bind('undoScenario','change',()=>{update(s=>{s.tabs.undoAnimations.undoScenario=$('undoScenario').value;s.tabs.undoAnimations.undoDone=false;});render();});
-  bind('doScenario','click',async()=>{const sc=UNDO_SCENARIOS[tabState().undoScenario];await board.setPosition(sc.before,false);await board.setPosition(sc.after,true);update(s=>s.tabs.undoAnimations.undoDone=true);updateInfo();$('undoScenarioBtn').disabled=false;message(sc.name+' utfört med animation.');});
-  bind('undoScenarioBtn','click',async()=>{const sc=UNDO_SCENARIOS[tabState().undoScenario];await board.setPosition(sc.before,true);update(s=>s.tabs.undoAnimations.undoDone=false);updateInfo();$('undoScenarioBtn').disabled=true;message(sc.name+' ångrades med animation.');});
-  bind('resetScenario','click',async()=>{const sc=UNDO_SCENARIOS[tabState().undoScenario];await board.setPosition(sc.before,false);update(s=>s.tabs.undoAnimations.undoDone=false);updateInfo();$('undoScenarioBtn').disabled=true;message('Scenariot återställt före draget.');});
+  bind('undoScenario','change',()=>{update(s=>{s.tabs.undoAnimations.undoScenario=$('undoScenario').value;s.tabs.undoAnimations.undoDone=false;s.tabs.undoAnimations.undoPromotionPiece='';s.tabs.undoAnimations.undoVerification='—';});render();});
+  bind('doScenario','click',async()=>{const key=tabState().undoScenario,sc=UNDO_SCENARIOS[key];if(key==='promotion'){await runUndoPromotionChoice();return;}await board.setPosition(sc.before,false);await board.setPosition(sc.after,true);update(s=>{s.tabs.undoAnimations.undoDone=true;s.tabs.undoAnimations.undoVerification='Väntar på ångra';});updateInfo();$('undoScenarioBtn').disabled=false;if($('undoVerification'))$('undoVerification').textContent='Väntar på ångra';message(sc.name+' utfört med animation.');});
+  bind('undoScenarioBtn','click',async()=>{const key=tabState().undoScenario,sc=UNDO_SCENARIOS[key];await board.setPosition(sc.before,true);let verification='OK';if(key==='promotion'){const ok=board.getPiece('b7')==='wp'&&!board.getPiece('b8');verification=ok?'OK – bonde b7, b8 tom':'FEL – promoveringsrester finns kvar';}update(s=>{s.tabs.undoAnimations.undoDone=false;s.tabs.undoAnimations.undoVerification=verification;});updateInfo();$('undoScenarioBtn').disabled=true;if($('undoVerification'))$('undoVerification').textContent=verification;message(sc.name+' ångrades med animation. '+verification);});
+  bind('resetScenario','click',async()=>{const sc=UNDO_SCENARIOS[tabState().undoScenario];await board.setPosition(sc.before,false);update(s=>{s.tabs.undoAnimations.undoDone=false;s.tabs.undoAnimations.undoPromotionPiece='';s.tabs.undoAnimations.undoVerification='—';});updateInfo();$('undoScenarioBtn').disabled=true;if($('undoVerification'))$('undoVerification').textContent='—';message('Scenariot återställt före draget.');});
   bind('clearMoveCode','click',()=>{update(s=>s.tabs.moveReturn.lastMoveCode='—');if($('moveCode'))$('moveCode').textContent='—';message('Dragkoden nollställd.');});
+  for(const el of document.querySelectorAll('[data-pedagogy]'))el.onclick=()=>showPedagogy(el.dataset.pedagogy).catch(reportError);
+  bind('clearPedagogy','click',()=>{board.removeArrows();board.removeMarkers();message('Pedagogiska överlägg rensade.');});
   bind('duration','input',()=>{const d=Number($('duration').value);update(s=>s.settings.duration=d);board.props.style.animationDuration=d;$('durationValue').textContent=d+' ms';});
   bind('first','click',()=>step(0));bind('prev','click',()=>step(Math.max(0,tabState().step-1)));bind('next','click',()=>step(Math.min(moves.length,tabState().step+1)));bind('play','click',play);bind('stop','click',()=>{stop();drawSteps();message('Uppspelningen stoppas efter pågående drag.');});
 }
