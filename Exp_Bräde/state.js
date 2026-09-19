@@ -10,12 +10,19 @@ export const TABS = [
   {id:'pointer',name:'Pekhändelser',description:'Prova enableSquareSelect med pointerdown, pointerup och pointermove och se vilka rutor komponenten rapporterar.'},
   {id:'rotation',name:'Pjäsrotation',description:'Prova den officiella PieceRotation-extensionen: rotera alla, vita eller svarta pjäser 0–270 grader, med eller utan animation.'},
   {id:'annotator',name:'Högerklick',description:'Prova officiella RightClickAnnotator: högerklick för cirkel och högerdra för pil. Modifierare väljer grön, blå, röd eller orange.'},
-  {id:'accessibility',name:'Tillgänglighet',description:'Prova officiella Accessibility-extensionen med tangentbordsnavigering, tabell, dragformulär, pjäslista och skärmläsarstöd.'}
+  {id:'accessibility',name:'Tillgänglighet',description:'Prova officiella Accessibility-extensionen med tangentbordsnavigering, tabell, dragformulär, pjäslista och skärmläsarstöd.'},
+  {id:'testChessboard',name:'TestChessboard',description:'Komponentägarens originaltest för Chessboard-API: skapa/förstöra bräde, position, pjäser, orientering, animationkö och resize-regressioner.'},
+  {id:'testMarkers',name:'TestMarkers',description:'Komponentägarens originaltest för Markers-extensionen.'},
+  {id:'testArrows',name:'TestArrows',description:'Komponentägarens originaltest för Arrows-extensionen.'},
+  {id:'testPosition',name:'TestPosition',description:'Komponentägarens originaltest för Position/FEN, rutor, pjäser och index.'},
+  {id:'testPiecesAnimation',name:'TestPiecesAnimation',description:'Komponentägarens originaltest för avstånd och beräkning av positionsförändringar.'},
+  {id:'testVisualMoveInput',name:'TestVisualMoveInput',description:'Komponentägarens originaltest för klick, drag, cancel, validering och visuellt dragläge.'},
+  {id:'testPieceRotation',name:'TestPieceRotation',description:'Komponentägarens originaltest för PieceRotation-extensionen.'}
 ];
 export const SAMPLE = 'r2q1rk1/ppp2ppp/2npbn2/8/2BPP3/2N2N2/PPP2PPP/R1BQ1RK1';
 export const DEFAULT_SETTINGS = {theme:'default',pieces:'standard.svg',border:'frame',coordinates:true,width:560,duration:250};
-const KEY = 'ChessApps.Exp_Brade.v2';
-const LEGACY_KEY = 'ChessApps.Exp_Brade.v1';
+const KEY = 'ChessApps.Exp_Brade.v3';
+const LEGACY_KEYS = ['ChessApps.Exp_Brade.v2','ChessApps.Exp_Brade.v1'];
 const tabDefaults = () => ({
   fen:FEN.start,orientation:'w',history:[],events:[],mode:'both',reject:false,palette:'wq',
   markers:[],arrows:[],markerType:'circlePrimary',arrowType:'success',step:0,
@@ -35,8 +42,10 @@ export function readState(){
   try{
     const current=localStorage.getItem(KEY);
     if(current)return normalize(JSON.parse(current));
-    const legacy=localStorage.getItem(LEGACY_KEY);
-    if(legacy){const migrated=normalize(JSON.parse(legacy));localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
+    for(const legacyKey of LEGACY_KEYS){
+      const legacy=localStorage.getItem(legacyKey);
+      if(legacy){const migrated=normalize(JSON.parse(legacy));localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
+    }
   }catch{}
   return structuredClone(fallback);
 }
