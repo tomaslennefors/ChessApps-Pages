@@ -23,18 +23,19 @@ export const TABS = [
   {id:'autoBorder',name:'AutoBorder',description:'Prova AutoBorderNone: ramen försvinner automatiskt när brädet blir smalare än vald gräns.'},
   {id:'persistence',name:'Persistence',description:'Prova komponentägarens Persistence-extension för localStorage. Ägaren markerar den uttryckligen som work in progress.'},
   {id:'undoAnimations',name:'Ångra animation',description:'Prova samma positionsanimation baklänges för vanligt drag, slag, en passant, rockad och promovering.'},
-  {id:'moveReturn',name:'Dragretur',description:'Se exakt squareFrom och squareTo från move-input och bygg en koordinatkod som e2e4.'}
+  {id:'moveReturn',name:'Dragretur',description:'Se exakt squareFrom och squareTo från move-input och bygg en koordinatkod som e2e4.'},
+  {id:'pedagogy',name:'Pedagogik',description:'Visa pedagogiska exempel med flera pilar och markeringar: schack, dubbelschack, gaffel och avdragsschack.'}
 ];
 export const SAMPLE = 'r2q1rk1/ppp2ppp/2npbn2/8/2BPP3/2N2N2/PPP2PPP/R1BQ1RK1';
 export const DEFAULT_SETTINGS = {theme:'default',pieces:'standard.svg',border:'frame',coordinates:true,width:560,duration:250};
-const KEY = 'ChessApps.Exp_Brade.v5';
-const LEGACY_KEYS = ['ChessApps.Exp_Brade.v4','ChessApps.Exp_Brade.v3','ChessApps.Exp_Brade.v2','ChessApps.Exp_Brade.v1'];
+const KEY = 'ChessApps.Exp_Brade.v6';
+const LEGACY_KEYS = ['ChessApps.Exp_Brade.v5','ChessApps.Exp_Brade.v4','ChessApps.Exp_Brade.v3','ChessApps.Exp_Brade.v2','ChessApps.Exp_Brade.v1'];
 const tabDefaults = () => ({
   fen:FEN.start,orientation:'w',history:[],events:[],mode:'both',reject:false,palette:'wq',
   markers:[],arrows:[],markerType:'circlePrimary',markerShape:'circle',markerColor:'blue',arrowType:'success',step:0,
   responsive:true,assetsCache:false,aspectRatio:1,pointerEvent:'pointerdown',pointerEvents:[],
   rotationColor:'',rotationAngle:0,rotationAnimated:true,
-  brailleNotationInAlt:true,boardAsTable:true,movePieceForm:true,piecesAsList:true,keyboardMoveInput:true,visuallyHidden:false,autoBorderThreshold:540,undoScenario:'move',undoDone:false,lastMoveCode:'—'
+  brailleNotationInAlt:true,boardAsTable:true,movePieceForm:true,piecesAsList:true,keyboardMoveInput:true,visuallyHidden:false,autoBorderThreshold:540,undoScenario:'move',undoDone:false,undoPromotionPiece:'',undoVerification:'—',lastMoveCode:'—'
 });
 const fresh = () => ({settings:{...DEFAULT_SETTINGS},tabs:Object.fromEntries(TABS.map(t=>[t.id,tabDefaults()]))});
 function normalize(raw){
