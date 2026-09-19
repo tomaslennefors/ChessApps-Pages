@@ -46,3 +46,13 @@
 .cm-chessboard .markers .marker.marker-frame-warning{stroke:orange;stroke-width:1.8px;opacity:.45}
 .cm-chessboard .markers .marker.marker-frame-purple{stroke:#7a3fb0;stroke-width:1.8px;opacity:.45}
 .demo-html-layer{position:absolute;inset:8%;display:grid;place-content:center;text-align:center;gap:8px;background:#ffffffd9;border:2px dashed #1d5449;border-radius:14px;color:#1d5449;pointer-events:none;font-size:18px}.demo-html-layer span{font-size:12px}
+
+/* Exp_Bräde V6: accessibility-utdata ska vara läsbar när den visas visuellt */
+.cm-chessboard-accessibility{line-height:1.45;text-align:left;background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:12px;color:#20332e}
+.cm-chessboard-accessibility h3,.cm-chessboard-accessibility h4{margin:8px 0 6px}
+.cm-chessboard-accessibility ul{margin:0 0 10px;padding-left:22px}
+.cm-chessboard-accessibility li{margin:2px 0}
+.cm-chessboard-accessibility table{border-collapse:collapse;font-size:12px}
+.cm-chessboard-accessibility th,.cm-chessboard-accessibility td{border:1px solid #d8dfd8;padding:3px 5px}
+.cm-chessboard-accessibility form{display:flex;gap:6px;align-items:end;flex-wrap:wrap}
+.cm-chessboard-accessibility.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
