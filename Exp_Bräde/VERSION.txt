@@ -1,4 +1,5 @@
-Exp_Bräde version 3
+Exp_Bräde version 4
 cm-chessboard 8.14.0
-V3: V2:s 10 interaktiva flikar + 7 körbara originaltestflikar från komponentägaren.
-Originaltester: TestChessboard, TestMarkers, TestArrows, TestPosition, TestPiecesAnimation, TestVisualMoveInput, TestPieceRotation.
+V4: 21 flikar.
+Flik 4: separat Markeringstyp och Markeringsfärg.
+Nytt: animerad rockad, PromotionDialog med klickbar bondepromovering, HtmlLayer, AutoBorderNone och Persistence.
