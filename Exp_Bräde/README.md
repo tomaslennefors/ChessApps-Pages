@@ -1,34 +1,41 @@
-# Exp_Bräde – version 2
+# Exp_Bräde – version 3
 
-V2 bygger vidare direkt på fungerande V1 och använder cm-chessboard 8.14.0.
+V3 bygger vidare på V2 och använder cm-chessboard 8.14.0.
 
-## Tio experiment
+## Flik 1–10: våra interaktiva experiment
 
-1. **Inställningar:** officiella teman + hög kontrast samt egna CSS-teman röd, orange, lila och turkos; Standard/Staunty, ram, koordinater och storlek.
-2. **Flytta pjäser:** dra/släpp och klick/klick, färgbegränsning, avvisning, ångra och händelselogg.
-3. **Ställningar / FEN:** formatkontroll, import av pjäsplacering, kopiering och pjäseditor.
-4. **Markeringar:** blå, röd, grön, orange och lila cirklar/ramar samt färgade pilar.
-5. **Animationer:** åtta halvdrag, stegning, uppspelning, stopp och animationstid.
-6. **Brädparametrar:** responsive, assetsCache och style.aspectRatio.
-7. **Pekhändelser:** enableSquareSelect med pointerdown, pointerup och pointermove.
-8. **Pjäsrotation:** officiella PieceRotation-extensionen.
-9. **Högerklick:** officiella RightClickAnnotator-extensionen.
-10. **Tillgänglighet:** officiella Accessibility-extensionen med tangentbordsnavigation och alternativa representationer.
+1. **Inställningar**
+2. **Flytta pjäser**
+3. **Ställningar / FEN**
+4. **Markeringar**
+5. **Animationer**
+6. **Brädparametrar**
+7. **Pekhändelser**
+8. **Pjäsrotation**
+9. **Högerklick**
+10. **Tillgänglighet**
 
-Alla tio flikar kan lossas till egna fönster precis som i V1. V1-inställningar migreras automatiskt till V2:s lokala lagring.
+## Flik 11–17: komponentägarens originaltester
 
-## Officiella testfiler
+11. **TestChessboard** – Chessboard-API, position, pjäser, orientering, destroy, animationkö och resize-regression.
+12. **TestMarkers** – Markers-extensionen.
+13. **TestArrows** – Arrows-extensionen.
+14. **TestPosition** – Position/FEN, index/rutor och pjäsoperationer.
+15. **TestPiecesAnimation** – avstånd och analys av positionsförändringar.
+16. **TestVisualMoveInput** – klick, drag, cancel, validering och visuellt dragläge.
+17. **TestPieceRotation** – PieceRotation-extensionen.
 
-Originalprojektets testfiler har kopierats oförändrade till `vendor/cm-chessboard/test/` för referens:
-`TestChessboard.js`, `TestArrows.js`, `TestMarkers.js`, `TestPieceRotation.js`, `TestPiecesAnimation.js`, `TestPosition.js`, `TestVisualMoveInput.js`, `headless.mjs` och `index.html`.
+Originalfilerna i `vendor/cm-chessboard/test/*.js` är **inte omskrivna**. V3 laddar och kör dem i separata testvyer. En lokal Teevi-kompatibel runner finns endast för att originaltesternas `describe`, `it` och `assert` ska kunna köras i den publicerade appen utan npm-installation.
+
+Varje testflik visar PASS/FAIL per originaltest och har knappen **Kör om testet**.
+
+## Lagring och fönster
+
+V2-inställningar migreras automatiskt till V3. Alla 17 flikar kan lossas till egna fönster med samma mekanism som tidigare.
 
 ## API-översikt
 
-Se `CM_CHESSBOARD_API.md` för sammanställning av dokumenterade constructor-properties, style-properties, metoder, events och extensioner som är relevanta för experimentappen.
-
-## Begränsning
-
-Detta är ett komponenttest, inte en schackmotor. Vanliga flyttar och ställningar kontrolleras inte automatiskt mot schackregler. FEN-fliken använder endast pjäsdelen av FEN.
+Se `CM_CHESSBOARD_API.md`.
 
 ## Licenser
 
