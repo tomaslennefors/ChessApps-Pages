@@ -1,5 +1,7 @@
-Exp_Bräde version 4
+Exp_Bräde version 5
 cm-chessboard 8.14.0
-V4: 21 flikar.
-Flik 4: separat Markeringstyp och Markeringsfärg.
-Nytt: animerad rockad, PromotionDialog med klickbar bondepromovering, HtmlLayer, AutoBorderNone och Persistence.
+V5: 23 flikar.
+Nytt: animerad ångra för vanligt drag, slag, en passant, rockad och promovering.
+Nytt: dragretur e2e4 via squareFrom + squareTo.
+Förtydligat: mobilstöd via responsive, touch, aspectRatio och AutoBorderNone.
+Inga egna blink/glitter/gung/hopp-effekter har lagts till eftersom de inte finns inbyggda i cm-chessboard.
