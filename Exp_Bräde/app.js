@@ -16,6 +16,15 @@ const select=(id,label,items,value)=>`<label>${label}<select id="${id}">${option
 const check=(id,label,on)=>`<label class="check"><input id="${id}" type="checkbox" ${on?'checked':''}>${label}</label>`;
 const EXTRA_MARKER_TYPE={circleSuccess:{class:'marker-circle-success',slice:'markerCircle'},circleWarning:{class:'marker-circle-warning',slice:'markerCircle'},circlePurple:{class:'marker-circle-purple',slice:'markerCircle'},frameSuccess:{class:'marker-frame-success',slice:'markerFrame'},frameWarning:{class:'marker-frame-warning',slice:'markerFrame'},framePurple:{class:'marker-frame-purple',slice:'markerFrame'}};
 const markerType=id=>MARKER_TYPE[id]||EXTRA_MARKER_TYPE[id];
+const OWNER_TESTS={
+  testChessboard:'TestChessboard',
+  testMarkers:'TestMarkers',
+  testArrows:'TestArrows',
+  testPosition:'TestPosition',
+  testPiecesAnimation:'TestPiecesAnimation',
+  testVisualMoveInput:'TestVisualMoveInput',
+  testPieceRotation:'TestPieceRotation'
+};
 const moves=[['e2','e4','1. e4'],['e7','e5','…e5'],['g1','f3','2. Sf3'],['b8','c6','…Sc6'],['f1','b5','3. Lb5'],['a7','a6','…a6'],['b5','a4','4. La4'],['g8','f6','…Sf6']];
 const positions=[FEN.start];const pos=new Position(FEN.start);for(const [a,b] of moves){pos.movePiece(a,b);positions.push(pos.getFen());}
 let state=readState(), board=null,active='settings',busy=false,playing=false,playTimer=null,generation=0,disposing=false;
@@ -56,6 +65,13 @@ function render(){
   dispose();state=readState();drawTabs();const tab=TABS.find(t=>t.id===active);
   document.title=`Exp_Bräde · ${tab.name}`;
   if(!windows.popupId&&windows.isDetached(active)){$('main').innerHTML=`<section class="card placeholder"><h2>${tab.name} ligger i ett eget fönster</h2><p>Flytta fönstret till en annan skärm med dess namnlist. Inställningar och testdata behålls.</p><div class="buttons"><button id="focusWindow">Visa fönstret</button><button class="primary" id="dockWindow">↙ Sätt tillbaka</button></div></section>`;$('focusWindow').onclick=()=>detach(active);$('dockWindow').onclick=()=>windows.dock(active);return;}
+  if(OWNER_TESTS[active]){
+    const testName=OWNER_TESTS[active];
+    $('main').innerHTML=`<section id="panel" role="tabpanel" ${windows.popupId?'':`aria-labelledby="tab-${active}"`}><div class="panel-heading"><div><h2>${tab.name}</h2><p>${tab.description}</p></div>${windows.popupId?'':`<button id="detachActive" title="Öppna denna flik i ett riktigt webbläsarfönster">↗ Lossa fliken</button>`}</div><section class="card owner-test-card"><div class="owner-test-head"><div><strong>Originalfil: ${testName}.js</strong><p>Testet körs från vår oförändrade kopia av cm-chessboard 8.14.0.</p></div><button id="rerunTest">Kör om testet</button></div><iframe id="ownerTestFrame" class="owner-test-frame" title="${testName}" src="./vendor/cm-chessboard/test/${testName}.html"></iframe></section></section>`;
+    if($('detachActive'))$('detachActive').onclick=()=>detach(active);
+    $('rerunTest').onclick=()=>{const f=$('ownerTestFrame');f.src=f.src.split('?')[0]+'?run='+Date.now();};
+    return;
+  }
   $('main').innerHTML=`<section id="panel" role="tabpanel" ${windows.popupId?'':`aria-labelledby="tab-${active}"`}><div class="panel-heading"><div><h2>${tab.name}</h2><p>${tab.description}</p></div>${windows.popupId?'':`<button id="detachActive" title="Öppna denna flik i ett riktigt webbläsarfönster">↗ Lossa fliken</button>`}</div><div class="workspace"><div class="board-column"><div class="board-shell" style="width:${state.settings.width}px"><div id="board" class="board" aria-label="Schackbräde för ${tab.name}"></div><div class="board-caption"><span id="orientation"></span><span><span class="live-dot">●</span> Eget testbräde</span></div><div id="status" class="status" role="status">Brädet är klart.</div><div class="fen-output"><label for="fenOutput">Bräd-FEN · pjäsdelen</label><textarea id="fenOutput" rows="2" readonly></textarea></div></div></div><aside class="controls">${controls()}</aside></div></section>`;
   if($('detachActive'))$('detachActive').onclick=()=>detach(active);
   createBoard();bindControls();updateInfo();
