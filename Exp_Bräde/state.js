@@ -1,19 +1,43 @@
 import {FEN} from './vendor/cm-chessboard/src/Chessboard.js';
 
 export const TABS = [
-  {id:'settings',name:'Inställningar',description:'Prova brädtema, pjäser, ram, koordinater och storlek. Utseendet delas av alla fem tester, även i egna fönster.'},
+  {id:'settings',name:'Inställningar',description:'Prova brädtema, pjäser, ram, koordinater och storlek. Utseendet delas av alla tio tester, även i egna fönster.'},
   {id:'input',name:'Flytta pjäser',description:'Prova dra och släpp eller klicka på pjäs och målruta. Begränsa färg, avvisa testdrag och följ komponentens händelser.'},
   {id:'fen',name:'Ställningar / FEN',description:'Ladda en pjäsställning eller bygg en egen genom att välja en pjäs och klicka på brädet.'},
-  {id:'markers',name:'Markeringar',description:'Prova komponentens cirklar, ramar, prickar och pilar. Klicka på en ruta för att sätta eller ta bort vald markering.'},
-  {id:'animation',name:'Animationer',description:'Stega genom en kort öppning och prova animationstiden. Jämför mjuka förflyttningar med omedelbara positionsbyten.'}
+  {id:'markers',name:'Markeringar',description:'Prova cirklar, ramar, prickar och pilar i flera färger. V2 kompletterar färgvalen med grön, orange och lila.'},
+  {id:'animation',name:'Animationer',description:'Stega genom en kort öppning och prova animationstiden. Jämför mjuka förflyttningar med omedelbara positionsbyten.'},
+  {id:'parameters',name:'Brädparametrar',description:'Prova dokumenterade grundparametrar: responsive, assetsCache och style.aspectRatio, utan att ändra komponentkoden.'},
+  {id:'pointer',name:'Pekhändelser',description:'Prova enableSquareSelect med pointerdown, pointerup och pointermove och se vilka rutor komponenten rapporterar.'},
+  {id:'rotation',name:'Pjäsrotation',description:'Prova den officiella PieceRotation-extensionen: rotera alla, vita eller svarta pjäser 0–270 grader, med eller utan animation.'},
+  {id:'annotator',name:'Högerklick',description:'Prova officiella RightClickAnnotator: högerklick för cirkel och högerdra för pil. Modifierare väljer grön, blå, röd eller orange.'},
+  {id:'accessibility',name:'Tillgänglighet',description:'Prova officiella Accessibility-extensionen med tangentbordsnavigering, tabell, dragformulär, pjäslista och skärmläsarstöd.'}
 ];
 export const SAMPLE = 'r2q1rk1/ppp2ppp/2npbn2/8/2BPP3/2N2N2/PPP2PPP/R1BQ1RK1';
 export const DEFAULT_SETTINGS = {theme:'default',pieces:'standard.svg',border:'frame',coordinates:true,width:560,duration:250};
-const KEY = 'ChessApps.Exp_Brade.v1';
-const fresh = () => ({settings:{...DEFAULT_SETTINGS},tabs:Object.fromEntries(TABS.map(t=>[t.id,{fen:FEN.start,orientation:'w',history:[],events:[],mode:'both',reject:false,palette:'wq',markers:[],arrows:[],markerType:'circlePrimary',arrowType:'success',step:0}]))});
+const KEY = 'ChessApps.Exp_Brade.v2';
+const LEGACY_KEY = 'ChessApps.Exp_Brade.v1';
+const tabDefaults = () => ({
+  fen:FEN.start,orientation:'w',history:[],events:[],mode:'both',reject:false,palette:'wq',
+  markers:[],arrows:[],markerType:'circlePrimary',arrowType:'success',step:0,
+  responsive:true,assetsCache:false,aspectRatio:1,pointerEvent:'pointerdown',pointerEvents:[],
+  rotationColor:'',rotationAngle:0,rotationAnimated:true,
+  brailleNotationInAlt:true,boardAsTable:true,movePieceForm:true,piecesAsList:true,keyboardMoveInput:true,visuallyHidden:false
+});
+const fresh = () => ({settings:{...DEFAULT_SETTINGS},tabs:Object.fromEntries(TABS.map(t=>[t.id,tabDefaults()]))});
+function normalize(raw){
+  const base=fresh();
+  if(raw?.settings)base.settings={...base.settings,...raw.settings};
+  for(const t of TABS)if(raw?.tabs?.[t.id])base.tabs[t.id]={...base.tabs[t.id],...raw.tabs[t.id]};
+  return base;
+}
 let fallback = fresh();
 export function readState(){
-  try {const s=JSON.parse(localStorage.getItem(KEY));if(s?.settings&&TABS.every(t=>s.tabs?.[t.id]))return s;}catch{}
+  try{
+    const current=localStorage.getItem(KEY);
+    if(current)return normalize(JSON.parse(current));
+    const legacy=localStorage.getItem(LEGACY_KEY);
+    if(legacy){const migrated=normalize(JSON.parse(legacy));localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
+  }catch{}
   return structuredClone(fallback);
 }
 const channel = typeof BroadcastChannel==='function' ? new BroadcastChannel(KEY) : null;
