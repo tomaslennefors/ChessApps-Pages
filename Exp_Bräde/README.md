@@ -1,41 +1,52 @@
-# Exp_Bräde – version 3
+# Exp_Bräde – version 4
 
-V3 bygger vidare på V2 och använder cm-chessboard 8.14.0.
+V4 bygger vidare på V3 och använder cm-chessboard 8.14.0.
 
-## Flik 1–10: våra interaktiva experiment
+## Viktiga V4-ändringar
 
-1. **Inställningar**
-2. **Flytta pjäser**
-3. **Ställningar / FEN**
-4. **Markeringar**
-5. **Animationer**
-6. **Brädparametrar**
-7. **Pekhändelser**
-8. **Pjäsrotation**
-9. **Högerklick**
-10. **Tillgänglighet**
+- **Flik 4 Markeringar:** markeringsform och markeringsfärg väljs nu i två separata listboxar.
+  - Form: cirkel, ram, prick, fylld ruta, hörn.
+  - Färg: standard/svart, blå, röd, grön, orange, lila.
+- **Flik 18 Specialdrag:** animerad kort/lång rockad samt officiella PromotionDialog.
+  - Rockad animeras genom `setPosition(..., true)`, samma princip som i cm-chessboards eget validate-moves-exempel.
+  - Bonde b7 kan klickas/dras till b8 och därefter väljer man dam, torn, löpare eller springare direkt på brädet.
+- **Flik 19 HTML-lager:** officiella HtmlLayer-extensionen.
+- **Flik 20 AutoBorder:** officiella AutoBorderNone-extensionen.
+- **Flik 21 Persistence:** officiella Persistence-extensionen. Komponentägaren markerar den som *work in progress* och säger att den inte bör användas i produktion.
+
+## Flik 1–10: interaktiva experiment
+
+1. Inställningar
+2. Flytta pjäser
+3. Ställningar / FEN
+4. Markeringar
+5. Animationer
+6. Brädparametrar
+7. Pekhändelser
+8. Pjäsrotation
+9. Högerklick
+10. Tillgänglighet
 
 ## Flik 11–17: komponentägarens originaltester
 
-11. **TestChessboard** – Chessboard-API, position, pjäser, orientering, destroy, animationkö och resize-regression.
-12. **TestMarkers** – Markers-extensionen.
-13. **TestArrows** – Arrows-extensionen.
-14. **TestPosition** – Position/FEN, index/rutor och pjäsoperationer.
-15. **TestPiecesAnimation** – avstånd och analys av positionsförändringar.
-16. **TestVisualMoveInput** – klick, drag, cancel, validering och visuellt dragläge.
-17. **TestPieceRotation** – PieceRotation-extensionen.
+11. TestChessboard
+12. TestMarkers
+13. TestArrows
+14. TestPosition
+15. TestPiecesAnimation
+16. TestVisualMoveInput
+17. TestPieceRotation
 
-Originalfilerna i `vendor/cm-chessboard/test/*.js` är **inte omskrivna**. V3 laddar och kör dem i separata testvyer. En lokal Teevi-kompatibel runner finns endast för att originaltesternas `describe`, `it` och `assert` ska kunna köras i den publicerade appen utan npm-installation.
+## Flik 18–21: fler officiella funktioner
 
-Varje testflik visar PASS/FAIL per originaltest och har knappen **Kör om testet**.
+18. Specialdrag – rockad + PromotionDialog
+19. HTML-lager – HtmlLayer
+20. AutoBorder – AutoBorderNone
+21. Persistence – localStorage-demo
 
-## Lagring och fönster
+## Ytterligare saker i upstream som vi har identifierat
 
-V2-inställningar migreras automatiskt till V3. Alla 17 flikar kan lossas till egna fönster med samma mekanism som tidigare.
-
-## API-översikt
-
-Se `CM_CHESSBOARD_API.md`.
+cm-chessboard har också exempel för många samtidiga bräden, destroy av många bräden, responsive board, generell positionsanimation, Chess960-validering och vanlig dragvalidering med chess.js. Dessa är nu kartlagda även om alla inte behöver en egen experimentflik.
 
 ## Licenser
 
