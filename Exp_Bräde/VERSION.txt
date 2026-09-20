@@ -1,8 +1,0 @@
-Exp_Bräde version 6
-cm-chessboard 8.14.0
-V6: 24 flikar.
-Flik 22: riktig PromotionDialog med val D/T/L/S och verifierad animerad ångra utan kvarvarande promoveringspjäs.
-Flik 10: tydligare synlig piecesAsList och förklaring att det är pjäs+ruta, inte materialräkning.
-Flik 24: pedagogiska överlägg för schack, dubbelschack, gaffel och avdragsschack.
-Ingen inbyggd ljudfunktion hittades i cm-chessboard.
-SAN/PGN som O-O kräver regel-/protokollager ovanpå rå squareFrom/squareTo.

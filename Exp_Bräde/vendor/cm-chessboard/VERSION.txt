@@ -1,4 +1,0 @@
-cm-chessboard 8.14.0
-Source in this repository: Download/cm-chessboard-master
-Copied for the Test project on 2026-09-17.
-
