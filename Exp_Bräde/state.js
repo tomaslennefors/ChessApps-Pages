@@ -1,10 +1,10 @@
 import {FEN} from './vendor/cm-chessboard/src/Chessboard.js';
 
 export const TABS = [
-  {id:'settings',name:'Inställningar',description:'Prova brädtema, pjäser, ram, koordinater och storlek. Utseendet delas av alla tio tester, även i egna fönster.'},
+  {id:'settings',name:'Inställningar',description:'Prova alla inbyggda brädteman och pjässet, ram, koordinater, responsive och ett större storleksintervall.'},
   {id:'input',name:'Flytta pjäser',description:'Prova dra och släpp eller klicka på pjäs och målruta. Begränsa färg, avvisa testdrag och följ komponentens händelser.'},
   {id:'fen',name:'Ställningar / FEN',description:'Ladda en pjäsställning eller bygg en egen genom att välja en pjäs och klicka på brädet.'},
-  {id:'markers',name:'Markeringar',description:'Välj markeringsform och markeringsfärg separat. Prova cirkel, ram, prick, fylld ruta, hörn och färgade pilar.'},
+  {id:'markers',name:'Markeringar',description:'Slå av/på markeringar, prova alla färdiga markeringsformer, fler färger och pilar både vid pjäsdrag och mellan två valfria rutor.'},
   {id:'animation',name:'Animationer',description:'Stega genom en kort öppning och prova animationstiden. Jämför mjuka förflyttningar med omedelbara positionsbyten.'},
   {id:'parameters',name:'Brädparametrar',description:'Prova responsive, assetsCache och aspectRatio samt se vilka delar som är relevanta för mobil och touch.'},
   {id:'pointer',name:'Pekhändelser',description:'Prova enableSquareSelect med pointerdown, pointerup och pointermove och se vilka rutor komponenten rapporterar.'},
@@ -27,12 +27,12 @@ export const TABS = [
   {id:'pedagogy',name:'Pedagogik',description:'Visa pedagogiska exempel med flera pilar och markeringar: schack, dubbelschack, gaffel och avdragsschack.'}
 ];
 export const SAMPLE = 'r2q1rk1/ppp2ppp/2npbn2/8/2BPP3/2N2N2/PPP2PPP/R1BQ1RK1';
-export const DEFAULT_SETTINGS = {theme:'default',pieces:'standard.svg',border:'frame',coordinates:true,width:560,duration:250};
-const KEY = 'ChessApps.Exp_Brade.v6';
-const LEGACY_KEYS = ['ChessApps.Exp_Brade.v5','ChessApps.Exp_Brade.v4','ChessApps.Exp_Brade.v3','ChessApps.Exp_Brade.v2','ChessApps.Exp_Brade.v1'];
+export const DEFAULT_SETTINGS = {theme:'default',pieces:'standard.svg',border:'frame',coordinates:true,responsive:true,width:560,duration:250};
+const KEY = 'ChessApps.Exp_Brade.v7';
+const LEGACY_KEYS = ['ChessApps.Exp_Brade.v6','ChessApps.Exp_Brade.v5','ChessApps.Exp_Brade.v4','ChessApps.Exp_Brade.v3','ChessApps.Exp_Brade.v2','ChessApps.Exp_Brade.v1'];
 const tabDefaults = () => ({
   fen:FEN.start,orientation:'w',history:[],events:[],mode:'both',reject:false,palette:'wq',
-  markers:[],arrows:[],markerType:'circlePrimary',markerShape:'circle',markerColor:'blue',arrowType:'success',step:0,
+  markers:[],arrows:[],markersEnabled:true,dragArrowEnabled:true,markerType:'circlePrimary',markerShape:'circle',markerColor:'blue',arrowType:'success',step:0,
   responsive:true,assetsCache:false,aspectRatio:1,pointerEvent:'pointerdown',pointerEvents:[],
   rotationColor:'',rotationAngle:0,rotationAnimated:true,
   brailleNotationInAlt:true,boardAsTable:true,movePieceForm:true,piecesAsList:true,keyboardMoveInput:true,visuallyHidden:false,autoBorderThreshold:540,undoScenario:'move',undoDone:false,undoPromotionPiece:'',undoVerification:'—',lastMoveCode:'—'
