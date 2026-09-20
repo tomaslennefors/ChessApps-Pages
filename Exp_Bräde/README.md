@@ -1,41 +1,63 @@
-# Exp_Bräde – version 6
+# E02_Bräde – version 7
 
-V6 bygger vidare på V5 och använder cm-chessboard 8.14.0.
+Kortnamn: **E02**
 
-## Flik 22 – Ångra animation
-Promoveringsscenariot använder nu den riktiga PromotionDialog-rutan. Du väljer själv dam, torn, löpare eller springare. Efter **Ångra** kontrollerar appen automatiskt att:
+V7 bygger vidare på V6 och använder cm-chessboard 8.14.0.
 
-- b7 åter innehåller en vit bonde
-- b8 är tom
-- den valda promoveringspjäsen alltså inte ligger kvar
+## Flik 1 – Inställningar
 
-Samma flik testar även vanligt drag, slag, en passant och rockad baklänges med positionsanimation.
+### Inbyggda brädteman
+cm-chessboard 8.14.0 innehåller sju teman:
 
-## Dragkod och protokoll
-cm-chessboard ger `squareFrom` och `squareTo`, vilket räcker för rå koordinatkod som `e1g1`.
+- default
+- default-contrast
+- green
+- blue
+- chess-club
+- chessboard-js
+- black-and-white
 
-Att säkert skriva detta som **O-O** eller **O-O-O**, eller skapa korrekt SAN/PGN för slag, schack, matt och promovering, kräver information om spelställningen och schackregler. Det bör ligga i regel-/protokolllagret, exempelvis chess.js eller motsvarande, inte i själva brädkomponenten.
+E02 har dessutom fyra egna CSS-teman: röd, orange, lila och turkos. V7 märker nu tydligt vilka som är inbyggda respektive egna.
 
-## Ljud
-Jag hittade inga inbyggda ljudsignaler eller ljudfiler i cm-chessboard. Dragljud, slag, schack, matt osv. måste därför läggas som ett separat lager i vår app om vi vill ha det senare.
+### Pjäsuppsättningar
+Komponenten levereras med två pjäsuppsättningar och båda finns i listan:
 
-## Flik 10 – Tillgänglighet och pjäslista
-`piecesAsList` är inte en materialräkning. Extensionen listar varje pjäs med sin ruta, separat för vit och svart, till exempel `Knight f3`.
+- standard.svg
+- staunty.svg
 
-V6 lägger till knappen **Visa pjäslistan tydligt** och egen CSS så listan går att granska visuellt. Funktionen är ursprungligen främst avsedd för skärmläsare och kan döljas visuellt med `visuallyHidden`.
+### Koordinatnotation
+Kärn-API:t har bara den separata egenskapen `style.showCoordinates`.
 
-## Flik 24 – Pedagogik
-Nya visuella demonstrationer:
+Placeringen styrs indirekt av ramen:
 
-- Schack – pil mot kungen + markering
-- Dubbelschack – två pilar från två angripare mot kungen
-- Gaffel – två pilar från samma angripare mot två mål
-- Avdragsschack – visar frigjord schacklinje och flytten som öppnade linjen
+- `borderType=frame` → koordinaterna placeras i ramen
+- `borderType=none/thin` → koordinaterna placeras inne på rutorna
+- orienteringen vänds automatiskt när brädet vänds
 
-Detta är bara visuella överlägg. Automatisk identifiering av schack, dubbelschack, gaffel, avdragsschack, hot och pjäs-vinsthot kräver en regel-/analysmotor ovanpå cm-chessboard.
+### Storlek och responsive
+cm-chessboard sätter ingen egen min- eller maxbredd. Brädet följer sin container. V7 utökar därför experimentets testintervall till **120–1400 px** och gör `responsive` till en gemensam kryssruta i flik 1.
 
-Arrows-extensionen har flera färger men en grundform på pilhuvudet. En särskild dubbelpil eller annan specialsymbol kräver ett eget SVG-/overlay-lager.
+### extensions []
+`extensions` är arrayen med extension-klasser som ska skapas tillsammans med brädet. E02 använder Markers och Arrows som bas och lägger till andra extensioner i de flikar där de behövs.
+
+## Flik 4 – Markeringar
+
+V7 lägger till:
+
+- kryssruta för att visa/dölja markeringar
+- fylld cirkel utöver cirkel, ram, prick, fylld ruta och hörn
+- fler färger: gul, cyan, rosa, vit och grå
+- alla sex inbyggda piltyper: default, success, secondary, warning, info och danger
+- tillfällig pil från startruta till aktuell ruta under pågående pjäsflytt
+- tydlig funktion för att lägga till en pil mellan två rutor utan att någon pjäs flyttas
+
+Markeringsformen och markeringsfärgen väljs fortfarande separat. Det gör att V7 kan prova fler kombinationer än de färdiga standardkombinationerna i cm-chessboard.
+
+## Tidigare funktioner
+
+V1–V6 finns kvar: flyttinmatning, FEN/editor, animationer, parametrar, pekhändelser, PieceRotation, RightClickAnnotator, Accessibility, originaltester, PromotionDialog, HtmlLayer, AutoBorderNone, Persistence, animerad ångra, dragretur och pedagogiska överlägg.
 
 ## Licenser
+
 cm-chessboard av Stefan Haack: MIT, se `vendor/cm-chessboard/LICENSE`.
 Standard-pjäserna: CC BY-SA 3.0. Staunty-pjäserna: CC BY-NC-SA 4.0.
