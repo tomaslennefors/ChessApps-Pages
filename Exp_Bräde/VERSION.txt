@@ -19,4 +19,4 @@ Flik 4:
 - Pil mellan två angivna rutor kan läggas till utan att någon pjäs flyttas.
 
 Dokumentation:
-- KRAVSPEC_VERSIONER.md flyttad till KravSpec och omformad till E02_Bräde_Versioner.md.
+- KRAVSPEC_VERSIONER.md ersatt av KravSpec/E02_Bräde_V01.md, som endast innehåller V01-kraven.
