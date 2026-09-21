@@ -19,7 +19,6 @@ E01_Test/                        ← projektet E01_Test
 ├── index.html                   ← appens startfil
 ├── app.js                       ← vår JavaScript-kod
 ├── styles.css                   ← vår layout och vårt utseende
-├── VERSION.txt                  ← versions- och publiceringsinformation
 │
 └── vendor/                      ← externa komponenter som appen använder
     ├── README.md                ← förklaring av vendor-mappen
