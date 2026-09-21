@@ -1,10 +1,10 @@
-# Test – cm-chessboard
+# E01_Test – cm-chessboard
 
-Test-appen används för att prova `cm-chessboard` som grundkomponent för schackbräden i mina ChessApps.
+E01_Test används för att prova `cm-chessboard` som grundkomponent för schackbräden i mina ChessApps.
 
 ## Starta appen
 
-[**▶ Starta Test-appen**](https://tomaslennefors.github.io/ChessApps-Pages/Test/)
+[**▶ Starta E01_Test**](https://tomaslennefors.github.io/ChessApps-Pages/E01_Test/)
 
 ## Syfte
 
@@ -13,7 +13,7 @@ Appen provar själva schackbrädeskomponenten och dess grundläggande visning oc
 ## Struktur
 
 ```text
-Test/                            ← appen Test
+E01_Test/                        ← projektet E01_Test
 │
 ├── README.md                    ← denna beskrivning och startlänk
 ├── index.html                   ← appens startfil
@@ -39,6 +39,6 @@ Test/                            ← appen Test
 
 ## Extern komponent
 
-Test använder **cm-chessboard 8.14.0**. De filer som krävs för den publicerade appen ligger under `vendor/cm-chessboard/`.
+E01_Test använder **cm-chessboard 8.14.0**. De filer som krävs för den publicerade appen ligger under `vendor/cm-chessboard/`.
 
 Licensinformationen för komponenten ligger kvar tillsammans med komponentfilerna.
