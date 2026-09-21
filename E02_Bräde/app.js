@@ -102,7 +102,7 @@ case 'pedagogy':return `<section class="card"><h3>Pedagogiska överlägg</h3><di
 }}
 function render(){
   dispose();state=readState();drawTabs();const tab=TABS.find(t=>t.id===active);
-  document.title=`Exp_Bräde · ${tab.name}`;
+  document.title=`E02_Bräde · ${tab.name}`;
   if(!windows.popupId&&windows.isDetached(active)){$('main').innerHTML=`<section class="card placeholder"><h2>${tab.name} ligger i ett eget fönster</h2><p>Flytta fönstret till en annan skärm med dess namnlist. Inställningar och testdata behålls.</p><div class="buttons"><button id="focusWindow">Visa fönstret</button><button class="primary" id="dockWindow">↙ Sätt tillbaka</button></div></section>`;$('focusWindow').onclick=()=>detach(active);$('dockWindow').onclick=()=>windows.dock(active);return;}
   if(OWNER_TESTS[active]){
     const testName=OWNER_TESTS[active];
