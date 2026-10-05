@@ -8,11 +8,9 @@
     body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:32px auto;padding:0 16px;line-height:1.45}
     h1{font-size:1.6rem}
     label{display:block;font-weight:600;margin-top:18px}
-    input,textarea,button{font:inherit;box-sizing:border-box}
-    input,textarea{width:100%;padding:10px;margin-top:6px}
-    textarea{min-height:110px;resize:vertical}
+    textarea,button{font:inherit;box-sizing:border-box}
+    textarea{width:100%;padding:10px;margin-top:6px;min-height:110px;resize:vertical}
     button{margin-top:18px;padding:10px 16px;cursor:pointer}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
     #status{margin-top:18px;padding:10px;border:1px solid #bbb;white-space:pre-wrap}
     .small{font-size:.9rem;color:#555}
     code{word-break:break-all}
@@ -23,16 +21,7 @@
   <p>Den här testsidan skriver en ny rad till:</p>
   <p><code>tomaslennefors/Data/Test/PageApp/PageApp.txt</code></p>
 
-  <label for="token">GitHub-token</label>
-  <input id="token" type="password" autocomplete="off" placeholder="Klistra in token första gången">
-  <div class="small">
-    Token sparas lokalt i den här webbläsaren på den här enheten och används automatiskt nästa gång.
-    Det läggs inte in i den publika HTML-filen.
-  </div>
-  <div class="row">
-    <button id="saveTokenBtn" type="button">Spara token</button>
-    <button id="forgetTokenBtn" type="button">Glöm sparat token</button>
-  </div>
+  <p class="small">GitHub-token hämtas automatiskt från TokenSetup på samma Pages-domän.</p>
 
   <label for="text">Text att skriva</label>
   <textarea id="text" placeholder="Skriv en testtext"></textarea>
@@ -48,42 +37,34 @@
   const path = "Test/PageApp/PageApp.txt";
   const branch = "main";
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  const tokenStorageKey = "TestData_GitHubToken";
+  const tokenStorageKey = "ChessApps_GitHubToken";
+  const oldTokenStorageKey = "TestData_GitHubToken";
 
-  const tokenEl = document.getElementById("token");
   const textEl = document.getElementById("text");
   const statusEl = document.getElementById("status");
   const writeButton = document.getElementById("writeBtn");
-  const saveTokenButton = document.getElementById("saveTokenBtn");
-  const forgetTokenButton = document.getElementById("forgetTokenBtn");
 
   function setStatus(msg) {
     statusEl.textContent = msg;
   }
 
-  function loadSavedToken() {
-    const saved = localStorage.getItem(tokenStorageKey);
-    if (saved) {
-      tokenEl.value = saved;
-      setStatus("Sparat token är inläst automatiskt. Redo.");
-    }
-  }
+  function getToken() {
+    let token = localStorage.getItem(tokenStorageKey);
 
-  function saveToken() {
-    const token = tokenEl.value.trim();
     if (!token) {
-      setStatus("Det finns inget token att spara.");
-      return false;
+      const oldToken = localStorage.getItem(oldTokenStorageKey);
+      if (oldToken) {
+        localStorage.setItem(tokenStorageKey, oldToken);
+        localStorage.removeItem(oldTokenStorageKey);
+        token = oldToken;
+      }
     }
-    localStorage.setItem(tokenStorageKey, token);
-    setStatus("Token sparat lokalt i den här webbläsaren.");
-    return true;
-  }
 
-  function forgetToken() {
-    localStorage.removeItem(tokenStorageKey);
-    tokenEl.value = "";
-    setStatus("Det sparade tokenet är borttaget från den här webbläsaren.");
+    if (!token) {
+      throw new Error("Inget GitHub-token finns sparat. Öppna först TokenSetup och spara tokenet där.");
+    }
+
+    return token;
   }
 
   function decodeBase64Utf8(base64) {
@@ -98,19 +79,6 @@
     let binary = "";
     for (const b of bytes) binary += String.fromCharCode(b);
     return btoa(binary);
-  }
-
-  function getToken() {
-    const entered = tokenEl.value.trim();
-    if (entered) return entered;
-
-    const saved = localStorage.getItem(tokenStorageKey);
-    if (saved) {
-      tokenEl.value = saved;
-      return saved;
-    }
-
-    throw new Error("GitHub-token saknas. Klistra in tokenet första gången och spara det.");
   }
 
   async function githubRequest(url, options = {}) {
@@ -131,10 +99,6 @@
     if (!text) {
       setStatus("Skriv först en testtext.");
       return;
-    }
-
-    if (tokenEl.value.trim()) {
-      localStorage.setItem(tokenStorageKey, tokenEl.value.trim());
     }
 
     writeButton.disabled = true;
@@ -173,7 +137,7 @@
 
       const putRes = await githubRequest(apiUrl, {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify(body)
       });
 
@@ -196,11 +160,13 @@
     }
   }
 
-  saveTokenButton.addEventListener("click", saveToken);
-  forgetTokenButton.addEventListener("click", forgetToken);
   writeButton.addEventListener("click", writeToData);
 
-  loadSavedToken();
+  if (localStorage.getItem(tokenStorageKey) || localStorage.getItem(oldTokenStorageKey)) {
+    setStatus("Token hittat. Redo.");
+  } else {
+    setStatus("Inget token hittat. Öppna TokenSetup först.");
+  }
 })();
 </script>
 </body>
