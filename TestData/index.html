@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Test Pages → Data</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:32px auto;padding:0 16px;line-height:1.45}
+    h1{font-size:1.6rem}
+    label{display:block;font-weight:600;margin-top:18px}
+    input,textarea,button{font:inherit;box-sizing:border-box}
+    input,textarea{width:100%;padding:10px;margin-top:6px}
+    textarea{min-height:110px;resize:vertical}
+    button{margin-top:18px;padding:10px 16px;cursor:pointer}
+    #status{margin-top:18px;padding:10px;border:1px solid #bbb;white-space:pre-wrap}
+    .small{font-size:.9rem;color:#555}
+    code{word-break:break-all}
+  </style>
+</head>
+<body>
+  <h1>Test: GitHub Pages → Data</h1>
+  <p>Den här testsidan skriver en ny rad till:</p>
+  <p><code>tomaslennefors/Data/Test/PageApp/PageApp.txt</code></p>
+
+  <label for="token">GitHub-token</label>
+  <input id="token" type="password" autocomplete="off" placeholder="Klistra in token här">
+  <div class="small">Token sparas inte av sidan.</div>
+
+  <label for="text">Text att skriva</label>
+  <textarea id="text" placeholder="Skriv en testtext"></textarea>
+
+  <button id="writeBtn" type="button">Skriv till Data</button>
+
+  <div id="status">Redo.</div>
+
+<script>
+(() => {
+  const owner = "tomaslennefors";
+  const repo = "Data";
+  const path = "Test/PageApp/PageApp.txt";
+  const branch = "main";
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+  const tokenEl = document.getElementById("token");
+  const textEl = document.getElementById("text");
+  const statusEl = document.getElementById("status");
+  const button = document.getElementById("writeBtn");
+
+  function setStatus(msg) {
+    statusEl.textContent = msg;
+  }
+
+  function decodeBase64Utf8(base64) {
+    const clean = base64.replace(/\n/g, "");
+    const binary = atob(clean);
+    const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+
+  function encodeBase64Utf8(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+    for (const b of bytes) binary += String.fromCharCode(b);
+    return btoa(binary);
+  }
+
+  async function githubRequest(url, options = {}) {
+    const token = tokenEl.value.trim();
+    if (!token) throw new Error("GitHub-token saknas.");
+
+    const headers = {
+      "Accept": "application/vnd.github+json",
+      "Authorization": `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28",
+      ...(options.headers || {})
+    };
+
+    return fetch(url, {...options, headers});
+  }
+
+  async function writeToData() {
+    const text = textEl.value.trim();
+    if (!text) {
+      setStatus("Skriv först en testtext.");
+      return;
+    }
+
+    button.disabled = true;
+    setStatus("Läser senaste filversionen...");
+
+    try {
+      let oldContent = "";
+      let sha = null;
+
+      const getRes = await githubRequest(apiUrl + "?ref=" + encodeURIComponent(branch));
+
+      if (getRes.status === 200) {
+        const file = await getRes.json();
+        sha = file.sha;
+        oldContent = decodeBase64Utf8(file.content || "");
+      } else if (getRes.status !== 404) {
+        const err = await getRes.text();
+        throw new Error(`Kunde inte läsa filen. HTTP ${getRes.status}\n${err}`);
+      }
+
+      const stamp = new Date().toLocaleString("sv-SE");
+      const newLine = `${stamp} - ${text}`;
+      const newContent =
+        oldContent.length === 0
+          ? newLine + "\n"
+          : oldContent.replace(/\s*$/, "\n") + newLine + "\n";
+
+      setStatus("Skriver till repository Data...");
+
+      const body = {
+        message: "Test från GitHub Pages",
+        content: encodeBase64Utf8(newContent),
+        branch
+      };
+      if (sha) body.sha = sha;
+
+      const putRes = await githubRequest(apiUrl, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      });
+
+      if (!putRes.ok) {
+        const err = await putRes.text();
+        throw new Error(`Skrivningen misslyckades. HTTP ${putRes.status}\n${err}`);
+      }
+
+      const result = await putRes.json();
+      setStatus(
+        "KLART!\n" +
+        "Skrev: " + newLine + "\n" +
+        "Commit: " + (result.commit?.sha || "okänd")
+      );
+      textEl.value = "";
+    } catch (err) {
+      setStatus("FEL:\n" + (err?.message || String(err)));
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  button.addEventListener("click", writeToData);
+})();
+</script>
+</body>
+</html>
