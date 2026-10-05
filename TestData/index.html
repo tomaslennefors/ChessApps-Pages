@@ -12,6 +12,7 @@
     input,textarea{width:100%;padding:10px;margin-top:6px}
     textarea{min-height:110px;resize:vertical}
     button{margin-top:18px;padding:10px 16px;cursor:pointer}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
     #status{margin-top:18px;padding:10px;border:1px solid #bbb;white-space:pre-wrap}
     .small{font-size:.9rem;color:#555}
     code{word-break:break-all}
@@ -23,8 +24,15 @@
   <p><code>tomaslennefors/Data/Test/PageApp/PageApp.txt</code></p>
 
   <label for="token">GitHub-token</label>
-  <input id="token" type="password" autocomplete="off" placeholder="Klistra in token här">
-  <div class="small">Token sparas inte av sidan.</div>
+  <input id="token" type="password" autocomplete="off" placeholder="Klistra in token första gången">
+  <div class="small">
+    Token sparas lokalt i den här webbläsaren på den här enheten och används automatiskt nästa gång.
+    Det läggs inte in i den publika HTML-filen.
+  </div>
+  <div class="row">
+    <button id="saveTokenBtn" type="button">Spara token</button>
+    <button id="forgetTokenBtn" type="button">Glöm sparat token</button>
+  </div>
 
   <label for="text">Text att skriva</label>
   <textarea id="text" placeholder="Skriv en testtext"></textarea>
@@ -40,14 +48,42 @@
   const path = "Test/PageApp/PageApp.txt";
   const branch = "main";
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const tokenStorageKey = "TestData_GitHubToken";
 
   const tokenEl = document.getElementById("token");
   const textEl = document.getElementById("text");
   const statusEl = document.getElementById("status");
-  const button = document.getElementById("writeBtn");
+  const writeButton = document.getElementById("writeBtn");
+  const saveTokenButton = document.getElementById("saveTokenBtn");
+  const forgetTokenButton = document.getElementById("forgetTokenBtn");
 
   function setStatus(msg) {
     statusEl.textContent = msg;
+  }
+
+  function loadSavedToken() {
+    const saved = localStorage.getItem(tokenStorageKey);
+    if (saved) {
+      tokenEl.value = saved;
+      setStatus("Sparat token är inläst automatiskt. Redo.");
+    }
+  }
+
+  function saveToken() {
+    const token = tokenEl.value.trim();
+    if (!token) {
+      setStatus("Det finns inget token att spara.");
+      return false;
+    }
+    localStorage.setItem(tokenStorageKey, token);
+    setStatus("Token sparat lokalt i den här webbläsaren.");
+    return true;
+  }
+
+  function forgetToken() {
+    localStorage.removeItem(tokenStorageKey);
+    tokenEl.value = "";
+    setStatus("Det sparade tokenet är borttaget från den här webbläsaren.");
   }
 
   function decodeBase64Utf8(base64) {
@@ -64,9 +100,21 @@
     return btoa(binary);
   }
 
+  function getToken() {
+    const entered = tokenEl.value.trim();
+    if (entered) return entered;
+
+    const saved = localStorage.getItem(tokenStorageKey);
+    if (saved) {
+      tokenEl.value = saved;
+      return saved;
+    }
+
+    throw new Error("GitHub-token saknas. Klistra in tokenet första gången och spara det.");
+  }
+
   async function githubRequest(url, options = {}) {
-    const token = tokenEl.value.trim();
-    if (!token) throw new Error("GitHub-token saknas.");
+    const token = getToken();
 
     const headers = {
       "Accept": "application/vnd.github+json",
@@ -85,7 +133,11 @@
       return;
     }
 
-    button.disabled = true;
+    if (tokenEl.value.trim()) {
+      localStorage.setItem(tokenStorageKey, tokenEl.value.trim());
+    }
+
+    writeButton.disabled = true;
     setStatus("Läser senaste filversionen...");
 
     try {
@@ -140,11 +192,15 @@
     } catch (err) {
       setStatus("FEL:\n" + (err?.message || String(err)));
     } finally {
-      button.disabled = false;
+      writeButton.disabled = false;
     }
   }
 
-  button.addEventListener("click", writeToData);
+  saveTokenButton.addEventListener("click", saveToken);
+  forgetTokenButton.addEventListener("click", forgetToken);
+  writeButton.addEventListener("click", writeToData);
+
+  loadSavedToken();
 })();
 </script>
 </body>
