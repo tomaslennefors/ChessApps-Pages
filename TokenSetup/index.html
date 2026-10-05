@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TokenSetup</title>
   <style>
-    body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:32px auto;padding:0 16px;line-height:1.45}
+    body{font-family:system-ui,Arial,sans-serif;max-width:760px;margin:32px auto;padding:0 16px;line-height:1.5}
     h1{font-size:1.6rem}
+    h2{font-size:1.15rem;margin-top:28px}
     label{display:block;font-weight:600;margin-top:18px}
     input,button{font:inherit;box-sizing:border-box}
     input{width:100%;padding:10px;margin-top:6px}
     button{margin-top:14px;padding:10px 16px;cursor:pointer}
     .row{display:flex;gap:10px;flex-wrap:wrap}
     #status{margin-top:18px;padding:10px;border:1px solid #bbb;white-space:pre-wrap}
-    .small{font-size:.9rem;color:#555}
+    .small{font-size:.92rem;color:#555}
+    code{word-break:break-all}
   </style>
 </head>
 <body>
@@ -28,9 +30,40 @@
     <button id="deleteBtn" type="button">Ta bort token</button>
   </div>
 
-  <p class="small">Tokenet sparas bara i webbläsarens localStorage på den här enheten. Det läggs inte i den publika HTML-filen.</p>
-
   <div id="status">Kontrollerar om token redan finns...</div>
+
+  <h2>Så lägger du till eller byter token</h2>
+  <ol>
+    <li>Skapa eller kopiera ett giltigt GitHub-token.</li>
+    <li>Klistra in tokenet i fältet ovan.</li>
+    <li>Klicka på <strong>Spara token</strong>.</li>
+    <li>Om ett token redan fanns sparat ersätts det automatiskt av det nya.</li>
+  </ol>
+
+  <h2>Var lagras tokenet?</h2>
+  <p>
+    Tokenet sparas i webbläsarens <strong>localStorage</strong> för domänen
+    <code>tomaslennefors.github.io</code>, under namnet
+    <code>ChessApps_GitHubToken</code>.
+  </p>
+  <p class="small">
+    Det lagras alltså lokalt i just den webbläsarprofil och på den enhet där du sparar det.
+    Det skrivs inte in i den publika HTML-filen och skickas inte till andra användares webbläsare.
+  </p>
+
+  <h2>När måste tokenet matas in på nytt?</h2>
+  <ul>
+    <li>Om du klickar på <strong>Ta bort token</strong>.</li>
+    <li>Om du rensar webbplatsdata/localStorage för <code>tomaslennefors.github.io</code>.</li>
+    <li>Om du använder en annan webbläsare, en annan webbläsarprofil eller en annan enhet.</li>
+    <li>Om webbläsarprofilen tas bort eller återställs.</li>
+    <li>Om du använder privat/inkognito-läge och den privata sessionens lagring försvinner när sessionen avslutas.</li>
+    <li>Om GitHub-tokenet går ut eller återkallas. Det gamla värdet kan då fortfarande ligga kvar i webbläsaren, men fungerar inte längre och måste ersättas med ett nytt giltigt token.</li>
+  </ul>
+
+  <p class="small">
+    Att bara rensa vanlig webbcache behöver normalt inte ta bort localStorage. Det är framför allt när webbplatsdata/cookies och lokal lagring rensas som tokenet försvinner.
+  </p>
 
 <script>
 (() => {
