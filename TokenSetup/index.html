@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TokenSetup</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:32px auto;padding:0 16px;line-height:1.45}
+    h1{font-size:1.6rem}
+    label{display:block;font-weight:600;margin-top:18px}
+    input,button{font:inherit;box-sizing:border-box}
+    input{width:100%;padding:10px;margin-top:6px}
+    button{margin-top:14px;padding:10px 16px;cursor:pointer}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    #status{margin-top:18px;padding:10px;border:1px solid #bbb;white-space:pre-wrap}
+    .small{font-size:.9rem;color:#555}
+  </style>
+</head>
+<body>
+  <h1>TokenSetup</h1>
+  <p>Här sparar du GitHub-tokenet en gång för alla appar på samma GitHub Pages-domän.</p>
+
+  <label for="token">GitHub-token</label>
+  <input id="token" type="password" autocomplete="off" placeholder="Klistra in token här">
+
+  <div class="row">
+    <button id="saveBtn" type="button">Spara token</button>
+    <button id="deleteBtn" type="button">Ta bort token</button>
+  </div>
+
+  <p class="small">Tokenet sparas bara i webbläsarens localStorage på den här enheten. Det läggs inte i den publika HTML-filen.</p>
+
+  <div id="status">Kontrollerar om token redan finns...</div>
+
+<script>
+(() => {
+  const key = "ChessApps_GitHubToken";
+  const oldKey = "TestData_GitHubToken";
+  const tokenEl = document.getElementById("token");
+  const statusEl = document.getElementById("status");
+
+  const oldToken = localStorage.getItem(oldKey);
+  if (!localStorage.getItem(key) && oldToken) {
+    localStorage.setItem(key, oldToken);
+    localStorage.removeItem(oldKey);
+  }
+
+  function refreshStatus() {
+    statusEl.textContent = localStorage.getItem(key)
+      ? "Ett token finns sparat i den här webbläsaren."
+      : "Inget token finns sparat i den här webbläsaren.";
+  }
+
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    const token = tokenEl.value.trim();
+    if (!token) {
+      statusEl.textContent = "Klistra in ett token först.";
+      return;
+    }
+    localStorage.setItem(key, token);
+    tokenEl.value = "";
+    statusEl.textContent = "Token sparat. Pages-appar på samma domän kan nu använda det automatiskt.";
+  });
+
+  document.getElementById("deleteBtn").addEventListener("click", () => {
+    localStorage.removeItem(key);
+    localStorage.removeItem(oldKey);
+    tokenEl.value = "";
+    refreshStatus();
+  });
+
+  refreshStatus();
+})();
+</script>
+</body>
+</html>
