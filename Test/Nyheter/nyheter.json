@@ -243,6 +243,366 @@
       ],
       "sammanfattning": "Google Threat Intelligence Group varnar för så kallad LLM-jacking, där angripare stjäl konton eller molnresurser för att få tillgång till dyr AI-kapacitet. Stulna inloggningsuppgifter till AI-tjänster säljs på svarta marknader och företag med egen AI-infrastruktur pekas ut som attraktiva mål.",
       "länk": "https://computersweden.se/article/4227591/hackare-kapar-ai-konton-ny-svart-marknad-vaxer-fram.html"
+    },
+    {
+      "id": 18,
+      "datum": "",
+      "titel": "YouTube-klipp 2",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=OFsDWCjyGvU",
+      "youtube_id": "OFsDWCjyGvU",
+      "spellisteindex": 2
+    },
+    {
+      "id": 19,
+      "datum": "",
+      "titel": "YouTube-klipp 3",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=QMJogOLqRXE",
+      "youtube_id": "QMJogOLqRXE",
+      "spellisteindex": 3
+    },
+    {
+      "id": 20,
+      "datum": "",
+      "titel": "YouTube-klipp 7",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=PDFeEufLLS4",
+      "youtube_id": "PDFeEufLLS4",
+      "spellisteindex": 7
+    },
+    {
+      "id": 21,
+      "datum": "",
+      "titel": "YouTube-klipp 9",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=foWISRR3XdY",
+      "youtube_id": "foWISRR3XdY",
+      "spellisteindex": 9
+    },
+    {
+      "id": 22,
+      "datum": "",
+      "titel": "YouTube-klipp 10",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=4h1mCWmz_7g",
+      "youtube_id": "4h1mCWmz_7g",
+      "spellisteindex": 10
+    },
+    {
+      "id": 23,
+      "datum": "",
+      "titel": "YouTube-klipp 11",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=DRqx9KVc4hE",
+      "youtube_id": "DRqx9KVc4hE",
+      "spellisteindex": 11
+    },
+    {
+      "id": 24,
+      "datum": "",
+      "titel": "YouTube-klipp 13",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=56OQWGUaN9c",
+      "youtube_id": "56OQWGUaN9c",
+      "spellisteindex": 13
+    },
+    {
+      "id": 25,
+      "datum": "",
+      "titel": "YouTube-klipp 20",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=pJYNQtctAao",
+      "youtube_id": "pJYNQtctAao",
+      "spellisteindex": 20
+    },
+    {
+      "id": 26,
+      "datum": "",
+      "titel": "YouTube-klipp 21",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=GDphnKg-hgg",
+      "youtube_id": "GDphnKg-hgg",
+      "spellisteindex": 21
+    },
+    {
+      "id": 27,
+      "datum": "",
+      "titel": "YouTube-klipp 22",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=bvYp7_GFGQQ",
+      "youtube_id": "bvYp7_GFGQQ",
+      "spellisteindex": 22
+    },
+    {
+      "id": 28,
+      "datum": "",
+      "titel": "YouTube-klipp 25",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=4I9PputSKn4",
+      "youtube_id": "4I9PputSKn4",
+      "spellisteindex": 25
+    },
+    {
+      "id": 29,
+      "datum": "",
+      "titel": "YouTube-klipp 29",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=sjoriSHxEs0",
+      "youtube_id": "sjoriSHxEs0",
+      "spellisteindex": 29
+    },
+    {
+      "id": 30,
+      "datum": "",
+      "titel": "YouTube-klipp 30",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=95HTm5zbFH4",
+      "youtube_id": "95HTm5zbFH4",
+      "spellisteindex": 30
+    },
+    {
+      "id": 31,
+      "datum": "",
+      "titel": "YouTube-klipp 43",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=1QyDYs7rI18",
+      "youtube_id": "1QyDYs7rI18",
+      "spellisteindex": 43
+    },
+    {
+      "id": 32,
+      "datum": "",
+      "titel": "YouTube-klipp 49",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=JtXPedIXZpo",
+      "youtube_id": "JtXPedIXZpo",
+      "spellisteindex": 49
+    },
+    {
+      "id": 33,
+      "datum": "",
+      "titel": "YouTube-klipp 50",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=KFNxEGSXX18",
+      "youtube_id": "KFNxEGSXX18",
+      "spellisteindex": 50
+    },
+    {
+      "id": 34,
+      "datum": "",
+      "titel": "YouTube-klipp 51",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=_Gqoy1r5LvY",
+      "youtube_id": "_Gqoy1r5LvY",
+      "spellisteindex": 51
+    },
+    {
+      "id": 35,
+      "datum": "",
+      "titel": "YouTube-klipp 52",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=5ifRRr_-hYA",
+      "youtube_id": "5ifRRr_-hYA",
+      "spellisteindex": 52
+    },
+    {
+      "id": 36,
+      "datum": "",
+      "titel": "YouTube-klipp 55",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=5fPK2gtB91Q",
+      "youtube_id": "5fPK2gtB91Q",
+      "spellisteindex": 55
+    },
+    {
+      "id": 37,
+      "datum": "",
+      "titel": "YouTube-klipp 56",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=ZtjkbZj80Hw",
+      "youtube_id": "ZtjkbZj80Hw",
+      "spellisteindex": 56
+    },
+    {
+      "id": 38,
+      "datum": "",
+      "titel": "YouTube-klipp 57",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=0v5amb1PInk",
+      "youtube_id": "0v5amb1PInk",
+      "spellisteindex": 57
+    },
+    {
+      "id": 39,
+      "datum": "",
+      "titel": "YouTube-klipp 58",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=nrNdriwsvnw",
+      "youtube_id": "nrNdriwsvnw",
+      "spellisteindex": 58
+    },
+    {
+      "id": 40,
+      "datum": "",
+      "titel": "YouTube-klipp 59",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=HDVM6GyIjW4",
+      "youtube_id": "HDVM6GyIjW4",
+      "spellisteindex": 59
+    },
+    {
+      "id": 41,
+      "datum": "",
+      "titel": "YouTube-klipp 61",
+      "källa": "YouTube",
+      "språk": "Okänt",
+      "typ": "youtube",
+      "kategorier": [
+        "YouTube"
+      ],
+      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "länk": "https://www.youtube.com/watch?v=ZeBFUuFQqaw",
+      "youtube_id": "ZeBFUuFQqaw",
+      "spellisteindex": 61
     }
   ],
   "senast_uppdaterad": "2026-10-06"
