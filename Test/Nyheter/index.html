@@ -35,10 +35,15 @@
     .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
     .web-address{font-size:.88rem;color:var(--muted);margin:6px 0 10px;overflow-wrap:anywhere}
     .web-address a{color:var(--blue)}
-    .youtube-player,.article-viewer{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .youtube-player,.article-reader{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
     .youtube-player{background:#000}
-    .article-viewer{background:#fff}
-    .youtube-player iframe,.article-viewer iframe{display:block;width:100%;height:100%;border:0}
+    .youtube-player iframe{display:block;width:100%;height:100%;border:0}
+    .article-reader{background:var(--card);padding:22px;overflow:auto}
+    .article-reader h2{margin:0 0 8px;font-size:1.35rem}
+    .article-reader .reader-meta{color:var(--muted);font-size:.92rem;margin-bottom:16px}
+    .article-reader .reader-body{font-size:1rem;line-height:1.7;white-space:pre-wrap}
+    .article-reader .reader-tags{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
+    .article-reader .reader-actions{margin-top:16px}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -218,7 +223,7 @@
       <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
       <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
     </label>
-    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa artikel eller video · Mellanslag = starta vald YouTube-video.</div>
+    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa artikel eller video · Mellanslag = starta vald YouTube-video. Artiklar visas i AI-läsvy.</div>
   </div>
 
   <div id="list"></div>
@@ -826,18 +831,48 @@
           player.append(iframe);
           listEl.append(player);
         }
-      } else if (showEmbeddedVideo && !youtube && item.länk) {
-        const viewer = document.createElement("div");
-        viewer.className = "article-viewer";
+      } else if (showEmbeddedVideo && !youtube) {
+        const reader = document.createElement("section");
+        reader.className = "article-reader";
 
-        const iframe = document.createElement("iframe");
-        iframe.src = item.länk;
-        iframe.title = item.titel || "Artikel";
-        iframe.loading = "lazy";
-        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        const readerTitle = document.createElement("h2");
+        readerTitle.textContent = item.titel || "Artikel";
 
-        viewer.append(iframe);
-        listEl.append(viewer);
+        const readerMeta = document.createElement("div");
+        readerMeta.className = "reader-meta";
+        readerMeta.textContent = [
+          item.datum ? "Datum: " + item.datum : "",
+          item.källa ? "Källa: " + item.källa : "",
+          item.språk ? "Språk: " + item.språk : ""
+        ].filter(Boolean).join(" · ");
+
+        const readerBody = document.createElement("div");
+        readerBody.className = "reader-body";
+        readerBody.textContent = item.läsvy || item.lasvy || item.sammanfattning || "Ingen AI-sammanfattning finns ännu för denna artikel.";
+
+        const readerTags = document.createElement("div");
+        readerTags.className = "reader-tags";
+        for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = category;
+          readerTags.append(tag);
+        }
+
+        const readerActions = document.createElement("div");
+        readerActions.className = "reader-actions";
+        if (item.länk) {
+          const original = document.createElement("a");
+          original.className = "button";
+          original.href = item.länk;
+          original.target = "_blank";
+          original.rel = "noopener noreferrer";
+          original.textContent = "Läs originalartikeln";
+          readerActions.append(original);
+        }
+
+        reader.append(readerTitle, readerMeta, readerBody, readerTags, readerActions);
+        listEl.append(reader);
       }
     }
 
