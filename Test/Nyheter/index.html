@@ -871,7 +871,9 @@
     if (!videoId) return false;
 
     iframe.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(videoId) + "?rel=0&autoplay=1";
-    iframe.focus();
+
+    // Behåll tangentbordsbläddringen i Fullständig rubrik efter videostart.
+    requestAnimationFrame(() => exactTitleFilter.focus({preventScroll:true}));
     return true;
   }
 
