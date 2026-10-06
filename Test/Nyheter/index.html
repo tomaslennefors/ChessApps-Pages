@@ -42,7 +42,7 @@
     .web-address a{color:var(--blue)}
     .youtube-player{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000}
     .youtube-player iframe{display:block;width:100%;height:100%;border:0}
-    .news.article-detailed{aspect-ratio:16/9;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;padding:22px}
+    .news.article-detailed{height:min(62vh,700px);min-height:220px;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;padding:22px 22px 30px}
     .news.article-detailed h2{font-size:1.35rem;margin-bottom:8px}
     .article-ingress{font-weight:700;line-height:1.65;margin:14px 0 18px;white-space:pre-wrap}
     .article-body{line-height:1.72;white-space:pre-wrap;margin-top:18px}
@@ -55,7 +55,10 @@
     .star.on{color:var(--star)}
     .star:hover,.copy-news:hover{background:transparent;transform:scale(1.08)}
     .text-stats{display:none;margin:10px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#f6f8fa;color:var(--muted);font-size:.88rem}
-    .text-stats.visible{display:block;position:sticky;bottom:0;z-index:2}
+    .text-stats.visible{display:block;position:sticky;top:0;bottom:auto;z-index:4;box-shadow:0 2px 7px rgba(31,35,40,.12)}
+    .article-resize-handle{height:22px;margin:-27px 0 5px;position:relative;z-index:6;cursor:ns-resize;touch-action:none;user-select:none}
+    .article-resize-handle::after{content:"";position:absolute;left:12%;right:12%;top:9px;border-top:3px solid #8c959f;border-radius:999px;opacity:.65}
+    .article-resize-handle:hover::after{opacity:1}
     .archive-btn.on{font-weight:700}
     .small{font-size:.9rem;color:var(--muted)}
     .count{font-weight:650}
@@ -243,10 +246,6 @@
 
   <div id="list"></div>
 
-  <p class="small">
-    Nyhetsfilen ligger publikt tillsammans med appen på GitHub Pages. Filter, sorteringsordning, favoriter och arkivering sparas bara lokalt i respektive webbläsare. Ägardelen HämtaNyheter visas endast för en webbläsare vars GitHub-token har åtkomst till det privata Data-repot.
-  </p>
-
 <script>
 (() => {
   const dataUrl = "./nyheter.json";
@@ -375,10 +374,11 @@
         linkDraft: p.requestUiVersion === 2 && typeof p.linkDraft === "string" ? p.linkDraft : "",
         ownerCollapsed: !!p.ownerCollapsed,
         filterCollapsed: !!p.filterCollapsed,
-        privateView: p.privateView !== false
+        privateView: p.privateView !== false,
+        articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true};
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
     }
   }
 
@@ -853,6 +853,37 @@
     return parts.filter(Boolean).join("\n\n");
   }
 
+  function attachArticleResize(handle, article) {
+    handle.setAttribute("role", "separator");
+    handle.setAttribute("aria-orientation", "horizontal");
+    handle.setAttribute("aria-label", "Dra för att ändra höjden på nyhetsrutan");
+
+    handle.addEventListener("pointerdown", event => {
+      event.preventDefault();
+      const startY = event.clientY;
+      const startHeight = article.getBoundingClientRect().height;
+      handle.setPointerCapture?.(event.pointerId);
+
+      const move = moveEvent => {
+        const nextHeight = Math.max(220, Math.min(1600, startHeight + (moveEvent.clientY - startY)));
+        article.style.height = Math.round(nextHeight) + "px";
+      };
+
+      const stop = stopEvent => {
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", stop);
+        handle.removeEventListener("pointercancel", stop);
+        try { handle.releasePointerCapture?.(stopEvent.pointerId); } catch {}
+        prefs.articleHeight = Math.round(article.getBoundingClientRect().height);
+        savePrefs();
+      };
+
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", stop);
+      handle.addEventListener("pointercancel", stop);
+    });
+  }
+
   function updateSelectionStats() {
     const card = document.querySelector(".news.article-detailed");
     const box = card?.querySelector(".text-stats");
@@ -910,6 +941,9 @@
 
       const article = document.createElement("article");
       article.className = "news" + (archived ? " archived" : "") + (detailedArticle ? " article-detailed" : "");
+      if (detailedArticle && Number(prefs.articleHeight) >= 220) {
+        article.style.height = Math.min(1600, Number(prefs.articleHeight)) + "px";
+      }
 
       const star = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
         if (prefs.favorites[key]) delete prefs.favorites[key]; else prefs.favorites[key] = true;
@@ -1022,14 +1056,23 @@
       });
       actions.append(archiveBtn);
 
-      article.append(star, copyNewsBtn, h2, details, tags, summary);
+      article.append(star, copyNewsBtn);
+      if (detailedArticle) article.append(selectionStats);
+      article.append(h2, details, tags, summary);
       if (detailedArticle) {
-        article.append(body, selectionStats);
+        article.append(body);
       } else if (youtube) {
         article.append(webAddress, transcriptInfo);
       }
       article.append(actions);
       listEl.append(article);
+
+      if (detailedArticle) {
+        const resizeHandle = document.createElement("div");
+        resizeHandle.className = "article-resize-handle";
+        attachArticleResize(resizeHandle, article);
+        listEl.append(resizeHandle);
+      }
 
       if (showSingle && youtube) {
         const videoId = youtubeVideoId(item);
