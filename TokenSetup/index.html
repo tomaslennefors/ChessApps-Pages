@@ -12,6 +12,7 @@
     input,button{font:inherit;box-sizing:border-box}
     input{width:100%;padding:10px;margin-top:6px}
     button{margin-top:14px;padding:10px 16px;cursor:pointer}
+    button:disabled{cursor:wait;opacity:.65}
     .row{display:flex;gap:10px;flex-wrap:wrap}
     #status{margin-top:18px;padding:10px;border:1px solid #bbb;white-space:pre-wrap}
     .small{font-size:.92rem;color:#555}
@@ -26,18 +27,28 @@
   <input id="token" type="password" autocomplete="off" placeholder="Klistra in token här">
 
   <div class="row">
-    <button id="saveBtn" type="button">Spara token</button>
+    <button id="saveBtn" type="button">Kontrollera och spara token</button>
     <button id="deleteBtn" type="button">Ta bort token</button>
   </div>
 
   <div id="status">Kontrollerar om token redan finns...</div>
 
+  <h2>Vad kontrolleras?</h2>
+  <p>När du klickar på <strong>Kontrollera och spara token</strong> gör sidan tre kontroller innan något sparas:</p>
+  <ol>
+    <li>GitHub godkänner tokenet.</li>
+    <li>Tokenet kan komma åt repository <code>tomaslennefors/Data</code>.</li>
+    <li>Tokenet kan skriva till <code>Data</code>. Testet skriver en liten kontrollfil i <code>Data/Test/TokenSetup/TokenCheck.txt</code>.</li>
+  </ol>
+  <p><strong>Tokenet sparas bara om alla tre kontrollerna lyckas.</strong></p>
+
   <h2>Så lägger du till eller byter token</h2>
   <ol>
     <li>Skapa eller kopiera ett giltigt GitHub-token.</li>
     <li>Klistra in tokenet i fältet ovan.</li>
-    <li>Klicka på <strong>Spara token</strong>.</li>
-    <li>Om ett token redan fanns sparat ersätts det automatiskt av det nya.</li>
+    <li>Klicka på <strong>Kontrollera och spara token</strong>.</li>
+    <li>Vänta tills sidan visar <strong>Token godkänt och sparat</strong>.</li>
+    <li>Om ett token redan fanns sparat ersätts det först när det nya tokenet har klarat kontrollen.</li>
   </ol>
 
   <h2>Var lagras tokenet?</h2>
@@ -58,7 +69,7 @@
     <li>Om du använder en annan webbläsare, en annan webbläsarprofil eller en annan enhet.</li>
     <li>Om webbläsarprofilen tas bort eller återställs.</li>
     <li>Om du använder privat/inkognito-läge och den privata sessionens lagring försvinner när sessionen avslutas.</li>
-    <li>Om GitHub-tokenet går ut eller återkallas. Det gamla värdet kan då fortfarande ligga kvar i webbläsaren, men fungerar inte längre och måste ersättas med ett nytt giltigt token.</li>
+    <li>Om GitHub-tokenet går ut eller återkallas. Då måste ett nytt giltigt token kontrolleras och sparas här.</li>
   </ul>
 
   <p class="small">
@@ -69,8 +80,17 @@
 (() => {
   const key = "ChessApps_GitHubToken";
   const oldKey = "TestData_GitHubToken";
+  const owner = "tomaslennefors";
+  const repo = "Data";
+  const branch = "main";
+  const checkPath = "Test/TokenSetup/TokenCheck.txt";
+  const repoUrl = `https://api.github.com/repos/${owner}/${repo}`;
+  const checkUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${checkPath}`;
+
   const tokenEl = document.getElementById("token");
   const statusEl = document.getElementById("status");
+  const saveBtn = document.getElementById("saveBtn");
+  const deleteBtn = document.getElementById("deleteBtn");
 
   const oldToken = localStorage.getItem(oldKey);
   if (!localStorage.getItem(key) && oldToken) {
@@ -78,31 +98,132 @@
     localStorage.removeItem(oldKey);
   }
 
-  function refreshStatus() {
-    statusEl.textContent = localStorage.getItem(key)
-      ? "Ett token finns sparat i den här webbläsaren."
-      : "Inget token finns sparat i den här webbläsaren.";
+  function setStatus(message) {
+    statusEl.textContent = message;
   }
 
-  document.getElementById("saveBtn").addEventListener("click", () => {
+  function headersFor(token, extra = {}) {
+    return {
+      "Accept": "application/vnd.github+json",
+      "Authorization": `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28",
+      ...extra
+    };
+  }
+
+  function encodeBase64Utf8(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+    for (const b of bytes) binary += String.fromCharCode(b);
+    return btoa(binary);
+  }
+
+  async function errorMessage(response, fallback) {
+    let message = fallback;
+    try {
+      const data = await response.json();
+      if (data && data.message) message += "\nGitHub: " + data.message;
+    } catch {}
+    return message + `\nHTTP ${response.status}`;
+  }
+
+  async function validateAndSave(token) {
+    setStatus("1/3 Kontrollerar att GitHub godkänner tokenet...");
+
+    const repoRes = await fetch(repoUrl, {
+      headers: headersFor(token)
+    });
+
+    if (!repoRes.ok) {
+      if (repoRes.status === 401) {
+        throw new Error("Tokenet är ogiltigt eller har gått ut. Det har INTE sparats.\nHTTP 401 - Bad credentials");
+      }
+      if (repoRes.status === 403 || repoRes.status === 404) {
+        throw new Error("Tokenet godkändes inte för repository Data. Kontrollera att tokenet har åtkomst till Data. Det har INTE sparats.\nHTTP " + repoRes.status);
+      }
+      throw new Error(await errorMessage(repoRes, "GitHub kunde inte verifiera tokenet. Det har INTE sparats."));
+    }
+
+    setStatus("2/3 Tokenet är giltigt och repository Data går att nå. Kontrollerar skrivbehörighet...");
+
+    let sha = null;
+    const getCheck = await fetch(checkUrl + "?ref=" + encodeURIComponent(branch), {
+      headers: headersFor(token)
+    });
+
+    if (getCheck.status === 200) {
+      const current = await getCheck.json();
+      sha = current.sha;
+    } else if (getCheck.status !== 404) {
+      throw new Error(await errorMessage(getCheck, "Kunde inte läsa kontrollfilen i Data. Tokenet har INTE sparats."));
+    }
+
+    const now = new Date().toLocaleString("sv-SE");
+    const body = {
+      message: "Kontrollera GitHub-token från TokenSetup",
+      content: encodeBase64Utf8("TokenSetup kontroll lyckades: " + now + "\n"),
+      branch
+    };
+    if (sha) body.sha = sha;
+
+    const writeRes = await fetch(checkUrl, {
+      method: "PUT",
+      headers: headersFor(token, {"Content-Type":"application/json"}),
+      body: JSON.stringify(body)
+    });
+
+    if (!writeRes.ok) {
+      if (writeRes.status === 403) {
+        throw new Error("Tokenet kan läsa Data men saknar skrivbehörighet. Ge tokenet Contents: Read and write. Det har INTE sparats.\nHTTP 403");
+      }
+      throw new Error(await errorMessage(writeRes, "Skrivtestet till Data misslyckades. Tokenet har INTE sparats."));
+    }
+
+    setStatus("3/3 Skrivtestet lyckades. Sparar tokenet i webbläsaren...");
+    localStorage.setItem(key, token);
+    localStorage.removeItem(oldKey);
+    tokenEl.value = "";
+    setStatus(
+      "TOKEN GODKÄNT OCH SPARAT.\n\n" +
+      "GitHub godkände tokenet.\n" +
+      "Repository Data kunde läsas.\n" +
+      "Skrivning till Data lyckades.\n\n" +
+      "Pages-appar på samma domän kan nu använda tokenet automatiskt."
+    );
+  }
+
+  saveBtn.addEventListener("click", async () => {
     const token = tokenEl.value.trim();
     if (!token) {
-      statusEl.textContent = "Klistra in ett token först.";
+      setStatus("Klistra in ett token först.");
       return;
     }
-    localStorage.setItem(key, token);
-    tokenEl.value = "";
-    statusEl.textContent = "Token sparat. Pages-appar på samma domän kan nu använda det automatiskt.";
+
+    saveBtn.disabled = true;
+    deleteBtn.disabled = true;
+
+    try {
+      await validateAndSave(token);
+    } catch (err) {
+      setStatus("FEL:\n" + (err?.message || String(err)));
+    } finally {
+      saveBtn.disabled = false;
+      deleteBtn.disabled = false;
+    }
   });
 
-  document.getElementById("deleteBtn").addEventListener("click", () => {
+  deleteBtn.addEventListener("click", () => {
     localStorage.removeItem(key);
     localStorage.removeItem(oldKey);
     tokenEl.value = "";
-    refreshStatus();
+    setStatus("Det sparade tokenet är borttaget från den här webbläsaren.");
   });
 
-  refreshStatus();
+  if (localStorage.getItem(key)) {
+    setStatus("Ett token finns redan sparat i den här webbläsaren. Du kan ersätta det genom att klistra in ett nytt och klicka på Kontrollera och spara token.");
+  } else {
+    setStatus("Inget token finns sparat i den här webbläsaren.");
+  }
 })();
 </script>
 </body>
