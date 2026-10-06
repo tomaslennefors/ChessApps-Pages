@@ -38,10 +38,13 @@
     .youtube-player,.article-reader{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
     .youtube-player{background:#000}
     .youtube-player iframe{display:block;width:100%;height:100%;border:0}
-    .article-reader{background:var(--card);padding:22px;overflow:auto}
+    .article-reader{background:var(--card);padding:22px;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable}
     .article-reader h2{margin:0 0 8px;font-size:1.35rem}
     .article-reader .reader-meta{color:var(--muted);font-size:.92rem;margin-bottom:16px}
+    .article-reader .reader-section{margin-top:16px}
+    .article-reader .reader-section h3{font-size:1rem;margin:0 0 6px}
     .article-reader .reader-body{font-size:1rem;line-height:1.7;white-space:pre-wrap}
+    .article-reader .reader-original{font-size:.96rem;line-height:1.65;padding:10px 12px;border-left:3px solid var(--line);background:#f6f8fa}
     .article-reader .reader-tags{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
     .article-reader .reader-actions{margin-top:16px}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
@@ -846,9 +849,32 @@
           item.språk ? "Språk: " + item.språk : ""
         ].filter(Boolean).join(" · ");
 
+        const summarySection = document.createElement("section");
+        summarySection.className = "reader-section";
+        const summaryHeading = document.createElement("h3");
+        summaryHeading.textContent = "Kort sammanfattning";
+        const summaryBody = document.createElement("div");
+        summaryBody.className = "reader-body";
+        summaryBody.textContent = item.sammanfattning || "Ingen kort sammanfattning finns ännu.";
+        summarySection.append(summaryHeading, summaryBody);
+
+        const readSection = document.createElement("section");
+        readSection.className = "reader-section";
+        const readHeading = document.createElement("h3");
+        readHeading.textContent = "Utförlig AI-läsvy";
         const readerBody = document.createElement("div");
         readerBody.className = "reader-body";
-        readerBody.textContent = item.läsvy || item.lasvy || item.sammanfattning || "Ingen AI-sammanfattning finns ännu för denna artikel.";
+        readerBody.textContent = item.läsvy || item.lasvy || item.sammanfattning || "Ingen AI-läsvy finns ännu för denna artikel.";
+        readSection.append(readHeading, readerBody);
+
+        const originalSection = document.createElement("section");
+        originalSection.className = "reader-section";
+        const originalHeading = document.createElement("h3");
+        originalHeading.textContent = "Kort originalutdrag";
+        const originalBody = document.createElement("div");
+        originalBody.className = "reader-original";
+        originalBody.textContent = item.originalutdrag || "Inget originalutdrag har sparats.";
+        originalSection.append(originalHeading, originalBody);
 
         const readerTags = document.createElement("div");
         readerTags.className = "reader-tags";
@@ -871,7 +897,7 @@
           readerActions.append(original);
         }
 
-        reader.append(readerTitle, readerMeta, readerBody, readerTags, readerActions);
+        reader.append(readerTitle, readerMeta, summarySection, readSection, originalSection, readerTags, readerActions);
         listEl.append(reader);
       }
     }
