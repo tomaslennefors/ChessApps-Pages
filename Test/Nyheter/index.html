@@ -1197,7 +1197,16 @@
   function scrollDetailedArticle(direction) {
     const article = listEl.querySelector(".news.article-detailed");
     if (!article) return false;
-    const distance = Math.max(120, article.clientHeight * 0.75);
+
+    const sample = article.querySelector(".article-body, .article-ingress") || article;
+    const computed = getComputedStyle(sample);
+    let lineHeight = parseFloat(computed.lineHeight);
+    if (!Number.isFinite(lineHeight)) {
+      const fontSize = parseFloat(computed.fontSize) || 16;
+      lineHeight = fontSize * 1.6;
+    }
+
+    const distance = lineHeight * 2;
     article.scrollBy({top: direction * distance, behavior:"smooth"});
     return true;
   }
