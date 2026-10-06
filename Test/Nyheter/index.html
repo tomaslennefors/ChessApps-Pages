@@ -33,6 +33,8 @@
     button:hover,a.button:hover{background:#f3f4f6}
     button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
     button.primary:hover{filter:brightness(.95)}
+    #reloadBtn{background:#cf222e;border-color:#cf222e;color:#fff;font-weight:750}
+    #reloadBtn:hover{background:#a40e26;border-color:#a40e26}
     button:disabled{opacity:.6;cursor:wait}
     #status{padding:11px;border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
     .news{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0}
@@ -1516,7 +1518,7 @@
       savePrefs();renderRequestLists();
       await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha);
       await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"");
-      saveRequestMessage.textContent = "Önskemålen är hämtade.";
+      saveRequestMessage.textContent = "Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.";
       saveRequestMessage.hidden = false;
       return true;
     }catch(err){statusEl.textContent="Önskemålet sparades lokalt, men inte i Data: "+(err?.message||String(err));return false;}
@@ -1775,7 +1777,9 @@
   }, true);
   rulesBtn.addEventListener("click", toggleRules);
   clearBtn.addEventListener("click", clearFilters);
-  reloadBtn.addEventListener("click", loadNews);
+  reloadBtn.addEventListener("click", () => {
+    window.location.reload();
+  });
 
   privateViewCheckbox.addEventListener("change", () => {
     if (!ownerAuthenticated) return;
