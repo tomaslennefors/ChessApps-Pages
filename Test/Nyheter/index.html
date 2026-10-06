@@ -48,7 +48,11 @@
     .news.article-detailed{height:min(62vh,700px);min-height:220px;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;padding:22px 22px 30px}
     .news.article-detailed h2{font-size:1.35rem;margin-bottom:8px}
     .article-ingress{font-weight:700;line-height:1.65;margin:14px 0 18px;white-space:pre-wrap}
-    .article-body{line-height:1.72;white-space:pre-wrap;margin-top:18px}
+    .article-body{line-height:1.72;margin-top:18px}
+    .article-section-heading{font-size:1.08rem;font-weight:800;line-height:1.35;margin:26px 0 10px}
+    .article-section-heading:first-child{margin-top:4px}
+    .article-paragraph{white-space:pre-wrap;margin:0 0 15px}
+    .article-paragraph strong{font-weight:800}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -860,6 +864,40 @@
     return label + ": " + stats.words + " ord · " + stats.letters + " bokstäver";
   }
 
+  function appendBoldText(container, text) {
+    const parts = String(text || "").split("**");
+    parts.forEach((part, index) => {
+      if (!part) return;
+      if (index % 2 === 1) {
+        const strong = document.createElement("strong");
+        strong.textContent = part;
+        container.append(strong);
+      } else {
+        container.append(document.createTextNode(part));
+      }
+    });
+  }
+
+  function renderStructuredArticleBody(container, text) {
+    container.replaceChildren();
+    const blocks = String(text || "").split("\n\n").map(x => x.trim()).filter(Boolean);
+    for (const block of blocks) {
+      const element = document.createElement("div");
+      if (block.startsWith("## ")) {
+        element.className = "article-section-heading";
+        appendBoldText(element, block.slice(3));
+      } else {
+        element.className = "article-paragraph";
+        appendBoldText(element, block);
+      }
+      container.append(element);
+    }
+  }
+
+  function plainArticleText(text) {
+    return String(text || "").split("\n").map(line => line.startsWith("## ") ? line.slice(3) : line).join("\n").split("**").join("");
+  }
+
   function copyNewsText(item, youtube, detailedArticle, detailsText, transcriptText) {
     const parts = [displayTitle(item)];
     if (detailsText) parts.push(detailsText);
@@ -870,7 +908,7 @@
     if (item.sammanfattning) parts.push(String(item.sammanfattning));
     if (!youtube) {
       const body = String(item.läsvy || item.lasvy || "").trim();
-      if (body && body !== String(item.sammanfattning || "").trim()) parts.push(body);
+      if (body && body !== String(item.sammanfattning || "").trim()) parts.push(plainArticleText(body));
     }
 
     if (youtube && transcriptText) parts.push(transcriptText);
@@ -1021,7 +1059,7 @@
 
       const body = document.createElement("div");
       body.className = "article-body";
-      body.textContent = item.läsvy || item.lasvy || item.sammanfattning || "";
+      renderStructuredArticleBody(body, item.läsvy || item.lasvy || item.sammanfattning || "");
 
       const selectionStats = document.createElement("div");
       selectionStats.className = "text-stats";
