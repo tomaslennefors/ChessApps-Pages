@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-06 23:25
+Senast uppdaterad: 2026-10-07 00:26
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -190,4 +190,16 @@ När användaren trycker på **Spara önskemål** och sparningen har lyckats ska
 **Önskemålen är hämtade.**
 
 Meddelandet ska försvinna automatiskt så fort användaren klickar eller trycker någon annanstans i appen.
+
+### 6e. Uppdatera filtrering laddar om appen
+
+Knappen **Uppdatera filtrering** ska vara tydligt **röd** så att Tomas lättare kommer ihåg att använda den.
+
+När användaren trycker på **Uppdatera filtrering** ska appen göra en fullständig siduppdatering motsvarande **F5**. Därmed läses den senaste versionen av appens HTML/JavaScript och den senaste nyhetsfilen in.
+
+Efter en lyckad **Spara önskemål** ska meddelandet även påminna:
+
+**Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.**
+
+Den tidigare regeln gäller fortfarande att meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
 
