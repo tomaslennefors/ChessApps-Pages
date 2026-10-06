@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-06 23:24
+Senast uppdaterad: 2026-10-06 23:25
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -91,7 +91,7 @@ Följande typer av innehåll är beständiga sammanställningar och inte vanliga
 
 Regler:
 - både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!**,
-- dessa poster ska alltid tillhöra kategorin **AI-sammanställningar**,
+- dessa poster ska alltid tillhöra kategorin **!AI-sammanställningar**,
 - tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
 
 ## 3. HämtaNyheter och dataflöde
@@ -153,4 +153,41 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 - Ägardelen **HämtaNyheter** visas endast för en webbläsare vars GitHub-token har åtkomst till det privata Data-repot.
 
 Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarande text längst ner under nyheterna i appen**.
+
+## 6. AI-sammanställningar och appbeteende
+
+### 6a. Kategorin för beständiga AI-sammanställningar
+
+Kategorin ska heta **!AI-sammanställningar**. Utropstecknet markerar att innehållet är en beständig sammanställning och inte en vanlig tidsbunden nyhetsartikel.
+
+Följande sammanställningar ska tillhöra kategorin **!AI-sammanställningar**:
+- **!IT-året ...**
+- **!AI-historik ...**
+- **!AI-begrepp ...**
+- **!AI och schack ...**
+- **!AI-bolag och AI-modeller ...**
+
+### 6b. Utbrytningar från !AI-historik
+
+Detaljerad information om AI och schack ska ligga i den separata artikeln **!AI och schack**.
+
+Detaljerad information om AI-bolag, deras modellfamiljer och verktyg ska ligga i den separata artikeln **!AI-bolag och AI-modeller**.
+
+I **!AI-historik** ska däremot korta årtalsnotiser finnas kvar så att den historiska tidslinjen fortfarande visar när viktiga händelser inom AI-schack och AI-bolag/modeller inträffade.
+
+### 6c. Markering av aktiva filter
+
+Alla aktiva filtervillkor ska markeras tydligt med blå färg i appen.
+
+När ett filtervillkor inte längre är aktivt ska den blå markeringen försvinna.
+
+När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla blå filtermarkeringar försvinna.
+
+### 6d. Meddelande efter Spara önskemål
+
+När användaren trycker på **Spara önskemål** och sparningen har lyckats ska appen visa meddelandet:
+
+**Önskemålen är hämtade.**
+
+Meddelandet ska försvinna automatiskt så fort användaren klickar eller trycker någon annanstans i appen.
 
