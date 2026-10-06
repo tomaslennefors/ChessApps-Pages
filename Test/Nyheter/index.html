@@ -32,6 +32,7 @@
     .news h2{font-size:1.22rem;margin:0 52px 8px 0}
     .details{font-size:.92rem;color:var(--muted);margin-bottom:10px}
     .summary{white-space:pre-wrap}
+    .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -80,32 +81,57 @@
   <div class="filters">
     <div class="filter-grid">
       <label>
-        <span class="label-row">Datum <input class="sortno" data-sort="datum" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Datum <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <input id="dateFilter" type="date">
       </label>
 
       <label>
-        <span class="label-row">Källa <input class="sortno" data-sort="källa" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Källa <input class="sortno" data-sort="källa" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <select id="sourceFilter"><option value="">Alla källor</option></select>
       </label>
 
       <label>
-        <span class="label-row">Rubrik <input class="sortno" data-sort="titel" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Utgivare <input class="sortno" data-sort="utgivare" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="publisherFilter"><option value="">Alla utgivare</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Kanal <input class="sortno" data-sort="kanal" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="channelFilter"><option value="">Alla kanaler</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Rubrik <input class="sortno" data-sort="titel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <input id="titleFilter" type="search" placeholder="Sök i rubrik">
       </label>
 
       <label>
-        <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
       </label>
 
       <label>
-        <span class="label-row">Språk <input class="sortno" data-sort="språk" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Sammanfattning <input class="sortno" data-sort="sammanfattning" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <input id="summaryFilter" type="search" placeholder="Sök i sammanfattning">
+      </label>
+
+      <label>
+        <span class="label-row">Språk <input class="sortno" data-sort="språk" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <select id="languageFilter"><option value="">Alla språk</option></select>
       </label>
 
       <label>
-        <span class="label-row">Kategori <input class="sortno" data-sort="kategori" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Transkribering <input class="sortno" data-sort="transkribering" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="transcriptStatusFilter"><option value="">Alla transkriberingar</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Transkript/ämnen <input class="sortno" data-sort="transkript" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <input id="transcriptFilter" type="search" placeholder="Sök i transkriptinformation">
+      </label>
+
+      <label>
+        <span class="label-row">Kategori <input class="sortno" data-sort="kategori" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <select id="categoryFilter"><option value="">Alla kategorier</option></select>
       </label>
 
@@ -160,7 +186,7 @@
   const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
-  const filterSchemaVersion = 2;
+  const filterSchemaVersion = 3;
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -175,9 +201,14 @@
   const requestHistory = document.getElementById("requestHistory");
   const dateFilter = document.getElementById("dateFilter");
   const sourceFilter = document.getElementById("sourceFilter");
+  const publisherFilter = document.getElementById("publisherFilter");
+  const channelFilter = document.getElementById("channelFilter");
   const titleFilter = document.getElementById("titleFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
+  const summaryFilter = document.getElementById("summaryFilter");
   const languageFilter = document.getElementById("languageFilter");
+  const transcriptStatusFilter = document.getElementById("transcriptStatusFilter");
+  const transcriptFilter = document.getElementById("transcriptFilter");
   const categoryFilter = document.getElementById("categoryFilter");
   const favoriteFilter = document.getElementById("favoriteFilter");
   const archiveFilter = document.getElementById("archiveFilter");
@@ -274,8 +305,11 @@
 
   function buildFilterOptions() {
     fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
+    fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
+    fillSelect(channelFilter, uniqueSorted(allNews.map(x => x.kanal)), "Alla kanaler");
     fillSelect(exactTitleFilter, uniqueSorted(allNews.map(x => x.titel)), "Alla rubriker");
     fillSelect(languageFilter, uniqueSorted(allNews.map(x => x.språk)), "Alla språk");
+    fillSelect(transcriptStatusFilter, uniqueSorted(allNews.map(x => x.transkribering_status)), "Alla transkriberingar");
     fillSelect(categoryFilter, uniqueSorted(allNews.flatMap(x => Array.isArray(x.kategorier) ? x.kategorier : [])), "Alla kategorier");
   }
 
@@ -339,9 +373,14 @@
     const f = prefs.filters;
     dateFilter.value = f.date || "";
     sourceFilter.value = f.source || "";
+    publisherFilter.value = f.publisher || "";
+    channelFilter.value = f.channel || "";
     titleFilter.value = f.title || "";
     exactTitleFilter.value = f.exactTitle || "";
+    summaryFilter.value = f.summary || "";
     languageFilter.value = f.language || "";
+    transcriptStatusFilter.value = f.transcriptStatus || "";
+    transcriptFilter.value = f.transcript || "";
     categoryFilter.value = f.category || "";
     favoriteFilter.value = f.favorite || "";
     archiveFilter.value = f.archive || "all";
@@ -356,9 +395,14 @@
     prefs.filters = {
       date: dateFilter.value,
       source: sourceFilter.value,
+      publisher: publisherFilter.value,
+      channel: channelFilter.value,
       title: titleFilter.value,
       exactTitle: exactTitleFilter.value,
+      summary: summaryFilter.value,
       language: languageFilter.value,
+      transcriptStatus: transcriptStatusFilter.value,
+      transcript: transcriptFilter.value,
       category: categoryFilter.value,
       favorite: favoriteFilter.value,
       archive: archiveFilter.value,
@@ -376,9 +420,14 @@
   function getFilteredNews() {
     const date = dateFilter.value;
     const source = sourceFilter.value;
+    const publisher = publisherFilter.value;
+    const channel = channelFilter.value;
     const title = normalize(titleFilter.value.trim());
     const exactTitle = exactTitleFilter.value;
+    const summary = normalize(summaryFilter.value.trim());
     const language = languageFilter.value;
+    const transcriptStatus = transcriptStatusFilter.value;
+    const transcript = normalize(transcriptFilter.value.trim());
     const category = categoryFilter.value;
     const fav = favoriteFilter.value;
     const archive = archiveFilter.value;
@@ -393,9 +442,21 @@
 
       if (date && item.datum !== date) return false;
       if (source && item.källa !== source) return false;
+      if (publisher && item.utgivare !== publisher) return false;
+      if (channel && item.kanal !== channel) return false;
       if (title && !normalize(item.titel).includes(title)) return false;
       if (exactTitle && item.titel !== exactTitle) return false;
+      if (summary && !normalize(item.sammanfattning).includes(summary)) return false;
       if (language && item.språk !== language) return false;
+      if (transcriptStatus && item.transkribering_status !== transcriptStatus) return false;
+      if (transcript) {
+        const transcriptHaystack = normalize([
+          item.transkriptutdrag || "",
+          ...(Array.isArray(item.transkript_ämnen) ? item.transkript_ämnen : []),
+          ...(Array.isArray(item.transkript_nyckelord) ? item.transkript_nyckelord : [])
+        ].join(" "));
+        if (!transcriptHaystack.includes(transcript)) return false;
+      }
       if (category && !categories.includes(category)) return false;
       if (fav === "yes" && !favorite) return false;
       if (fav === "no" && favorite) return false;
@@ -410,8 +471,13 @@
   function sortValue(item, field) {
     if (field === "datum") return String(item.datum || "");
     if (field === "källa") return String(item.källa || "");
+    if (field === "utgivare") return String(item.utgivare || "");
+    if (field === "kanal") return String(item.kanal || "");
     if (field === "titel" || field === "fullTitel") return String(item.titel || "");
+    if (field === "sammanfattning") return String(item.sammanfattning || "");
     if (field === "språk") return String(item.språk || "");
+    if (field === "transkribering") return String(item.transkribering_status || "");
+    if (field === "transkript") return (Array.isArray(item.transkript_ämnen) ? item.transkript_ämnen : []).join(" | ");
     if (field === "kategori") return (Array.isArray(item.kategorier) ? item.kategorier : []).join(" | ");
     return "";
   }
@@ -482,8 +548,11 @@
       const parts = [];
       if (item.datum) parts.push("Datum: " + item.datum);
       if (item.källa) parts.push("Källa: " + item.källa);
+      if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
+      if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
       if (youtube) parts.push("Typ: YouTube");
+      if (youtube && item.transkribering_status) parts.push("Transkribering: " + item.transkribering_status);
       if (archived) parts.push("Arkiverad");
       details.textContent = parts.join(" · ");
 
@@ -499,6 +568,20 @@
       const summary = document.createElement("div");
       summary.className = "summary";
       summary.textContent = item.sammanfattning || "";
+
+      const transcriptInfo = document.createElement("div");
+      transcriptInfo.className = "transcript-info";
+      if (youtube) {
+        const transcriptParts = [];
+        if (item.transkriberingsspråk) transcriptParts.push("Transkriberingsspråk: " + item.transkriberingsspråk);
+        if (Array.isArray(item.transkript_ämnen) && item.transkript_ämnen.length) {
+          transcriptParts.push("Transkriptämnen: " + item.transkript_ämnen.join(", "));
+        }
+        if (item.transkriptutdrag) transcriptParts.push("Kort utdrag: " + item.transkriptutdrag);
+        transcriptInfo.textContent = transcriptParts.length
+          ? transcriptParts.join("\n")
+          : "Ingen publicerbar transkriptinformation lagrad.";
+      }
 
       const actions = document.createElement("div");
       actions.className = "card-actions";
@@ -531,7 +614,9 @@
       });
       actions.append(archiveBtn);
 
-      article.append(star, h2, details, tags, summary, actions);
+      article.append(star, h2, details, tags, summary);
+      if (youtube) article.append(transcriptInfo);
+      article.append(actions);
       listEl.append(article);
     }
 
@@ -548,9 +633,14 @@
   function clearFilters() {
     dateFilter.value = "";
     sourceFilter.value = "";
+    publisherFilter.value = "";
+    channelFilter.value = "";
     titleFilter.value = "";
     exactTitleFilter.value = "";
+    summaryFilter.value = "";
     languageFilter.value = "";
+    transcriptStatusFilter.value = "";
+    transcriptFilter.value = "";
     categoryFilter.value = "";
     favoriteFilter.value = "";
     archiveFilter.value = "all";
@@ -885,9 +975,14 @@
       if (!initialItems.length && allNews.length) {
         dateFilter.value = "";
         sourceFilter.value = "";
+        publisherFilter.value = "";
+        channelFilter.value = "";
         titleFilter.value = "";
         exactTitleFilter.value = "";
+        summaryFilter.value = "";
         languageFilter.value = "";
+        transcriptStatusFilter.value = "";
+        transcriptFilter.value = "";
         categoryFilter.value = "";
         favoriteFilter.value = "";
         archiveFilter.value = "all";
@@ -907,10 +1002,12 @@
     }
   }
 
-  for (const control of [dateFilter, sourceFilter, exactTitleFilter, languageFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
+  for (const control of [dateFilter, sourceFilter, publisherFilter, channelFilter, exactTitleFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
     control.addEventListener("change", applyFilters);
   }
-  titleFilter.addEventListener("input", applyFilters);
+  for (const control of [titleFilter, summaryFilter, transcriptFilter]) {
+    control.addEventListener("input", applyFilters);
+  }
   sortInputs.forEach(x => x.addEventListener("change", applyFilters));
   fetchMoreText.addEventListener("input", () => {
     prefs.fetchMoreDraft = fetchMoreText.value;
