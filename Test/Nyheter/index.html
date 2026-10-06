@@ -43,7 +43,7 @@
     .news.article-detailed{aspect-ratio:16/9;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;padding:22px}
     .news.article-detailed h2{font-size:1.35rem;margin-bottom:8px}
     .article-ingress{font-weight:700;line-height:1.65;margin:14px 0 18px;white-space:pre-wrap}
-    .article-body{line-height:1.72;white-space:pre-wrap}
+    .article-body{line-height:1.72;white-space:pre-wrap;margin-top:18px}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -882,7 +882,7 @@
       return;
     }
 
-    const showSingle = !!exactTitleFilter.value && sorted.length === 1;
+    const showSingle = sorted.length === 1;
 
     for (const item of sorted) {
       const key = itemKey(item);
@@ -1014,7 +1014,7 @@
       article.append(actions);
       listEl.append(article);
 
-      if (showSingle && youtube) {
+      if (showSingle && youtube && exactTitleFilter.value) {
         const videoId = youtubeVideoId(item);
         if (videoId) {
           const player = document.createElement("div");
