@@ -860,7 +860,25 @@
 
       buildFilterOptions();
       restoreControls();
-      renderNews(getFilteredNews());
+
+      let initialItems = getFilteredNews();
+      if (!initialItems.length && allNews.length) {
+        dateFilter.value = "";
+        sourceFilter.value = "";
+        titleFilter.value = "";
+        exactTitleFilter.value = "";
+        languageFilter.value = "";
+        categoryFilter.value = "";
+        favoriteFilter.value = "";
+        archiveFilter.value = "all";
+        typeFilter.value = "";
+        sortInputs.forEach(x => x.value = "");
+        captureControls();
+        initialItems = getFilteredNews();
+        statusEl.textContent = "Sparade filter gav 0 träffar och återställdes automatiskt.";
+      }
+
+      renderNews(initialItems);
     } catch (err) {
       allNews = [];
       statusEl.textContent = "FEL:\n" + (err?.message || String(err));
