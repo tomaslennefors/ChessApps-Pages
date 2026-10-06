@@ -6,97 +6,137 @@
   <title>IT-Nyheter</title>
   <style>
     *{box-sizing:border-box}
-    body{font-family:system-ui,Arial,sans-serif;max-width:980px;margin:28px auto;padding:0 16px;line-height:1.55;background:#fafafa;color:#1f2328}
-    h1{font-size:1.8rem;margin-bottom:4px}
-    #meta{color:#59636e;margin-bottom:16px}
-    .filters{background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:16px;margin:14px 0 18px}
-    .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    :root{--bg:#f6f8fa;--card:#fff;--line:#d0d7de;--text:#1f2328;--muted:#59636e;--blue:#0969da;--star:#bf8700}
+    body{font-family:system-ui,Arial,sans-serif;max-width:1120px;margin:28px auto;padding:0 16px 50px;line-height:1.55;background:var(--bg);color:var(--text)}
+    h1{font-size:1.9rem;margin:0 0 4px}
+    h2{margin-top:0}
+    #meta{color:var(--muted);margin-bottom:16px}
+    .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
+    .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+    .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
+    .sortno{width:48px!important;margin:0!important;padding:4px 6px!important;text-align:center}
+    .sorthint{font-size:.78rem;color:var(--muted);font-weight:400}
     label{font-weight:600;font-size:.92rem;display:block}
-    input,select,button{font:inherit}
-    input,select{width:100%;padding:8px;margin-top:5px;border:1px solid #8c959f;border-radius:6px;background:#fff}
-    .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;cursor:pointer}
+    input,select,textarea,button{font:inherit}
+    input,select,textarea{width:100%;padding:8px;margin-top:5px;border:1px solid #8c959f;border-radius:7px;background:#fff}
+    textarea{min-height:110px;resize:vertical;line-height:1.45}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button,a.button{padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;cursor:pointer;color:var(--text);text-decoration:none}
     button:hover,a.button:hover{background:#f3f4f6}
+    button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    button.primary:hover{filter:brightness(.95)}
     button:disabled{opacity:.6;cursor:wait}
-    #status{padding:11px;border:1px solid #d0d7de;border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
-    .news{background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:18px;margin:16px 0}
-    .news h2{font-size:1.22rem;margin:0 0 8px}
-    .details{font-size:.92rem;color:#59636e;margin-bottom:10px}
+    #status{padding:11px;border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
+    .news{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0}
+    .news.archived{opacity:.72}
+    .news h2{font-size:1.22rem;margin:0 52px 8px 0}
+    .details{font-size:.92rem;color:var(--muted);margin-bottom:10px}
     .summary{white-space:pre-wrap}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-    .tag{font-size:.82rem;border:1px solid #d0d7de;border-radius:999px;padding:2px 8px;background:#f6f8fa}
-    a.button{display:inline-block;margin-top:10px;padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;color:#0969da;text-decoration:none}
-    .small{font-size:.9rem;color:#59636e}
-    .count{font-weight:600}
+    .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
+    .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+    .star{position:absolute;right:14px;top:12px;border:0;background:transparent;font-size:28px;line-height:1;padding:4px;color:#8c959f}
+    .star.on{color:var(--star)}
+    .star:hover{background:transparent;transform:scale(1.08)}
+    .archive-btn.on{font-weight:700}
+    .small{font-size:.9rem;color:var(--muted)}
+    .count{font-weight:650}
+    .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
+    .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
+    @media(max-width:600px){body{margin-top:16px}.news{padding:15px}.news h2{margin-right:42px}}
   </style>
 </head>
 <body>
   <h1 id="title">IT-Nyheter</h1>
   <div id="meta"></div>
 
+  <section class="panel">
+    <h2>Hämta fler nyheter</h2>
+    <textarea id="fetchMoreText" placeholder="Skriv instruktioner till GPT om vilka nyheter som ska hämtas nästa gång..."></textarea>
+    <div class="actions">
+      <button id="copyPromptBtn" class="primary" type="button">Kopiera till GPT</button>
+    </div>
+    <p class="prompt-note">Texten sparas automatiskt i den här webbläsarens localStorage.</p>
+  </section>
+
   <div class="filters">
     <div class="filter-grid">
       <label>
-        Datum
+        <span class="label-row">Datum <input class="sortno" data-sort="datum" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <input id="dateFilter" type="date">
       </label>
 
       <label>
-        Källa
-        <select id="sourceFilter">
-          <option value="">Alla källor</option>
-        </select>
+        <span class="label-row">Källa <input class="sortno" data-sort="källa" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="sourceFilter"><option value="">Alla källor</option></select>
       </label>
 
       <label>
-        Rubrik
+        <span class="label-row">Rubrik <input class="sortno" data-sort="titel" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <input id="titleFilter" type="search" placeholder="Sök i rubrik">
       </label>
 
       <label>
-        Fullständig rubrik
-        <select id="exactTitleFilter">
-          <option value="">Alla rubriker</option>
+        <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Språk <input class="sortno" data-sort="språk" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="languageFilter"><option value="">Alla språk</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Kategori <input class="sortno" data-sort="kategori" type="number" min="0" max="9" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <select id="categoryFilter"><option value="">Alla kategorier</option></select>
+      </label>
+
+      <label>
+        Favorit
+        <select id="favoriteFilter">
+          <option value="">Alla</option>
+          <option value="yes">Endast favoriter</option>
+          <option value="no">Ej favoriter</option>
         </select>
       </label>
 
       <label>
-        Språk
-        <select id="languageFilter">
-          <option value="">Alla språk</option>
+        Arkiv
+        <select id="archiveFilter">
+          <option value="active">Ej arkiverade</option>
+          <option value="archived">Endast arkiverade</option>
+          <option value="all">Alla</option>
         </select>
       </label>
 
       <label>
-        Kategori
-        <select id="categoryFilter">
-          <option value="">Alla kategorier</option>
+        Typ
+        <select id="typeFilter">
+          <option value="">Alla</option>
+          <option value="article">Artiklar</option>
+          <option value="youtube">YouTube</option>
         </select>
       </label>
     </div>
 
-    <div class="filter-actions">
+    <div class="actions">
       <button id="clearBtn" type="button">Rensa filter</button>
       <button id="reloadBtn" type="button">Läs in nyheterna igen</button>
     </div>
+    <p class="small">Sorteringsnummer: 1 sorteras först, 2 därefter osv. Lämna tomt eller 0 för att inte använda fältet vid sortering. Datum sorteras nyast först; textfält A–Ö.</p>
   </div>
 
-  <div id="status">Hämtar nyheter från Data...</div>
+  <div id="status">Hämtar nyheter...</div>
   <div id="list"></div>
 
   <p class="small">
-    Nyheterna hämtas från det privata repositoryt Data. Sammanfattningarna visas på svenska.
-    Fältet Språk avser originalkällans språk. GitHub-token hämtas automatiskt från TokenSetup.
+    Nyhetsfilen ligger publikt tillsammans med appen på GitHub Pages. Filter, sorteringsordning, favoriter, arkivering och texten ovan sparas bara lokalt i respektive webbläsare.
   </p>
 
 <script>
 (() => {
-  const owner = "tomaslennefors";
-  const repo = "Data";
-  const path = "Test/Nyheter/nyheter.json";
-  const branch = "main";
-  const tokenKey = "ChessApps_GitHubToken";
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`;
+  const dataUrl = "./nyheter.json";
+  const storageKey = "ITNyheter_Settings_V2";
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -104,87 +144,118 @@
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
   const clearBtn = document.getElementById("clearBtn");
+  const copyPromptBtn = document.getElementById("copyPromptBtn");
+  const fetchMoreText = document.getElementById("fetchMoreText");
   const dateFilter = document.getElementById("dateFilter");
   const sourceFilter = document.getElementById("sourceFilter");
   const titleFilter = document.getElementById("titleFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
   const languageFilter = document.getElementById("languageFilter");
   const categoryFilter = document.getElementById("categoryFilter");
+  const favoriteFilter = document.getElementById("favoriteFilter");
+  const archiveFilter = document.getElementById("archiveFilter");
+  const typeFilter = document.getElementById("typeFilter");
+  const sortInputs = [...document.querySelectorAll(".sortno")];
 
   let allNews = [];
+  let prefs = loadPrefs();
 
-  function decodeBase64Utf8(base64) {
-    const clean = base64.replace(/\n/g, "");
-    const binary = atob(clean);
-    const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
+  function loadPrefs() {
+    try {
+      const p = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      return {
+        favorites: p.favorites && typeof p.favorites === "object" ? p.favorites : {},
+        archived: p.archived && typeof p.archived === "object" ? p.archived : {},
+        filters: p.filters && typeof p.filters === "object" ? p.filters : {},
+        sort: p.sort && typeof p.sort === "object" ? p.sort : {},
+        fetchMoreText: typeof p.fetchMoreText === "string" ? p.fetchMoreText : ""
+      };
+    } catch {
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, fetchMoreText:""};
+    }
   }
 
-  function getToken() {
-    const token = localStorage.getItem(tokenKey);
-    if (!token) {
-      throw new Error(
-        "Inget GitHub-token finns sparat. Öppna först TokenSetup och spara ett giltigt token:\n" +
-        "https://tomaslennefors.github.io/ChessApps-Pages/TokenSetup/"
-      );
-    }
-    return token;
+  function savePrefs() {
+    localStorage.setItem(storageKey, JSON.stringify(prefs));
+  }
+
+  function itemKey(item) {
+    return String(item.id ?? item.länk ?? item.titel ?? "");
+  }
+
+  function isYoutube(item) {
+    const type = String(item.typ || item.type || "").toLowerCase();
+    const url = String(item.youtube_länk || item.youtube_url || item.länk || "").toLowerCase();
+    return type === "youtube" || url.includes("youtube.com/") || url.includes("youtu.be/");
   }
 
   function uniqueSorted(values) {
-    return [...new Set(values.filter(Boolean))]
-      .sort((a, b) => String(a).localeCompare(String(b), "sv"));
+    return [...new Set(values.filter(Boolean))].sort((a,b) => String(a).localeCompare(String(b),"sv"));
   }
 
   function fillSelect(select, values, firstText) {
     const current = select.value;
     select.replaceChildren();
-
     const first = document.createElement("option");
     first.value = "";
     first.textContent = firstText;
     select.append(first);
-
     for (const value of values) {
       const option = document.createElement("option");
       option.value = value;
       option.textContent = value;
       select.append(option);
     }
-
-    if ([...select.options].some(o => o.value === current)) {
-      select.value = current;
-    }
+    if ([...select.options].some(o => o.value === current)) select.value = current;
   }
 
   function buildFilterOptions() {
-    fillSelect(
-      sourceFilter,
-      uniqueSorted(allNews.map(item => item.källa)),
-      "Alla källor"
-    );
-
-    fillSelect(
-      exactTitleFilter,
-      uniqueSorted(allNews.map(item => item.titel)),
-      "Alla rubriker"
-    );
-
-    fillSelect(
-      languageFilter,
-      uniqueSorted(allNews.map(item => item.språk)),
-      "Alla språk"
-    );
-
-    fillSelect(
-      categoryFilter,
-      uniqueSorted(allNews.flatMap(item => Array.isArray(item.kategorier) ? item.kategorier : [])),
-      "Alla kategorier"
-    );
+    fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
+    fillSelect(exactTitleFilter, uniqueSorted(allNews.map(x => x.titel)), "Alla rubriker");
+    fillSelect(languageFilter, uniqueSorted(allNews.map(x => x.språk)), "Alla språk");
+    fillSelect(categoryFilter, uniqueSorted(allNews.flatMap(x => Array.isArray(x.kategorier) ? x.kategorier : [])), "Alla kategorier");
   }
 
   function normalize(text) {
     return String(text || "").toLocaleLowerCase("sv");
+  }
+
+  function restoreControls() {
+    const f = prefs.filters;
+    dateFilter.value = f.date || "";
+    sourceFilter.value = f.source || "";
+    titleFilter.value = f.title || "";
+    exactTitleFilter.value = f.exactTitle || "";
+    languageFilter.value = f.language || "";
+    categoryFilter.value = f.category || "";
+    favoriteFilter.value = f.favorite || "";
+    archiveFilter.value = f.archive || "active";
+    typeFilter.value = f.type || "";
+    fetchMoreText.value = prefs.fetchMoreText || "";
+    sortInputs.forEach(input => {
+      input.value = prefs.sort[input.dataset.sort] || "";
+    });
+  }
+
+  function captureControls() {
+    prefs.filters = {
+      date: dateFilter.value,
+      source: sourceFilter.value,
+      title: titleFilter.value,
+      exactTitle: exactTitleFilter.value,
+      language: languageFilter.value,
+      category: categoryFilter.value,
+      favorite: favoriteFilter.value,
+      archive: archiveFilter.value,
+      type: typeFilter.value
+    };
+    prefs.fetchMoreText = fetchMoreText.value;
+    prefs.sort = {};
+    sortInputs.forEach(input => {
+      const n = Number(input.value);
+      if (Number.isFinite(n) && n > 0) prefs.sort[input.dataset.sort] = Math.trunc(n);
+    });
+    savePrefs();
   }
 
   function getFilteredNews() {
@@ -194,9 +265,16 @@
     const exactTitle = exactTitleFilter.value;
     const language = languageFilter.value;
     const category = categoryFilter.value;
+    const fav = favoriteFilter.value;
+    const archive = archiveFilter.value;
+    const type = typeFilter.value;
 
     return allNews.filter(item => {
+      const key = itemKey(item);
       const categories = Array.isArray(item.kategorier) ? item.kategorier : [];
+      const favorite = !!prefs.favorites[key];
+      const archived = !!prefs.archived[key];
+      const youtube = isYoutube(item);
 
       if (date && item.datum !== date) return false;
       if (source && item.källa !== source) return false;
@@ -204,39 +282,95 @@
       if (exactTitle && item.titel !== exactTitle) return false;
       if (language && item.språk !== language) return false;
       if (category && !categories.includes(category)) return false;
-
+      if (fav === "yes" && !favorite) return false;
+      if (fav === "no" && favorite) return false;
+      if (archive === "active" && archived) return false;
+      if (archive === "archived" && !archived) return false;
+      if (type === "youtube" && !youtube) return false;
+      if (type === "article" && youtube) return false;
       return true;
     });
   }
 
+  function sortValue(item, field) {
+    if (field === "datum") return String(item.datum || "");
+    if (field === "källa") return String(item.källa || "");
+    if (field === "titel" || field === "fullTitel") return String(item.titel || "");
+    if (field === "språk") return String(item.språk || "");
+    if (field === "kategori") return (Array.isArray(item.kategorier) ? item.kategorier : []).join(" | ");
+    return "";
+  }
+
+  function sortNews(items) {
+    const priorities = Object.entries(prefs.sort)
+      .filter(([,n]) => Number(n) > 0)
+      .sort((a,b) => Number(a[1]) - Number(b[1]));
+
+    return [...items].sort((a,b) => {
+      if (priorities.length) {
+        for (const [field] of priorities) {
+          const av = sortValue(a, field);
+          const bv = sortValue(b, field);
+          const cmp = field === "datum"
+            ? bv.localeCompare(av)
+            : av.localeCompare(bv, "sv", {numeric:true, sensitivity:"base"});
+          if (cmp !== 0) return cmp;
+        }
+      } else {
+        const dateCmp = String(b.datum || "").localeCompare(String(a.datum || ""));
+        if (dateCmp !== 0) return dateCmp;
+      }
+      return Number(a.id || 0) - Number(b.id || 0);
+    });
+  }
+
+  function makeButton(text, className, onClick) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = text;
+    if (className) btn.className = className;
+    btn.addEventListener("click", onClick);
+    return btn;
+  }
+
   function renderNews(items) {
     listEl.replaceChildren();
+    const sorted = sortNews(items);
 
-    if (!items.length) {
+    if (!sorted.length) {
       statusEl.textContent = "Inga nyheter matchar de valda filtren.";
       return;
     }
 
-    const sorted = [...items].sort((a, b) => {
-      const byDate = String(b.datum || "").localeCompare(String(a.datum || ""));
-      if (byDate !== 0) return byDate;
-      return Number(a.id || 0) - Number(b.id || 0);
-    });
-
     for (const item of sorted) {
+      const key = itemKey(item);
+      const favorite = !!prefs.favorites[key];
+      const archived = !!prefs.archived[key];
+      const youtube = isYoutube(item);
+
       const article = document.createElement("article");
-      article.className = "news";
+      article.className = "news" + (archived ? " archived" : "");
+
+      const star = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
+        if (prefs.favorites[key]) delete prefs.favorites[key]; else prefs.favorites[key] = true;
+        savePrefs();
+        applyFilters();
+      });
+      star.title = favorite ? "Ta bort favorit" : "Markera som favorit";
+      star.setAttribute("aria-label", star.title);
 
       const h2 = document.createElement("h2");
       h2.textContent = item.titel || "Nyhet";
 
       const details = document.createElement("div");
       details.className = "details";
-      const detailParts = [];
-      if (item.datum) detailParts.push("Datum: " + item.datum);
-      if (item.källa) detailParts.push("Källa: " + item.källa);
-      if (item.språk) detailParts.push("Språk: " + item.språk);
-      details.textContent = detailParts.join(" · ");
+      const parts = [];
+      if (item.datum) parts.push("Datum: " + item.datum);
+      if (item.källa) parts.push("Källa: " + item.källa);
+      if (item.språk) parts.push("Språk: " + item.språk);
+      if (youtube) parts.push("Typ: YouTube");
+      if (archived) parts.push("Arkiverad");
+      details.textContent = parts.join(" · ");
 
       const tags = document.createElement("div");
       tags.className = "tags";
@@ -251,22 +385,48 @@
       summary.className = "summary";
       summary.textContent = item.sammanfattning || "";
 
-      const link = document.createElement("a");
-      link.className = "button";
-      link.textContent = "Läs originalnyheten";
-      link.href = item.länk || "#";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
+      const actions = document.createElement("div");
+      actions.className = "card-actions";
 
-      article.append(h2, details, tags, summary, link);
+      if (item.länk) {
+        const link = document.createElement("a");
+        link.className = "button";
+        link.textContent = youtube ? "Öppna YouTube" : "Läs originalnyheten";
+        link.href = item.länk;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        actions.append(link);
+      }
+
+      const videoUrl = item.youtube_länk || item.youtube_url || "";
+      if (videoUrl && videoUrl !== item.länk) {
+        const video = document.createElement("a");
+        video.className = "button";
+        video.textContent = "Se YouTube-video";
+        video.href = videoUrl;
+        video.target = "_blank";
+        video.rel = "noopener noreferrer";
+        actions.append(video);
+      }
+
+      const archiveBtn = makeButton(archived ? "Återställ från arkiv" : "Arkivera", "archive-btn" + (archived ? " on" : ""), () => {
+        if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
+        savePrefs();
+        applyFilters();
+      });
+      actions.append(archiveBtn);
+
+      article.append(star, h2, details, tags, summary, actions);
       listEl.append(article);
     }
 
-    statusEl.textContent =
-      "Visar " + sorted.length + " av " + allNews.length + " nyheter.";
+    const favCount = allNews.filter(x => !!prefs.favorites[itemKey(x)]).length;
+    const archCount = allNews.filter(x => !!prefs.archived[itemKey(x)]).length;
+    statusEl.textContent = "Visar " + sorted.length + " av " + allNews.length + " nyheter. Favoriter: " + favCount + ". Arkiverade: " + archCount + ".";
   }
 
   function applyFilters() {
+    captureControls();
     renderNews(getFilteredNews());
   }
 
@@ -277,43 +437,47 @@
     exactTitleFilter.value = "";
     languageFilter.value = "";
     categoryFilter.value = "";
+    favoriteFilter.value = "";
+    archiveFilter.value = "active";
+    typeFilter.value = "";
+    sortInputs.forEach(x => x.value = "");
     applyFilters();
+  }
+
+  async function copyPrompt() {
+    captureControls();
+    const text = fetchMoreText.value.trim();
+    if (!text) {
+      statusEl.textContent = "Skriv först något i Hämta fler nyheter.";
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      statusEl.textContent = "Texten i Hämta fler nyheter är kopierad.";
+    } catch {
+      fetchMoreText.select();
+      document.execCommand("copy");
+      statusEl.textContent = "Texten i Hämta fler nyheter är kopierad.";
+    }
   }
 
   async function loadNews() {
     reloadBtn.disabled = true;
-    statusEl.textContent = "Hämtar nyheter från Data...";
+    statusEl.textContent = "Hämtar nyheter...";
     listEl.replaceChildren();
 
     try {
-      const token = getToken();
-      const response = await fetch(apiUrl, {
-        headers: {
-          "Accept": "application/vnd.github+json",
-          "Authorization": `Bearer ${token}`,
-          "X-GitHub-Api-Version": "2022-11-28"
-        }
-      });
-
-      if (!response.ok) {
-        let detail = "";
-        try {
-          const err = await response.json();
-          detail = err?.message ? "\nGitHub: " + err.message : "";
-        } catch {}
-        throw new Error("Kunde inte läsa nyhetsfilen. HTTP " + response.status + detail);
-      }
-
-      const file = await response.json();
-      const jsonText = decodeBase64Utf8(file.content || "");
-      const data = JSON.parse(jsonText);
+      const response = await fetch(dataUrl + "?t=" + Date.now(), {cache:"no-store"});
+      if (!response.ok) throw new Error("Kunde inte läsa nyheter.json. HTTP " + response.status);
+      const data = await response.json();
 
       titleEl.textContent = data.rubrik || "IT-Nyheter";
       allNews = Array.isArray(data.nyheter) ? data.nyheter : [];
-      metaEl.textContent = allNews.length + " nyheter lagrade i Data.";
+      metaEl.textContent = allNews.length + " gemensamma nyheter ligger i den publika JSON-filen.";
 
       buildFilterOptions();
-      applyFilters();
+      restoreControls();
+      renderNews(getFilteredNews());
     } catch (err) {
       allNews = [];
       statusEl.textContent = "FEL:\n" + (err?.message || String(err));
@@ -322,13 +486,20 @@
     }
   }
 
-  for (const control of [dateFilter, sourceFilter, exactTitleFilter, languageFilter, categoryFilter]) {
+  for (const control of [dateFilter, sourceFilter, exactTitleFilter, languageFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
     control.addEventListener("change", applyFilters);
   }
   titleFilter.addEventListener("input", applyFilters);
+  sortInputs.forEach(x => x.addEventListener("change", applyFilters));
+  fetchMoreText.addEventListener("input", () => {
+    prefs.fetchMoreText = fetchMoreText.value;
+    savePrefs();
+  });
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
+  copyPromptBtn.addEventListener("click", copyPrompt);
 
+  fetchMoreText.value = prefs.fetchMoreText || "";
   loadNews();
 })();
 </script>
