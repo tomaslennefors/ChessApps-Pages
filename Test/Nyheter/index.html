@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI-nyheter</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;max-width:850px;margin:28px auto;padding:0 16px;line-height:1.55;background:#fafafa;color:#1f2328}
+    h1{font-size:1.8rem;margin-bottom:4px}
+    #meta{color:#59636e;margin-bottom:20px}
+    .news{background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:18px;margin:16px 0}
+    .news h2{font-size:1.22rem;margin:0 0 8px}
+    .source{font-size:.92rem;color:#59636e;margin-bottom:10px}
+    .summary{white-space:pre-wrap}
+    a.button,button{display:inline-block;margin-top:10px;padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;color:#0969da;text-decoration:none;font:inherit;cursor:pointer}
+    #status{padding:11px;border:1px solid #d0d7de;border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
+    .small{font-size:.9rem;color:#59636e}
+  </style>
+</head>
+<body>
+  <h1 id="title">AI-nyheter</h1>
+  <div id="meta"></div>
+
+  <div id="status">Hämtar nyheter från Data...</div>
+  <button id="reloadBtn" type="button">Läs in nyheterna igen</button>
+
+  <div id="list"></div>
+
+  <p class="small">
+    Nyheterna hämtas från det privata repositoryt Data. GitHub-token hämtas automatiskt från TokenSetup i den här webbläsaren.
+  </p>
+
+<script>
+(() => {
+  const owner = "tomaslennefors";
+  const repo = "Data";
+  const path = "Test/Nyheter/nyheter.json";
+  const branch = "main";
+  const tokenKey = "ChessApps_GitHubToken";
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`;
+
+  const titleEl = document.getElementById("title");
+  const metaEl = document.getElementById("meta");
+  const statusEl = document.getElementById("status");
+  const listEl = document.getElementById("list");
+  const reloadBtn = document.getElementById("reloadBtn");
+
+  function decodeBase64Utf8(base64) {
+    const clean = base64.replace(/\n/g, "");
+    const binary = atob(clean);
+    const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+
+  function getToken() {
+    const token = localStorage.getItem(tokenKey);
+    if (!token) {
+      throw new Error(
+        "Inget GitHub-token finns sparat. Öppna först TokenSetup och spara ett giltigt token:\n" +
+        "https://tomaslennefors.github.io/ChessApps-Pages/TokenSetup/"
+      );
+    }
+    return token;
+  }
+
+  function render(data) {
+    titleEl.textContent = data.rubrik || "AI-nyheter";
+    metaEl.textContent = data.datum ? "Nyheter från " + data.datum : "";
+    listEl.replaceChildren();
+
+    const items = Array.isArray(data.nyheter) ? data.nyheter : [];
+
+    if (!items.length) {
+      statusEl.textContent = "Filen lästes, men innehåller inga nyheter.";
+      return;
+    }
+
+    for (const item of items) {
+      const article = document.createElement("article");
+      article.className = "news";
+
+      const h2 = document.createElement("h2");
+      h2.textContent = item.titel || "Nyhet";
+
+      const source = document.createElement("div");
+      source.className = "source";
+      source.textContent = item.källa ? "Källa: " + item.källa : "";
+
+      const summary = document.createElement("div");
+      summary.className = "summary";
+      summary.textContent = item.sammanfattning || "";
+
+      const link = document.createElement("a");
+      link.className = "button";
+      link.textContent = "Läs originalnyheten";
+      link.href = item.länk || "#";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+
+      article.append(h2, source, summary, link);
+      listEl.append(article);
+    }
+
+    statusEl.textContent = "Klart. " + items.length + " nyheter inlästa från Data.";
+  }
+
+  async function loadNews() {
+    reloadBtn.disabled = true;
+    statusEl.textContent = "Hämtar nyheter från Data...";
+    listEl.replaceChildren();
+
+    try {
+      const token = getToken();
+      const response = await fetch(apiUrl, {
+        headers: {
+          "Accept": "application/vnd.github+json",
+          "Authorization": `Bearer ${token}`,
+          "X-GitHub-Api-Version": "2022-11-28"
+        }
+      });
+
+      if (!response.ok) {
+        let detail = "";
+        try {
+          const err = await response.json();
+          detail = err?.message ? "\nGitHub: " + err.message : "";
+        } catch {}
+        throw new Error("Kunde inte läsa nyhetsfilen. HTTP " + response.status + detail);
+      }
+
+      const file = await response.json();
+      const jsonText = decodeBase64Utf8(file.content || "");
+      const data = JSON.parse(jsonText);
+      render(data);
+    } catch (err) {
+      statusEl.textContent = "FEL:\n" + (err?.message || String(err));
+    } finally {
+      reloadBtn.disabled = false;
+    }
+  }
+
+  reloadBtn.addEventListener("click", loadNews);
+  loadNews();
+})();
+</script>
+</body>
+</html>
