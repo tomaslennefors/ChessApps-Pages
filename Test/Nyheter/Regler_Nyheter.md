@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-06 10:12
+Senast uppdaterad: 2026-10-06 13:23
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -80,6 +80,19 @@ Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Nyheten" ska
 ### 2b. Flera nyheter samtidigt
 
 När flera nyheter visas samtidigt ska varje vanlig artikel endast visa ingressen, inte den längre artikeltexten.
+
+
+## 2c. Beständiga AI-sammanställningar
+
+Följande typer av innehåll är beständiga sammanställningar och inte vanliga datumstyrda nyheter:
+- **!IT-året ...**
+- **!AI-historik ...**
+- **!AI-begrepp ...**
+
+Regler:
+- den fullständiga rubriken ska alltid börja med tecknet **!**,
+- dessa poster ska alltid tillhöra kategorin **AI-sammanställningar**,
+- tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
 
 ## 3. HämtaNyheter och dataflöde
 
