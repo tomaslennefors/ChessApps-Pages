@@ -44,7 +44,6 @@
     .article-reader .reader-section{margin-top:16px}
     .article-reader .reader-section h3{font-size:1rem;margin:0 0 6px}
     .article-reader .reader-body{font-size:1rem;line-height:1.7;white-space:pre-wrap}
-    .article-reader .reader-original{font-size:.96rem;line-height:1.65;padding:10px 12px;border-left:3px solid var(--line);background:#f6f8fa}
     .article-reader .reader-tags{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
     .article-reader .reader-actions{margin-top:16px}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
@@ -730,7 +729,6 @@
       details.className = "details";
       const parts = [];
       if (item.datum) parts.push("Datum: " + item.datum);
-      if (item.källa) parts.push("Källa: " + item.källa);
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
@@ -845,14 +843,13 @@
         readerMeta.className = "reader-meta";
         readerMeta.textContent = [
           item.datum ? "Datum: " + item.datum : "",
-          item.källa ? "Källa: " + item.källa : "",
           item.språk ? "Språk: " + item.språk : ""
         ].filter(Boolean).join(" · ");
 
         const summarySection = document.createElement("section");
         summarySection.className = "reader-section";
         const summaryHeading = document.createElement("h3");
-        summaryHeading.textContent = "Kort sammanfattning";
+        summaryHeading.textContent = "Ingress";
         const summaryBody = document.createElement("div");
         summaryBody.className = "reader-body";
         summaryBody.textContent = item.sammanfattning || "Ingen kort sammanfattning finns ännu.";
@@ -861,20 +858,11 @@
         const readSection = document.createElement("section");
         readSection.className = "reader-section";
         const readHeading = document.createElement("h3");
-        readHeading.textContent = "Utförlig AI-läsvy";
+        readHeading.textContent = "Nyheten";
         const readerBody = document.createElement("div");
         readerBody.className = "reader-body";
         readerBody.textContent = item.läsvy || item.lasvy || item.sammanfattning || "Ingen AI-läsvy finns ännu för denna artikel.";
         readSection.append(readHeading, readerBody);
-
-        const originalSection = document.createElement("section");
-        originalSection.className = "reader-section";
-        const originalHeading = document.createElement("h3");
-        originalHeading.textContent = "Kort originalutdrag";
-        const originalBody = document.createElement("div");
-        originalBody.className = "reader-original";
-        originalBody.textContent = item.originalutdrag || "Inget originalutdrag har sparats.";
-        originalSection.append(originalHeading, originalBody);
 
         const readerTags = document.createElement("div");
         readerTags.className = "reader-tags";
@@ -897,7 +885,7 @@
           readerActions.append(original);
         }
 
-        reader.append(readerTitle, readerMeta, summarySection, readSection, originalSection, readerTags, readerActions);
+        reader.append(readerTitle, readerMeta, summarySection, readSection, readerTags, readerActions);
         listEl.append(reader);
       }
     }
