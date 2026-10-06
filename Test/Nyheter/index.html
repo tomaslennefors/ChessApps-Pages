@@ -1277,6 +1277,30 @@
   }
   exactTitleFilter.addEventListener("change", () => applyFilters(false));
 
+  exactTitleFilter.addEventListener("keydown", event => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+    if (event.key === " ") {
+      event.preventDefault();
+      event.stopPropagation();
+      playSelectedYoutube();
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      event.stopPropagation();
+      stepExactTitle(1);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      event.stopPropagation();
+      stepExactTitle(-1);
+    }
+  });
+
   document.addEventListener("keydown", event => {
     if (!keyboardShortcutAllowed(event)) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
