@@ -6,7 +6,7 @@ Senast uppdaterad: 2026-10-06 10:12
 
 Appen ska se olika ut beroende på om Tomas använder appen eller om det är en annan användare.
 
-Knappen **Regler** är privat och ska endast vara synlig för Tomas.
+Knappen **Regler** är privat och ska endast vara synlig för Tomas när **Privat visning** är aktiverad. När Tomas avmarkerar Privat visning ska även Regler-knappen döljas, så att den publika förhandsvisningen motsvarar vad andra användare ser.
 
 ### 1a. Tomas
 
@@ -21,7 +21,7 @@ I privat visning ska Tomas kunna se och använda:
 - Knappen **Läs originalnyheten** för vanliga artiklar.
 - Privat artikelmetadata som hämtas från det privata repositoryt Data.
 - Kryssrutan **Privat visning** för att växla mellan Tomas vy och den publika vyn.
-- Knappen **Regler** och innehållet i `Regler_Nyheter.md`. Denna knapp ska endast visas för Tomas efter att den privata GitHub-token har verifierats.
+- Knappen **Regler** och innehållet i `Regler_Nyheter.md`. Denna knapp ska endast visas för Tomas när den privata GitHub-token har verifierats **och Privat visning är aktiverad**.
 
 När Tomas avmarkerar **Privat visning** ska han kunna kontrollera hur appen ser ut för andra användare.
 
