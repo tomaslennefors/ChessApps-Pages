@@ -32,7 +32,7 @@
     #status{padding:11px;border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
     .news{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0}
     .news.archived{opacity:.72}
-    .news h2{font-size:1.22rem;margin:0 52px 8px 0}
+    .news h2{font-size:1.22rem;margin:0 92px 8px 0}
     .details{font-size:.92rem;color:var(--muted);margin-bottom:10px}
     .summary{white-space:pre-wrap}
     .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
@@ -47,9 +47,13 @@
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-    .star{position:absolute;right:14px;top:12px;border:0;background:transparent;font-size:28px;line-height:1;padding:4px;color:#8c959f}
+    .star,.copy-news{position:absolute;top:12px;border:0;background:transparent;line-height:1;padding:4px;color:#8c959f}
+    .star{right:14px;font-size:28px}
+    .copy-news{right:54px;font-size:23px}
     .star.on{color:var(--star)}
-    .star:hover{background:transparent;transform:scale(1.08)}
+    .star:hover,.copy-news:hover{background:transparent;transform:scale(1.08)}
+    .text-stats{display:none;margin:10px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#f6f8fa;color:var(--muted);font-size:.88rem}
+    .text-stats.visible{display:block}
     .archive-btn.on{font-weight:700}
     .small{font-size:.9rem;color:var(--muted)}
     .count{font-weight:650}
@@ -798,6 +802,77 @@
     return btn;
   }
 
+  function textStats(text) {
+    const value = String(text || "");
+    const letters = (value.match(/\p{L}/gu) || []).length;
+    const words = (value.match(/[\p{L}\p{N}]+(?:[’'-][\p{L}\p{N}]+)*/gu) || []).length;
+    return {letters, words};
+  }
+
+  function statsLabel(label, text) {
+    const stats = textStats(text);
+    return label + ": " + stats.words + " ord · " + stats.letters + " bokstäver";
+  }
+
+  function copyNewsText(item, youtube, detailedArticle, detailsText, transcriptText) {
+    const parts = [displayTitle(item)];
+    if (detailsText) parts.push(detailsText);
+
+    const categories = Array.isArray(item.kategorier) ? item.kategorier.filter(Boolean) : [];
+    if (categories.length) parts.push("Kategorier: " + categories.join(", "));
+
+    if (item.sammanfattning) parts.push(String(item.sammanfattning));
+    if (detailedArticle) {
+      const body = String(item.läsvy || item.lasvy || "").trim();
+      if (body && body !== String(item.sammanfattning || "").trim()) parts.push(body);
+    }
+
+    if (youtube && transcriptText) parts.push(transcriptText);
+    if (youtube) {
+      const url = String(item.webbadress || item.länk || item.youtube_länk || item.youtube_url || "").trim();
+      if (url) parts.push(url);
+    }
+
+    return parts.filter(Boolean).join("\n\n");
+  }
+
+  function updateSelectionStats() {
+    const card = document.querySelector(".news.article-detailed");
+    const box = card?.querySelector(".text-stats");
+    if (!card || !box) return;
+
+    const selection = document.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+      box.classList.remove("visible");
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    const node = range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+      ? range.commonAncestorContainer
+      : range.commonAncestorContainer.parentElement;
+
+    if (!node || !card.contains(node)) {
+      box.classList.remove("visible");
+      return;
+    }
+
+    const selectedText = selection.toString().trim();
+    if (!selectedText) {
+      box.classList.remove("visible");
+      return;
+    }
+
+    const ingress = card.querySelector(".article-ingress")?.textContent || "";
+    const body = card.querySelector(".article-body")?.textContent || "";
+    box.textContent = [
+      statsLabel("Ingress", ingress),
+      statsLabel("Artikel", body),
+      statsLabel("Markering", selectedText)
+    ].join(" · ");
+    box.classList.add("visible");
+  }
+
   function renderNews(items) {
     listEl.replaceChildren();
     const sorted = sortNews(items);
@@ -826,6 +901,13 @@
       });
       star.title = favorite ? "Ta bort favorit" : "Markera som favorit";
       star.setAttribute("aria-label", star.title);
+
+      const copyNewsBtn = makeButton("⧉", "copy-news", async () => {
+        const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent);
+        await copyText(text, "Hela nyheten är kopierad till Urklipp.");
+      });
+      copyNewsBtn.title = "Kopiera hela nyheten";
+      copyNewsBtn.setAttribute("aria-label", "Kopiera hela nyheten");
 
       const h2 = document.createElement("h2");
       h2.textContent = displayTitle(item);
@@ -860,6 +942,10 @@
       const body = document.createElement("div");
       body.className = "article-body";
       body.textContent = item.läsvy || item.lasvy || item.sammanfattning || "";
+
+      const selectionStats = document.createElement("div");
+      selectionStats.className = "text-stats";
+      selectionStats.setAttribute("aria-live", "polite");
 
       const webAddress = document.createElement("div");
       webAddress.className = "web-address";
@@ -919,9 +1005,9 @@
       });
       actions.append(archiveBtn);
 
-      article.append(star, h2, details, tags, summary);
+      article.append(star, copyNewsBtn, h2, details, tags, summary);
       if (detailedArticle) {
-        article.append(body);
+        article.append(body, selectionStats);
       } else if (youtube) {
         article.append(webAddress, transcriptInfo);
       }
@@ -1453,6 +1539,10 @@
       stepExactTitle(-1);
     }
   });
+
+  document.addEventListener("selectionchange", updateSelectionStats);
+  document.addEventListener("mouseup", updateSelectionStats);
+  document.addEventListener("keyup", updateSelectionStats);
 
   document.addEventListener("keydown", event => {
     if (!keyboardShortcutAllowed(event)) return;
