@@ -45,6 +45,11 @@
     .small{font-size:.9rem;color:var(--muted)}
     .count{font-weight:650}
     .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
+    .save-explanation{margin-top:10px;padding:10px 12px;background:#f6f8fa;border:1px solid var(--line);border-radius:8px}
+    .section-splitter{border:0;border-top:2px solid var(--line);margin:22px 0}
+    .link-history-item{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding:7px 0}
+    .link-history-item:first-child{border-top:0}
+    .link-history-item a{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--blue);flex:1}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
     [hidden]{display:none!important}
     .request-history{margin-top:16px}
@@ -68,17 +73,37 @@
 
   <section id="ownerPanel" class="panel" hidden>
     <h2>HämtaNyheter</h2>
-    <textarea id="fetchMoreText" placeholder="Skriv instruktioner till GPT om vilka nyheter som ska hämtas nästa gång..."></textarea>
+
+    <label>
+      Önskemål i fritext
+      <textarea id="requestFreeText" placeholder="Skriv vad GPT ska leta efter nästa gång..."></textarea>
+    </label>
+
+    <label style="margin-top:12px">
+      Länkförslag
+      <textarea id="requestLinks" placeholder="En webbadress per rad. Sparade länkar behålls så att de inte försvinner."></textarea>
+    </label>
+
     <div class="actions">
-      <button id="savePromptBtn" class="primary" type="button">Spara aktuellt önskemål</button>
-      <button id="copyPromptBtn" type="button">Kopiera aktuellt</button>
+      <button id="savePromptBtn" class="primary" type="button">Spara önskemål</button>
     </div>
-    <p class="prompt-note">Varje sparad formulering läggs i historiken. Endast den senast sparade formuleringen är aktuell och ska användas för nästa nyhetshämtning.</p>
+
+    <div class="save-explanation small">
+      <strong>När du trycker på Spara önskemål:</strong>
+      fritexten sparas som aktuellt önskemål och läggs i fritext-historiken; nya länkar läggs till i den permanenta länklistan utan att tidigare länkar tas bort; allt sparas lokalt i denna webbläsare och i den privata filen <code>Data/Test/Nyheter/HamtaNyheter.json</code>; slutligen kopieras det aktuella önskemålet (fritext + alla sparade länkar) till Urklipp. Vid nästa nyhetshämtning läser GPT den aktuella fritexten och den sparade länklistan från denna Data-fil.
+    </div>
+
     <div class="request-history">
-      <h3>Tidigare önskemål</h3>
-      <div id="requestHistory"></div>
+      <h3>Fritext-historik</h3>
+      <div id="freeTextHistory"></div>
+    </div>
+
+    <div class="request-history">
+      <h3>Sparade länkar</h3>
+      <div id="linkHistory"></div>
     </div>
   </section>
+  <hr id="ownerSplitter" class="section-splitter" hidden>
 
   <div class="filters">
     <div class="filter-grid">
@@ -172,10 +197,11 @@
 
     <div class="actions">
       <button id="clearBtn" type="button">Rensa filter</button>
-      <button id="reloadBtn" type="button">Läs in nyheterna igen</button>
+      <button id="reloadBtn" type="button">Uppdatera filtrering</button>
     </div>
     <p class="small">Sorteringsnummer: 1 sorteras först, 2 därefter osv. Lämna tomt eller 0 för att inte använda fältet vid sortering. Datum sorteras nyast först; textfält A–Ö.</p>
   </div>
+  <hr class="section-splitter">
 
   <div id="status">Hämtar nyheter...</div>
   <div id="list"></div>
@@ -202,10 +228,12 @@
   const reloadBtn = document.getElementById("reloadBtn");
   const clearBtn = document.getElementById("clearBtn");
   const ownerPanel = document.getElementById("ownerPanel");
+  const ownerSplitter = document.getElementById("ownerSplitter");
   const savePromptBtn = document.getElementById("savePromptBtn");
-  const copyPromptBtn = document.getElementById("copyPromptBtn");
-  const fetchMoreText = document.getElementById("fetchMoreText");
-  const requestHistory = document.getElementById("requestHistory");
+  const requestFreeText = document.getElementById("requestFreeText");
+  const requestLinks = document.getElementById("requestLinks");
+  const freeTextHistory = document.getElementById("freeTextHistory");
+  const linkHistory = document.getElementById("linkHistory");
   const dateFilter = document.getElementById("dateFilter");
   const sourceFilter = document.getElementById("sourceFilter");
   const publisherFilter = document.getElementById("publisherFilter");
@@ -228,31 +256,73 @@
   let ownerToken = "";
   let prefs = loadPrefs();
 
+  function splitLegacyRequest(value) {
+    const lines = String(value || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    return {
+      text: lines.filter(x => !/^https?:\/\//i.test(x)).join("\n"),
+      links: lines.filter(x => /^https?:\/\//i.test(x))
+    };
+  }
+
+  function uniqueLinks(values) {
+    const out = [];
+    const seen = new Set();
+    for (const value of values || []) {
+      const url = String(value || "").trim();
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      out.push(url);
+    }
+    return out;
+  }
+
   function loadPrefs() {
     try {
       const p = JSON.parse(localStorage.getItem(storageKey) || "{}");
-      const legacyText = typeof p.fetchMoreText === "string" ? p.fetchMoreText.trim() : "";
-      let requests = Array.isArray(p.fetchRequests)
-        ? p.fetchRequests.filter(x => x && typeof x.text === "string" && x.text.trim()).map(x => ({
-            text: x.text.trim(),
-            savedAt: typeof x.savedAt === "string" ? x.savedAt : ""
+      const legacyRequests = Array.isArray(p.fetchRequests) ? p.fetchRequests : [];
+      const legacyDraft = typeof p.fetchMoreDraft === "string" ? p.fetchMoreDraft : (typeof p.fetchMoreText === "string" ? p.fetchMoreText : "");
+
+      let freeHistory = Array.isArray(p.freeTextHistory)
+        ? p.freeTextHistory.filter(x => x && typeof x.text === "string" && x.text.trim()).map(x => ({
+            text:x.text.trim(),
+            savedAt:typeof x.savedAt === "string" ? x.savedAt : ""
           }))
         : [];
-      if (!requests.length && legacyText) {
-        requests = [{text: legacyText, savedAt: ""}];
+
+      let savedLinks = Array.isArray(p.savedRequestLinks) ? uniqueLinks(p.savedRequestLinks) : [];
+
+      if (!freeHistory.length || !savedLinks.length) {
+        for (const legacy of legacyRequests) {
+          const split = splitLegacyRequest(legacy?.text || "");
+          if (split.text && !freeHistory.some(x => x.text === split.text)) {
+            freeHistory.push({text:split.text, savedAt:typeof legacy?.savedAt === "string" ? legacy.savedAt : ""});
+          }
+          savedLinks = uniqueLinks([...savedLinks, ...split.links]);
+        }
+        const splitDraft = splitLegacyRequest(legacyDraft);
+        if (splitDraft.text && !freeHistory.some(x => x.text === splitDraft.text)) {
+          freeHistory.push({text:splitDraft.text, savedAt:""});
+        }
+        savedLinks = uniqueLinks([...savedLinks, ...splitDraft.links]);
       }
+
+      freeHistory.sort((a,b) => String(a.savedAt).localeCompare(String(b.savedAt)));
+      const latestFree = freeHistory.length ? freeHistory[freeHistory.length - 1] : null;
+      const draftSplit = splitLegacyRequest(legacyDraft);
+
       return {
         favorites: p.favorites && typeof p.favorites === "object" ? p.favorites : {},
         archived: p.archived && typeof p.archived === "object" ? p.archived : {},
         filters: p.filterSchemaVersion === filterSchemaVersion && p.filters && typeof p.filters === "object" ? p.filters : {},
         sort: p.sort && typeof p.sort === "object" ? p.sort : {},
-        fetchRequests: requests,
-        fetchMoreDraft: typeof p.fetchMoreDraft === "string"
-          ? p.fetchMoreDraft
-          : (requests.length ? requests[requests.length - 1].text : legacyText)
+        freeTextHistory: freeHistory,
+        savedRequestLinks: savedLinks,
+        currentFreeText: typeof p.currentFreeText === "string" ? p.currentFreeText : (draftSplit.text || latestFree?.text || ""),
+        currentFreeTextSavedAt: typeof p.currentFreeTextSavedAt === "string" ? p.currentFreeTextSavedAt : (latestFree?.savedAt || ""),
+        linkDraft: typeof p.linkDraft === "string" ? p.linkDraft : savedLinks.join("\n")
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, fetchRequests:[], fetchMoreDraft:""};
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:""};
     }
   }
 
@@ -427,7 +497,8 @@
     favoriteFilter.value = f.favorite || "";
     archiveFilter.value = f.archive || "all";
     typeFilter.value = f.type || "";
-    fetchMoreText.value = prefs.fetchMoreDraft || (prefs.fetchRequests.length ? prefs.fetchRequests[prefs.fetchRequests.length - 1].text : "");
+    requestFreeText.value = prefs.currentFreeText || "";
+    requestLinks.value = prefs.linkDraft || prefs.savedRequestLinks.join("\n");
     sortInputs.forEach(input => {
       input.value = prefs.sort[input.dataset.sort] || "";
     });
@@ -451,7 +522,8 @@
       archive: archiveFilter.value,
       type: typeFilter.value
     };
-    prefs.fetchMoreDraft = fetchMoreText.value;
+    prefs.currentFreeText = requestFreeText.value;
+    prefs.linkDraft = requestLinks.value;
     prefs.sort = {};
     sortInputs.forEach(input => {
       const n = Number(input.value);
@@ -757,235 +829,182 @@
     };
   }
 
-  function requestRecord(x) {
+  function freeTextRecord(x) {
     if (!x || typeof x.text !== "string" || !x.text.trim()) return null;
-    return {
-      text: x.text.trim(),
-      savedAt: typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")
-    };
+    return {text:x.text.trim(), savedAt:typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")};
   }
 
-  function uniqueRequests(requests) {
-    const out = [];
-    const seen = new Set();
-    for (const raw of requests) {
-      const x = requestRecord(raw);
-      if (!x) continue;
-      const key = x.text;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      out.push(x);
+  function uniqueFreeTextHistory(records) {
+    const out = []; const seen = new Set();
+    for (const raw of records || []) {
+      const x = freeTextRecord(raw);
+      if (!x || seen.has(x.text)) continue;
+      seen.add(x.text); out.push(x);
     }
     return out.sort((a,b) => String(a.savedAt).localeCompare(String(b.savedAt)));
   }
 
-  async function readRequestsFromData() {
-    if (!ownerToken) return {sha:null, requests:[], current:null};
-    const response = await fetch(requestDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
-      headers: githubHeaders(ownerToken),
-      cache: "no-store"
-    });
+  function linkRecord(x) {
+    if (typeof x === "string") return x.trim() ? {url:x.trim(), savedAt:""} : null;
+    if (!x || typeof x.url !== "string" || !x.url.trim()) return null;
+    return {url:x.url.trim(), savedAt:typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")};
+  }
 
-    if (response.status === 404) return {sha:null, requests:[], current:null};
+  function uniqueLinkHistory(records) {
+    const out = []; const seen = new Set();
+    for (const raw of records || []) {
+      const x = linkRecord(raw);
+      if (!x || seen.has(x.url)) continue;
+      seen.add(x.url); out.push(x);
+    }
+    return out;
+  }
+
+  function parseLinkBox(value) {
+    const lines = String(value || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    const invalid = lines.filter(x => !/^https?:\/\//i.test(x));
+    if (invalid.length) throw new Error("Ogiltig webbadress: " + invalid[0]);
+    return uniqueLinks(lines);
+  }
+
+  function combinedRequestText(freeText, links) {
+    return [String(freeText || "").trim(), ...uniqueLinks(links)].filter(Boolean).join("\n");
+  }
+
+  async function readRequestsFromData() {
+    if (!ownerToken) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:""};
+    const response = await fetch(requestDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {headers: githubHeaders(ownerToken), cache:"no-store"});
+    if (response.status === 404) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:""};
     if (!response.ok) throw new Error("Kunde inte läsa HämtaNyheter från Data. HTTP " + response.status);
 
     const file = await response.json();
     const parsed = JSON.parse(decodeBase64Utf8(file.content || ""));
-    const remoteHistory = Array.isArray(parsed.historik) ? parsed.historik : [];
-    const current = requestRecord(parsed.aktuell);
-    return {
-      sha: file.sha || null,
-      requests: uniqueRequests([...remoteHistory, ...(current ? [current] : [])]),
-      current
-    };
+    let currentFreeText = "", currentLinks = [], currentSavedAt = parsed.aktuell?.sparad || "";
+    let freeHistoryRecords = [], linkHistoryRecords = [];
+
+    if (typeof parsed.aktuell?.fritext === "string" || Array.isArray(parsed.aktuell?.lankar)) {
+      currentFreeText = String(parsed.aktuell?.fritext || "").trim();
+      currentLinks = uniqueLinks(parsed.aktuell?.lankar || []);
+      freeHistoryRecords = Array.isArray(parsed.historik_fritext) ? parsed.historik_fritext : [];
+      linkHistoryRecords = Array.isArray(parsed.historik_lankar) ? parsed.historik_lankar : [];
+    } else {
+      const legacyCurrent = splitLegacyRequest(parsed.aktuell?.text || "");
+      currentFreeText = legacyCurrent.text; currentLinks = legacyCurrent.links;
+      for (const rec of (Array.isArray(parsed.historik) ? parsed.historik : [])) {
+        const split = splitLegacyRequest(rec?.text || "");
+        if (split.text) freeHistoryRecords.push({text:split.text, sparad:rec?.sparad || ""});
+        for (const url of split.links) linkHistoryRecords.push({url, sparad:rec?.sparad || ""});
+      }
+    }
+    if (currentFreeText) freeHistoryRecords.push({text:currentFreeText, savedAt:currentSavedAt});
+    for (const url of currentLinks) linkHistoryRecords.push({url, savedAt:currentSavedAt});
+    return {sha:file.sha||null, freeHistory:uniqueFreeTextHistory(freeHistoryRecords), linkHistory:uniqueLinkHistory(linkHistoryRecords), currentFreeText, currentLinks, currentSavedAt};
   }
 
-  async function writeRequestsToData(currentRequest, requests, knownSha = null) {
+  async function writeRequestsToData(currentFreeText, currentSavedAt, freeHistoryRecords, linkHistoryRecords, knownSha = null) {
     if (!ownerToken) throw new Error("Ägarens GitHub-token saknas.");
-
+    const cleanFreeHistory = uniqueFreeTextHistory(freeHistoryRecords);
+    const cleanLinkHistory = uniqueLinkHistory(linkHistoryRecords);
+    const links = cleanLinkHistory.map(x => x.url);
     const body = {
-      aktuell: {
-        text: currentRequest.text,
-        sparad: currentRequest.savedAt
-      },
-      historik: uniqueRequests(requests).map(x => ({
-        text: x.text,
-        sparad: x.savedAt
-      }))
+      aktuell:{fritext:String(currentFreeText||"").trim(), lankar:links, text:combinedRequestText(currentFreeText,links), sparad:currentSavedAt},
+      historik_fritext:cleanFreeHistory.map(x => ({text:x.text,sparad:x.savedAt})),
+      historik_lankar:cleanLinkHistory.map(x => ({url:x.url,sparad:x.savedAt}))
     };
-
-    const payload = {
-      message: "Uppdatera HämtaNyheter",
-      content: encodeBase64Utf8(JSON.stringify(body, null, 2) + "\n"),
-      branch: requestBranch
-    };
-    if (knownSha) payload.sha = knownSha;
-
-    const response = await fetch(requestDataUrl, {
-      method: "PUT",
-      headers: {...githubHeaders(ownerToken), "Content-Type":"application/json"},
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      let detail = "";
-      try {
-        const err = await response.json();
-        detail = err?.message ? ": " + err.message : "";
-      } catch {}
-      throw new Error("Kunde inte spara HämtaNyheter i Data. HTTP " + response.status + detail);
-    }
+    const payload={message:"Uppdatera HämtaNyheter",content:encodeBase64Utf8(JSON.stringify(body,null,2)+"\n"),branch:requestBranch};
+    if(knownSha) payload.sha=knownSha;
+    const response=await fetch(requestDataUrl,{method:"PUT",headers:{...githubHeaders(ownerToken),"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(!response.ok) throw new Error("Kunde inte spara HämtaNyheter i Data. HTTP "+response.status);
     return response.json();
   }
 
   async function syncRequestsWithData() {
     if (!ownerToken) return;
-
-    const remote = await readRequestsFromData();
-    const localRequests = uniqueRequests(Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : []);
-    const merged = uniqueRequests([...remote.requests, ...localRequests]);
-
-    const localCurrent = localRequests.length ? localRequests[localRequests.length - 1] : null;
-    const remoteCurrent = remote.current;
-    let current = remoteCurrent || localCurrent;
-
-    if (localCurrent && (!remoteCurrent || String(localCurrent.savedAt) > String(remoteCurrent.savedAt))) {
-      current = localCurrent;
+    const remote=await readRequestsFromData();
+    const localFree=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
+    const localLinks=uniqueLinkHistory((prefs.savedRequestLinks||[]).map(url=>({url,savedAt:""})));
+    const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...localFree]);
+    const mergedLinks=uniqueLinkHistory([...remote.linkHistory,...localLinks]);
+    let currentFreeText=remote.currentFreeText||prefs.currentFreeText||"";
+    let currentSavedAt=remote.currentSavedAt||prefs.currentFreeTextSavedAt||"";
+    if(prefs.currentFreeText && (!remote.currentFreeText || String(prefs.currentFreeTextSavedAt||"") > String(remote.currentSavedAt||""))){
+      currentFreeText=prefs.currentFreeText;
+      currentSavedAt=prefs.currentFreeTextSavedAt||new Date().toISOString();
     }
-
-    if (!current && prefs.fetchMoreDraft && prefs.fetchMoreDraft.trim()) {
-      current = {text:prefs.fetchMoreDraft.trim(), savedAt:new Date().toISOString()};
-      merged.push(current);
-    }
-
-    if (!current) {
-      prefs.fetchRequests = merged;
-      savePrefs();
-      renderRequestHistory();
-      return;
-    }
-
-    const finalRequests = uniqueRequests([...merged, current]);
-    prefs.fetchRequests = finalRequests;
-    prefs.fetchMoreDraft = current.text;
-    fetchMoreText.value = current.text;
-    savePrefs();
-    renderRequestHistory();
-
-    const remoteCurrentText = remoteCurrent?.text || "";
-    const remoteCurrentDate = remoteCurrent?.savedAt || "";
-    if (remoteCurrentText !== current.text || remoteCurrentDate !== current.savedAt || remote.requests.length !== finalRequests.length) {
-      await writeRequestsToData(current, finalRequests, remote.sha);
+    prefs.freeTextHistory=mergedFree;
+    prefs.savedRequestLinks=uniqueLinks(mergedLinks.map(x=>x.url));
+    prefs.currentFreeText=currentFreeText;
+    prefs.currentFreeTextSavedAt=currentSavedAt;
+    prefs.linkDraft=prefs.savedRequestLinks.join("\n");
+    requestFreeText.value=currentFreeText;
+    requestLinks.value=prefs.linkDraft;
+    savePrefs(); renderRequestLists();
+    const remoteLinks=uniqueLinks(remote.linkHistory.map(x=>x.url));
+    if((remote.currentFreeText!==currentFreeText || remote.freeHistory.length!==mergedFree.length || remoteLinks.length!==prefs.savedRequestLinks.length) && (currentFreeText || prefs.savedRequestLinks.length)){
+      await writeRequestsToData(currentFreeText,currentSavedAt||new Date().toISOString(),mergedFree,mergedLinks,remote.sha);
     }
   }
 
-  function renderRequestHistory() {
-    requestHistory.replaceChildren();
-    const requests = Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : [];
-    if (!requests.length) {
-      const p = document.createElement("p");
-      p.className = "small";
-      p.textContent = "Inga tidigare önskemål sparade ännu.";
-      requestHistory.append(p);
-      return;
-    }
+  function makeExpandableHistoryItem(record,isCurrent) {
+    const item=document.createElement("div"); item.className="request-item"; item.tabIndex=0; item.setAttribute("role","button"); item.setAttribute("aria-expanded","false");
+    const head=document.createElement("div"); head.className="request-head";
+    const date=document.createElement("span"); date.className="request-date"; date.textContent=(isCurrent?"Aktuellt · ":"")+formatSavedAt(record.savedAt);
+    const preview=document.createElement("span"); preview.className="request-preview"; preview.textContent=record.text.replace(/\s+/g," ").trim();
+    const copy=makeButton("Kopiera","",event=>{event?.stopPropagation?.();copyText(record.text,"Fritexten är kopierad.");}); copy.addEventListener("click",e=>e.stopPropagation());
+    const body=document.createElement("div"); body.className="request-text"; body.textContent=record.text; body.addEventListener("click",e=>e.stopPropagation());
+    const toggle=()=>{const expanded=item.classList.toggle("expanded");item.setAttribute("aria-expanded",String(expanded));};
+    item.addEventListener("click",toggle);
+    item.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle();}});
+    head.append(date,preview,copy); item.append(head,body); return item;
+  }
 
-    [...requests].reverse().forEach((request, reverseIndex) => {
-      const originalIndex = requests.length - 1 - reverseIndex;
-      const item = document.createElement("div");
-      item.className = "request-item";
-      item.tabIndex = 0;
-      item.setAttribute("role", "button");
-      item.setAttribute("aria-expanded", "false");
-      item.title = "Klicka för att visa hela önskemålet";
+  function renderRequestLists() {
+    freeTextHistory.replaceChildren();
+    const free=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
+    if(!free.length){const p=document.createElement("p");p.className="small";p.textContent="Ingen fritext har sparats ännu.";freeTextHistory.append(p);}
+    else [...free].reverse().forEach(record=>freeTextHistory.append(makeExpandableHistoryItem(record,record.text===prefs.currentFreeText)));
 
-      const head = document.createElement("div");
-      head.className = "request-head";
-
-      const date = document.createElement("span");
-      date.className = "request-date";
-      date.textContent = (originalIndex === requests.length - 1 ? "Aktuellt · " : "") + formatSavedAt(request.savedAt);
-
-      const preview = document.createElement("span");
-      preview.className = "request-preview";
-      preview.textContent = request.text.replace(/\s+/g, " ").trim();
-
-      const copy = makeButton("Kopiera", "", (event) => {
-        event?.stopPropagation?.();
-        copyText(request.text, "Det sparade önskemålet är kopierat. Det aktuella önskemålet har inte ändrats.");
-      });
-      copy.addEventListener("click", event => event.stopPropagation());
-
-      const body = document.createElement("div");
-      body.className = "request-text";
-      body.textContent = request.text;
-      body.addEventListener("click", event => event.stopPropagation());
-
-      function toggleExpanded() {
-        const expanded = item.classList.toggle("expanded");
-        item.setAttribute("aria-expanded", String(expanded));
-        item.title = expanded ? "Klicka för att fälla ihop önskemålet" : "Klicka för att visa hela önskemålet";
-      }
-
-      item.addEventListener("click", toggleExpanded);
-      item.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          toggleExpanded();
-        }
-      });
-
-      head.append(date, preview, copy);
-      item.append(head, body);
-      requestHistory.append(item);
-    });
+    linkHistory.replaceChildren();
+    const links=uniqueLinks(prefs.savedRequestLinks||[]);
+    if(!links.length){const p=document.createElement("p");p.className="small";p.textContent="Inga länkar har sparats ännu.";linkHistory.append(p);}
+    else links.forEach(url=>{const row=document.createElement("div");row.className="link-history-item";const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=url;const copy=makeButton("Kopiera","",()=>copyText(url,"Länken är kopierad."));row.append(a,copy);linkHistory.append(row);});
   }
 
   async function saveCurrentRequest() {
-    const text = fetchMoreText.value.trim();
-    if (!text) {
-      statusEl.textContent = "Skriv först ett önskemål i HämtaNyheter.";
-      return false;
-    }
-
-    const requests = Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : [];
-    const latest = requests.length ? requests[requests.length - 1].text : "";
-    let current;
-
-    if (latest !== text) {
-      current = {text, savedAt: new Date().toISOString()};
-      requests.push(current);
-      prefs.fetchRequests = uniqueRequests(requests);
-    } else {
-      current = prefs.fetchRequests[prefs.fetchRequests.length - 1];
-      if (!current.savedAt) current.savedAt = new Date().toISOString();
-    }
-
-    prefs.fetchMoreDraft = text;
-    savePrefs();
-    renderRequestHistory();
-
-    try {
-      const remote = await readRequestsFromData();
-      await writeRequestsToData(current, prefs.fetchRequests, remote.sha);
-      statusEl.textContent = latest === text
-        ? "Det aktuella önskemålet är sparat i Data."
-        : "Önskemålet är sparat i Data och är nu det enda aktuella alternativet.";
+    const freeText=requestFreeText.value.trim();
+    let enteredLinks;
+    try{enteredLinks=parseLinkBox(requestLinks.value);}catch(err){statusEl.textContent=err?.message||String(err);return false;}
+    if(!freeText && !enteredLinks.length && !(prefs.savedRequestLinks||[]).length){statusEl.textContent="Skriv ett önskemål eller lägg in minst en länk.";return false;}
+    const now=new Date().toISOString();
+    const freeHistory=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
+    if(freeText && !freeHistory.some(x=>x.text===freeText)) freeHistory.push({text:freeText,savedAt:now});
+    const previousLinks=uniqueLinks(prefs.savedRequestLinks||[]);
+    const allLinks=uniqueLinks([...previousLinks,...enteredLinks]);
+    const linkRecords=allLinks.map(url=>({url,savedAt:previousLinks.includes(url)?"":now}));
+    prefs.freeTextHistory=uniqueFreeTextHistory(freeHistory);
+    prefs.savedRequestLinks=allLinks;
+    prefs.currentFreeText=freeText;
+    prefs.currentFreeTextSavedAt=now;
+    prefs.linkDraft=allLinks.join("\n");
+    requestLinks.value=prefs.linkDraft;
+    savePrefs();renderRequestLists();
+    try{
+      const remote=await readRequestsFromData();
+      const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...prefs.freeTextHistory]);
+      const mergedLinkHistory=uniqueLinkHistory([...remote.linkHistory,...linkRecords]);
+      prefs.savedRequestLinks=uniqueLinks(mergedLinkHistory.map(x=>x.url));
+      prefs.linkDraft=prefs.savedRequestLinks.join("\n");
+      requestLinks.value=prefs.linkDraft;
+      savePrefs();renderRequestLists();
+      await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha);
+      await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"Önskemålet är sparat i Data och kopierat till Urklipp.");
       return true;
-    } catch (err) {
-      statusEl.textContent = "Önskemålet sparades lokalt, men inte i Data: " + (err?.message || String(err));
-      return false;
-    }
-  }
-
-  async function copyPrompt() {
-    if (!await saveCurrentRequest()) return;
-    const current = prefs.fetchRequests[prefs.fetchRequests.length - 1]?.text || "";
-    await copyText(current, "Det aktuella önskemålet är kopierat.");
+    }catch(err){statusEl.textContent="Önskemålet sparades lokalt, men inte i Data: "+(err?.message||String(err));return false;}
   }
 
   async function detectOwnerMode() {
     ownerPanel.hidden = true;
+    ownerSplitter.hidden = true;
     const token = localStorage.getItem(tokenKey);
     if (!token) return;
 
@@ -1001,7 +1020,8 @@
       if (response.ok) {
         ownerToken = token;
         ownerPanel.hidden = false;
-        renderRequestHistory();
+        ownerSplitter.hidden = false;
+        renderRequestLists();
         try {
           await syncRequestsWithData();
         } catch (err) {
@@ -1010,6 +1030,7 @@
       }
     } catch {
       ownerPanel.hidden = true;
+      ownerSplitter.hidden = true;
     }
   }
 
@@ -1035,8 +1056,10 @@
       statusEl.textContent = "Hämtar YouTube-rubriker...";
       await hydrateYoutubeBasics(allNews);
 
-      metaEl.textContent = allNews.length + " gemensamma nyheter ligger i den publika JSON-filen."
-        + (duplicateCount ? " " + duplicateCount + " dubblett" + (duplicateCount === 1 ? "" : "er") + " doldes automatiskt." : "");
+      const youtubeTotal = allNews.filter(isYoutube).length;
+      const articleTotal = allNews.length - youtubeTotal;
+      metaEl.textContent = "Totalt antal artiklar: " + articleTotal + " · YouTube-klipp: " + youtubeTotal
+        + (duplicateCount ? " · " + duplicateCount + " dubblett" + (duplicateCount === 1 ? "" : "er") + " doldes automatiskt" : "");
 
       buildFilterOptions();
       restoreControls();
@@ -1080,16 +1103,21 @@
     control.addEventListener("input", applyFilters);
   }
   sortInputs.forEach(x => x.addEventListener("change", applyFilters));
-  fetchMoreText.addEventListener("input", () => {
-    prefs.fetchMoreDraft = fetchMoreText.value;
+  requestFreeText.addEventListener("input", () => {
+    prefs.currentFreeText = requestFreeText.value;
+    savePrefs();
+  });
+  requestLinks.addEventListener("input", () => {
+    prefs.linkDraft = requestLinks.value;
     savePrefs();
   });
   savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
-  copyPromptBtn.addEventListener("click", copyPrompt);
 
-  fetchMoreText.value = prefs.fetchMoreDraft || (prefs.fetchRequests.length ? prefs.fetchRequests[prefs.fetchRequests.length - 1].text : "");
+  requestFreeText.value = prefs.currentFreeText || "";
+  requestLinks.value = prefs.linkDraft || prefs.savedRequestLinks.join("\n");
+  renderRequestLists();
   detectOwnerMode();
   loadNews();
 })();
