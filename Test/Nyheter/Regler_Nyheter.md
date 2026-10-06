@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-06 13:43
+Senast uppdaterad: 2026-10-06 23:24
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -122,3 +122,35 @@ GPT ska:
 - undvika att kopiera längre formuleringar ordagrant från originalartikeln.
 
 Målet är att ge en sakligt korrekt och lättläst återgivning utan att återpublicera originalartikeln.
+
+## 5. Appens visning, storleksändring och lokal lagring
+
+### 5a. Statistik för markerad text
+
+När användaren markerar text i en detaljerad nyhetsartikel ska appen visa statistik för:
+- ingressens antal ord och bokstäver,
+- artikelns antal ord och bokstäver,
+- den markerade textens antal ord och bokstäver.
+
+Statistiken visas i en flytande textruta **ovanför artikelns rubrik**. Rutan ska följa med vid rullning i den detaljerade nyhetsrutan så att statistiken förblir synlig.
+
+### 5b. Storleken på den detaljerade nyhetsrutan
+
+Den stora nyhetsrutan som visar både ingress och den fullständiga detaljerade nyhetstexten ska kunna ändras i höjd genom att användaren drar i rutans nederkant.
+
+Detta ska fungera:
+- med mus på dator,
+- med pekning/touch på mobil och surfplatta.
+
+Användaren ska kunna göra rutan högre för att se fler rader samtidigt eller lägre för att spara skärmutrymme.
+
+Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
+
+### 5c. Publik nyhetsfil, lokala inställningar och privat ägardel
+
+- Nyhetsfilen ligger publikt tillsammans med appen på GitHub Pages.
+- Filter, sorteringsordning, favoriter och arkivering sparas bara lokalt i respektive webbläsare.
+- Ägardelen **HämtaNyheter** visas endast för en webbläsare vars GitHub-token har åtkomst till det privata Data-repot.
+
+Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarande text längst ner under nyheterna i appen**.
+
