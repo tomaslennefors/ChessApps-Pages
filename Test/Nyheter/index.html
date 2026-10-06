@@ -35,17 +35,12 @@
     .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
     .web-address{font-size:.88rem;color:var(--muted);margin:6px 0 10px;overflow-wrap:anywhere}
     .web-address a{color:var(--blue)}
-    .youtube-player,.article-reader{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-    .youtube-player{background:#000}
+    .youtube-player{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000}
     .youtube-player iframe{display:block;width:100%;height:100%;border:0}
-    .article-reader{background:var(--card);padding:22px;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable}
-    .article-reader h2{margin:0 0 8px;font-size:1.35rem}
-    .article-reader .reader-meta{color:var(--muted);font-size:.92rem;margin-bottom:16px}
-    .article-reader .reader-section{margin-top:16px}
-    .article-reader .reader-section h3{font-size:1rem;margin:0 0 6px}
-    .article-reader .reader-body{font-size:1rem;line-height:1.7;white-space:pre-wrap}
-    .article-reader .reader-tags{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
-    .article-reader .reader-actions{margin-top:16px}
+    .news.article-detailed{aspect-ratio:16/9;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;padding:22px}
+    .news.article-detailed h2{font-size:1.35rem;margin-bottom:8px}
+    .article-ingress{font-weight:700;line-height:1.65;margin:14px 0 18px;white-space:pre-wrap}
+    .article-body{line-height:1.72;white-space:pre-wrap}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -128,11 +123,11 @@
   <div id="filterPanel" class="filters">
     <div class="filter-grid">
       <label>
-        <span class="label-row">Datum <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
-        <input id="dateFilter" type="date">
+        <span class="label-row"><span id="dateFilterCaption">Månad</span> <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <input id="dateFilter" type="month">
       </label>
 
-      <label>
+      <label id="sourceFilterWrap" hidden>
         <span class="label-row">Källa <input class="sortno" data-sort="källa" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <select id="sourceFilter"><option value="">Alla källor</option></select>
       </label>
@@ -220,9 +215,9 @@
 
   <div id="status">Hämtar nyheter...</div>
 
-  <div class="full-title-filter">
+  <div id="fullTitlePanel" class="full-title-filter">
     <label>
-      <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+      <span class="label-row"><span id="exactTitleCaption">Omskriven rubrik</span> <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
       <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
     </label>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa artikel eller video · Mellanslag = starta vald YouTube-video. Artiklar visas i AI-läsvy.</div>
@@ -241,9 +236,10 @@
   const tokenKey = "ChessApps_GitHubToken";
   const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
   const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
+  const privateNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_privata.json";
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
-  const filterSchemaVersion = 4;
+  const filterSchemaVersion = 5;
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -262,12 +258,15 @@
   const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
   const otherLinksSelect = document.getElementById("otherLinksSelect");
   const dateFilter = document.getElementById("dateFilter");
+  const dateFilterCaption = document.getElementById("dateFilterCaption");
+  const sourceFilterWrap = document.getElementById("sourceFilterWrap");
   const sourceFilter = document.getElementById("sourceFilter");
   const publisherFilter = document.getElementById("publisherFilter");
   const channelFilter = document.getElementById("channelFilter");
   const webAddressFilter = document.getElementById("webAddressFilter");
   const titleFilter = document.getElementById("titleFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
+  const exactTitleCaption = document.getElementById("exactTitleCaption");
   const summaryFilter = document.getElementById("summaryFilter");
   const languageFilter = document.getElementById("languageFilter");
   const transcriptStatusFilter = document.getElementById("transcriptStatusFilter");
@@ -281,6 +280,8 @@
   let allNews = [];
   let duplicateCount = 0;
   let ownerToken = "";
+  let ownerMode = false;
+  let privateNewsById = new Map();
   let prefs = loadPrefs();
 
   function splitLegacyRequest(value) {
@@ -406,6 +407,46 @@
     return type === "youtube" || url.includes("youtube.com/") || url.includes("youtu.be/");
   }
 
+  function displayTitle(item) {
+    return ownerMode ? String(item.fullständig_rubrik || item.titel || "Nyhet") : String(item.titel || "Nyhet");
+  }
+
+  function displayDate(item) {
+    const value = String(item.datum || "");
+    return ownerMode ? value : value.slice(0, 7);
+  }
+
+  function setPrivacyUi() {
+    sourceFilterWrap.hidden = !ownerMode;
+    dateFilter.type = ownerMode ? "date" : "month";
+    dateFilterCaption.textContent = ownerMode ? "Datum" : "Månad";
+    exactTitleCaption.textContent = ownerMode ? "Fullständig rubrik" : "Omskriven rubrik";
+  }
+
+  async function readPrivateNewsMetadata() {
+    if (!ownerToken) return new Map();
+    const response = await fetch(privateNewsDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      headers: githubHeaders(ownerToken),
+      cache:"no-store"
+    });
+    if (!response.ok) throw new Error("Kunde inte läsa privat artikelmetadata. HTTP " + response.status);
+    const file = await response.json();
+    const parsed = JSON.parse(decodeBase64Utf8(file.content || ""));
+    const map = new Map();
+    for (const item of (Array.isArray(parsed.artiklar) ? parsed.artiklar : [])) {
+      map.set(String(item.id), item);
+    }
+    return map;
+  }
+
+  function applyPrivateNewsMetadata() {
+    if (!ownerMode || !privateNewsById.size) return;
+    for (const item of allNews) {
+      const extra = privateNewsById.get(String(item.id));
+      if (extra) Object.assign(item, extra);
+    }
+  }
+
   function youtubeVideoId(item) {
     if (item.youtube_id) return String(item.youtube_id).trim();
     const raw = String(item.youtube_länk || item.youtube_url || item.länk || "").trim();
@@ -443,11 +484,34 @@
     if ([...select.options].some(o => o.value === current)) select.value = current;
   }
 
+  function fillExactTitleSelect(items, firstText) {
+    const current = exactTitleFilter.value;
+    const entries = items
+      .map(item => ({value:String(item.id), label:displayTitle(item)}))
+      .filter(x => x.value && x.label)
+      .sort((a,b) => a.label.localeCompare(b.label, "sv", {sensitivity:"base"}));
+
+    exactTitleFilter.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = firstText;
+    exactTitleFilter.append(first);
+
+    for (const entry of entries) {
+      const option = document.createElement("option");
+      option.value = entry.value;
+      option.textContent = entry.label;
+      exactTitleFilter.append(option);
+    }
+
+    if ([...exactTitleFilter.options].some(o => o.value === current)) exactTitleFilter.value = current;
+  }
+
   function buildFilterOptions() {
     fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
     fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
     fillSelect(channelFilter, uniqueSorted(allNews.map(x => x.kanal)), "Alla kanaler");
-    fillSelect(exactTitleFilter, uniqueSorted(allNews.map(x => x.titel)), "Alla rubriker");
+    fillExactTitleSelect(allNews, "Alla rubriker (" + allNews.length + ")");
     fillSelect(languageFilter, uniqueSorted(allNews.map(x => x.språk)), "Alla språk");
     fillSelect(transcriptStatusFilter, uniqueSorted(allNews.map(x => x.transkribering_status)), "Alla transkriberingar");
     fillSelect(categoryFilter, uniqueSorted(allNews.flatMap(x => Array.isArray(x.kategorier) ? x.kategorier : [])), "Alla kategorier");
@@ -544,8 +608,9 @@
 
   function restoreControls() {
     const f = prefs.filters;
-    dateFilter.value = f.date || "";
-    sourceFilter.value = f.source || "";
+    const savedDate = f.date || "";
+    dateFilter.value = ownerMode ? savedDate : savedDate.slice(0, 7);
+    sourceFilter.value = ownerMode ? (f.source || "") : "";
     publisherFilter.value = f.publisher || "";
     channelFilter.value = f.channel || "";
     webAddressFilter.value = f.webAddress || "";
@@ -618,13 +683,13 @@
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
 
-      if (date && item.datum !== date) return false;
+      if (date && (ownerMode ? item.datum !== date : String(item.datum || "").slice(0,7) !== date)) return false;
       if (source && item.källa !== source) return false;
       if (publisher && item.utgivare !== publisher) return false;
       if (channel && item.kanal !== channel) return false;
       if (webAddress && !normalize(item.webbadress || item.länk).includes(webAddress)) return false;
       if (title && !normalize(item.titel).includes(title)) return false;
-      if (!ignoreExactTitle && exactTitle && item.titel !== exactTitle) return false;
+      if (!ignoreExactTitle && exactTitle && String(item.id) !== exactTitle) return false;
       if (summary && !normalize(item.sammanfattning).includes(summary)) return false;
       if (language && item.språk !== language) return false;
       if (transcriptStatus && item.transkribering_status !== transcriptStatus) return false;
@@ -703,16 +768,17 @@
       return;
     }
 
-    const showEmbeddedVideo = !!exactTitleFilter.value && sorted.length === 1;
+    const showSingle = !!exactTitleFilter.value && sorted.length === 1;
 
     for (const item of sorted) {
       const key = itemKey(item);
       const favorite = !!prefs.favorites[key];
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
+      const detailedArticle = showSingle && !youtube;
 
       const article = document.createElement("article");
-      article.className = "news" + (archived ? " archived" : "");
+      article.className = "news" + (archived ? " archived" : "") + (detailedArticle ? " article-detailed" : "");
 
       const star = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
         if (prefs.favorites[key]) delete prefs.favorites[key]; else prefs.favorites[key] = true;
@@ -723,12 +789,14 @@
       star.setAttribute("aria-label", star.title);
 
       const h2 = document.createElement("h2");
-      h2.textContent = item.titel || "Nyhet";
+      h2.textContent = displayTitle(item);
 
       const details = document.createElement("div");
       details.className = "details";
       const parts = [];
-      if (item.datum) parts.push("Datum: " + item.datum);
+      const shownDate = displayDate(item);
+      if (shownDate) parts.push((ownerMode ? "Datum: " : "Månad: ") + shownDate);
+      if (ownerMode && item.källa) parts.push("Källa: " + item.källa);
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
@@ -736,6 +804,23 @@
       if (youtube && item.transkribering_status) parts.push("Transkribering: " + item.transkribering_status);
       if (archived) parts.push("Arkiverad");
       details.textContent = parts.join(" · ");
+
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = category;
+        tags.append(tag);
+      }
+
+      const summary = document.createElement("div");
+      summary.className = detailedArticle ? "article-ingress" : "summary";
+      summary.textContent = item.sammanfattning || "";
+
+      const body = document.createElement("div");
+      body.className = "article-body";
+      body.textContent = item.läsvy || item.lasvy || item.sammanfattning || "";
 
       const webAddress = document.createElement("div");
       webAddress.className = "web-address";
@@ -749,19 +834,6 @@
         a.textContent = addr;
         webAddress.append(label, a);
       }
-
-      const tags = document.createElement("div");
-      tags.className = "tags";
-      for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = category;
-        tags.append(tag);
-      }
-
-      const summary = document.createElement("div");
-      summary.className = "summary";
-      summary.textContent = item.sammanfattning || "";
 
       const transcriptInfo = document.createElement("div");
       transcriptInfo.className = "transcript-info";
@@ -780,7 +852,7 @@
       const actions = document.createElement("div");
       actions.className = "card-actions";
 
-      if (item.länk) {
+      if (item.länk && (youtube || ownerMode)) {
         const link = document.createElement("a");
         link.className = "button";
         link.textContent = youtube ? "Öppna YouTube" : "Läs originalnyheten";
@@ -808,14 +880,16 @@
       });
       actions.append(archiveBtn);
 
-      article.append(star, h2, details);
-      if (youtube) article.append(webAddress);
-      article.append(tags, summary);
-      if (youtube) article.append(transcriptInfo);
+      article.append(star, h2, details, tags, summary);
+      if (detailedArticle) {
+        article.append(body);
+      } else if (youtube) {
+        article.append(webAddress, transcriptInfo);
+      }
       article.append(actions);
       listEl.append(article);
 
-      if (showEmbeddedVideo && youtube) {
+      if (showSingle && youtube) {
         const videoId = youtubeVideoId(item);
         if (videoId) {
           const player = document.createElement("div");
@@ -832,61 +906,6 @@
           player.append(iframe);
           listEl.append(player);
         }
-      } else if (showEmbeddedVideo && !youtube) {
-        const reader = document.createElement("section");
-        reader.className = "article-reader";
-
-        const readerTitle = document.createElement("h2");
-        readerTitle.textContent = item.titel || "Artikel";
-
-        const readerMeta = document.createElement("div");
-        readerMeta.className = "reader-meta";
-        readerMeta.textContent = [
-          item.datum ? "Datum: " + item.datum : "",
-          item.språk ? "Språk: " + item.språk : ""
-        ].filter(Boolean).join(" · ");
-
-        const summarySection = document.createElement("section");
-        summarySection.className = "reader-section";
-        const summaryHeading = document.createElement("h3");
-        summaryHeading.textContent = "Ingress";
-        const summaryBody = document.createElement("div");
-        summaryBody.className = "reader-body";
-        summaryBody.textContent = item.sammanfattning || "Ingen kort sammanfattning finns ännu.";
-        summarySection.append(summaryHeading, summaryBody);
-
-        const readSection = document.createElement("section");
-        readSection.className = "reader-section";
-        const readHeading = document.createElement("h3");
-        readHeading.textContent = "Nyheten";
-        const readerBody = document.createElement("div");
-        readerBody.className = "reader-body";
-        readerBody.textContent = item.läsvy || item.lasvy || item.sammanfattning || "Ingen AI-läsvy finns ännu för denna artikel.";
-        readSection.append(readHeading, readerBody);
-
-        const readerTags = document.createElement("div");
-        readerTags.className = "reader-tags";
-        for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
-          const tag = document.createElement("span");
-          tag.className = "tag";
-          tag.textContent = category;
-          readerTags.append(tag);
-        }
-
-        const readerActions = document.createElement("div");
-        readerActions.className = "reader-actions";
-        if (item.länk) {
-          const original = document.createElement("a");
-          original.className = "button";
-          original.href = item.länk;
-          original.target = "_blank";
-          original.rel = "noopener noreferrer";
-          original.textContent = "Läs originalartikeln";
-          readerActions.append(original);
-        }
-
-        reader.append(readerTitle, readerMeta, summarySection, readSection, readerTags, readerActions);
-        listEl.append(reader);
       }
     }
 
@@ -898,9 +917,8 @@
   function updateExactTitleOptions() {
     const current = exactTitleFilter.value;
     const matching = getFilteredNews(true);
-    const titles = uniqueSorted(matching.map(x => x.titel));
-    fillSelect(exactTitleFilter, titles, "Alla rubriker (" + titles.length + ")");
-    if (current && titles.includes(current)) {
+    fillExactTitleSelect(matching, "Alla rubriker (" + matching.length + ")");
+    if (current && [...exactTitleFilter.options].some(o => o.value === current)) {
       exactTitleFilter.value = current;
     }
   }
@@ -1244,8 +1262,14 @@
   async function detectOwnerMode() {
     ownerPanel.hidden = true;
     ownerSplitter.hidden = true;
+    ownerMode = false;
+    setPrivacyUi();
+
     const token = localStorage.getItem(tokenKey);
-    if (!token) return;
+    if (!token) {
+      sourceFilter.value = "";
+      return;
+    }
 
     try {
       const response = await fetch(ownerRepoUrl, {
@@ -1256,20 +1280,50 @@
         },
         cache: "no-store"
       });
+
       if (response.ok) {
         ownerToken = token;
+        ownerMode = true;
+        setPrivacyUi();
         ownerSplitter.hidden = false;
         setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
         renderRequestLists();
+
+        try {
+          privateNewsById = await readPrivateNewsMetadata();
+          applyPrivateNewsMetadata();
+          if (allNews.length) {
+            buildFilterOptions();
+            restoreControls();
+            updateExactTitleOptions();
+            renderNews(getFilteredNews());
+          }
+        } catch (err) {
+          statusEl.textContent = "Ägardelen är öppnad, men privat artikelmetadata kunde inte läsas: " + (err?.message || String(err));
+        }
+
         try {
           await syncRequestsWithData();
         } catch (err) {
           statusEl.textContent = "Ägardelen är öppnad, men HämtaNyheter kunde inte synkroniseras med Data: " + (err?.message || String(err));
         }
+      } else {
+        ownerMode = false;
+        sourceFilter.value = "";
+        setPrivacyUi();
+        if (allNews.length) {
+          buildFilterOptions();
+          restoreControls();
+          updateExactTitleOptions();
+          renderNews(getFilteredNews());
+        }
       }
     } catch {
+      ownerMode = false;
       ownerPanel.hidden = true;
       ownerSplitter.hidden = true;
+      sourceFilter.value = "";
+      setPrivacyUi();
     }
   }
 
@@ -1287,6 +1341,7 @@
       const deduped = dedupeNews(data.nyheter);
       allNews = deduped.items;
       duplicateCount = deduped.removed;
+      applyPrivateNewsMetadata();
 
       for (const item of allNews.filter(isYoutube)) {
         item.webbadress = String(item.webbadress || item.länk || item.youtube_länk || item.youtube_url || "").trim();
@@ -1421,6 +1476,7 @@
   requestLinks.value = prefs.linkDraft || "";
   renderRequestLists();
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
+  setPrivacyUi();
   detectOwnerMode();
   loadNews();
 })();
