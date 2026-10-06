@@ -413,7 +413,7 @@
 
   function displayDate(item) {
     const value = String(item.datum || "");
-    return ownerMode ? value : value.slice(0, 7);
+    return (ownerMode || isYoutube(item)) ? value : value.slice(0, 7);
   }
 
   function setPrivacyUi() {
@@ -795,8 +795,8 @@
       details.className = "details";
       const parts = [];
       const shownDate = displayDate(item);
-      if (shownDate) parts.push((ownerMode ? "Datum: " : "Månad: ") + shownDate);
-      if (ownerMode && item.källa) parts.push("Källa: " + item.källa);
+      if (shownDate) parts.push(((ownerMode || youtube) ? "Datum: " : "Månad: ") + shownDate);
+      if ((ownerMode || youtube) && item.källa) parts.push("Källa: " + item.källa);
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
