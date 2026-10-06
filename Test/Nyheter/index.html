@@ -19,6 +19,9 @@
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
+    label.filter-active{color:var(--blue)}
+    label.filter-active>input:not(.sortno),label.filter-active>select{border-color:var(--blue);background:#ddf4ff;box-shadow:0 0 0 2px rgba(9,105,218,.14)}
+    .save-request-message{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
     .sortno{width:48px!important;margin:0!important;padding:4px 6px!important;text-align:center}
     .sorthint{font-size:.78rem;color:var(--muted);font-weight:400}
     label{font-weight:600;font-size:.92rem;display:block}
@@ -118,6 +121,7 @@
     <div class="actions">
       <button id="savePromptBtn" class="primary" type="button">Spara önskemål</button>
     </div>
+    <div id="saveRequestMessage" class="save-request-message" hidden aria-live="polite">Önskemålen är hämtade.</div>
 
     <div class="save-explanation small">
       <strong>När du trycker på Spara önskemål:</strong>
@@ -275,6 +279,7 @@
   const filterPanel = document.getElementById("filterPanel");
   const filterSplitter = document.getElementById("filterSplitter");
   const savePromptBtn = document.getElementById("savePromptBtn");
+  const saveRequestMessage = document.getElementById("saveRequestMessage");
   const requestFreeText = document.getElementById("requestFreeText");
   const requestLinks = document.getElementById("requestLinks");
   const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
@@ -666,6 +671,29 @@
     await Promise.allSettled(jobs);
   }
 
+  function updateActiveFilterStyles() {
+    const controls = [
+      [dateFilter, () => !!dateFilter.value],
+      [sourceFilter, () => !!sourceFilter.value],
+      [publisherFilter, () => !!publisherFilter.value],
+      [channelFilter, () => !!channelFilter.value],
+      [webAddressFilter, () => !!webAddressFilter.value.trim()],
+      [titleFilter, () => !!titleFilter.value.trim()],
+      [exactTitleFilter, () => !!exactTitleFilter.value],
+      [summaryFilter, () => !!summaryFilter.value.trim()],
+      [languageFilter, () => !!languageFilter.value],
+      [transcriptStatusFilter, () => !!transcriptStatusFilter.value],
+      [transcriptFilter, () => !!transcriptFilter.value.trim()],
+      [categoryFilter, () => !!categoryFilter.value],
+      [favoriteFilter, () => !!favoriteFilter.value],
+      [archiveFilter, () => archiveFilter.value !== "all"],
+      [typeFilter, () => !!typeFilter.value]
+    ];
+    for (const [control, isActive] of controls) {
+      control.closest("label")?.classList.toggle("filter-active", !!isActive());
+    }
+  }
+
   function restoreControls() {
     const f = prefs.filters;
     const savedDate = f.date || "";
@@ -689,6 +717,7 @@
     sortInputs.forEach(input => {
       input.value = prefs.sort[input.dataset.sort] || "";
     });
+    updateActiveFilterStyles();
   }
 
   function captureControls() {
@@ -1156,6 +1185,7 @@
 
   function applyFilters(updateTitles = true) {
     if (updateTitles) updateExactTitleOptions();
+    updateActiveFilterStyles();
     captureControls();
     renderNews(getFilteredNews());
   }
@@ -1189,7 +1219,7 @@
   async function copyText(text, message) {
     try {
       await navigator.clipboard.writeText(text);
-      statusEl.textContent = message;
+      if (message) statusEl.textContent = message;
     } catch {
       const temp = document.createElement("textarea");
       temp.value = text;
@@ -1199,7 +1229,7 @@
       temp.select();
       document.execCommand("copy");
       temp.remove();
-      statusEl.textContent = message;
+      if (message) statusEl.textContent = message;
     }
   }
 
@@ -1439,7 +1469,9 @@
       requestLinks.value="";
       savePrefs();renderRequestLists();
       await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha);
-      await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"Önskemålet är sparat i Data och kopierat till Urklipp.");
+      await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"");
+      saveRequestMessage.textContent = "Önskemålen är hämtade.";
+      saveRequestMessage.hidden = false;
       return true;
     }catch(err){statusEl.textContent="Önskemålet sparades lokalt, men inte i Data: "+(err?.message||String(err));return false;}
   }
@@ -1664,6 +1696,11 @@
     savePrefs();
   });
   savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
+  document.addEventListener("pointerdown", event => {
+    if (!saveRequestMessage.hidden && event.target !== savePromptBtn && !savePromptBtn.contains(event.target)) {
+      saveRequestMessage.hidden = true;
+    }
+  }, true);
   rulesBtn.addEventListener("click", toggleRules);
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
