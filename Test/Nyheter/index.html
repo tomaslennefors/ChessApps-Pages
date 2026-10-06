@@ -5,29 +5,81 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AI-nyheter</title>
   <style>
-    body{font-family:system-ui,Arial,sans-serif;max-width:850px;margin:28px auto;padding:0 16px;line-height:1.55;background:#fafafa;color:#1f2328}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,Arial,sans-serif;max-width:980px;margin:28px auto;padding:0 16px;line-height:1.55;background:#fafafa;color:#1f2328}
     h1{font-size:1.8rem;margin-bottom:4px}
-    #meta{color:#59636e;margin-bottom:20px}
+    #meta{color:#59636e;margin-bottom:16px}
+    .filters{background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:16px;margin:14px 0 18px}
+    .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    label{font-weight:600;font-size:.92rem;display:block}
+    input,select,button{font:inherit}
+    input,select{width:100%;padding:8px;margin-top:5px;border:1px solid #8c959f;border-radius:6px;background:#fff}
+    .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;cursor:pointer}
+    button:hover,a.button:hover{background:#f3f4f6}
+    button:disabled{opacity:.6;cursor:wait}
+    #status{padding:11px;border:1px solid #d0d7de;border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
     .news{background:#fff;border:1px solid #d0d7de;border-radius:10px;padding:18px;margin:16px 0}
     .news h2{font-size:1.22rem;margin:0 0 8px}
-    .source{font-size:.92rem;color:#59636e;margin-bottom:10px}
+    .details{font-size:.92rem;color:#59636e;margin-bottom:10px}
     .summary{white-space:pre-wrap}
-    a.button,button{display:inline-block;margin-top:10px;padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;color:#0969da;text-decoration:none;font:inherit;cursor:pointer}
-    #status{padding:11px;border:1px solid #d0d7de;border-radius:8px;background:#fff;margin:14px 0;white-space:pre-wrap}
+    .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+    .tag{font-size:.82rem;border:1px solid #d0d7de;border-radius:999px;padding:2px 8px;background:#f6f8fa}
+    a.button{display:inline-block;margin-top:10px;padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;color:#0969da;text-decoration:none}
     .small{font-size:.9rem;color:#59636e}
+    .count{font-weight:600}
   </style>
 </head>
 <body>
   <h1 id="title">AI-nyheter</h1>
   <div id="meta"></div>
 
-  <div id="status">Hämtar nyheter från Data...</div>
-  <button id="reloadBtn" type="button">Läs in nyheterna igen</button>
+  <div class="filters">
+    <div class="filter-grid">
+      <label>
+        Datum
+        <input id="dateFilter" type="date">
+      </label>
 
+      <label>
+        Källa
+        <select id="sourceFilter">
+          <option value="">Alla källor</option>
+        </select>
+      </label>
+
+      <label>
+        Rubrik
+        <input id="titleFilter" type="search" placeholder="Sök i rubrik">
+      </label>
+
+      <label>
+        Språk
+        <select id="languageFilter">
+          <option value="">Alla språk</option>
+        </select>
+      </label>
+
+      <label>
+        Kategori
+        <select id="categoryFilter">
+          <option value="">Alla kategorier</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="filter-actions">
+      <button id="clearBtn" type="button">Rensa filter</button>
+      <button id="reloadBtn" type="button">Läs in nyheterna igen</button>
+    </div>
+  </div>
+
+  <div id="status">Hämtar nyheter från Data...</div>
   <div id="list"></div>
 
   <p class="small">
-    Nyheterna hämtas från det privata repositoryt Data. GitHub-token hämtas automatiskt från TokenSetup i den här webbläsaren.
+    Nyheterna hämtas från det privata repositoryt Data. Sammanfattningarna visas på svenska.
+    Fältet Språk avser originalkällans språk. GitHub-token hämtas automatiskt från TokenSetup.
   </p>
 
 <script>
@@ -44,6 +96,14 @@
   const statusEl = document.getElementById("status");
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const dateFilter = document.getElementById("dateFilter");
+  const sourceFilter = document.getElementById("sourceFilter");
+  const titleFilter = document.getElementById("titleFilter");
+  const languageFilter = document.getElementById("languageFilter");
+  const categoryFilter = document.getElementById("categoryFilter");
+
+  let allNews = [];
 
   function decodeBase64Utf8(base64) {
     const clean = base64.replace(/\n/g, "");
@@ -63,28 +123,113 @@
     return token;
   }
 
-  function render(data) {
-    titleEl.textContent = data.rubrik || "AI-nyheter";
-    metaEl.textContent = data.datum ? "Nyheter från " + data.datum : "";
+  function uniqueSorted(values) {
+    return [...new Set(values.filter(Boolean))]
+      .sort((a, b) => String(a).localeCompare(String(b), "sv"));
+  }
+
+  function fillSelect(select, values, firstText) {
+    const current = select.value;
+    select.replaceChildren();
+
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = firstText;
+    select.append(first);
+
+    for (const value of values) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.append(option);
+    }
+
+    if ([...select.options].some(o => o.value === current)) {
+      select.value = current;
+    }
+  }
+
+  function buildFilterOptions() {
+    fillSelect(
+      sourceFilter,
+      uniqueSorted(allNews.map(item => item.källa)),
+      "Alla källor"
+    );
+
+    fillSelect(
+      languageFilter,
+      uniqueSorted(allNews.map(item => item.språk)),
+      "Alla språk"
+    );
+
+    fillSelect(
+      categoryFilter,
+      uniqueSorted(allNews.flatMap(item => Array.isArray(item.kategorier) ? item.kategorier : [])),
+      "Alla kategorier"
+    );
+  }
+
+  function normalize(text) {
+    return String(text || "").toLocaleLowerCase("sv");
+  }
+
+  function getFilteredNews() {
+    const date = dateFilter.value;
+    const source = sourceFilter.value;
+    const title = normalize(titleFilter.value.trim());
+    const language = languageFilter.value;
+    const category = categoryFilter.value;
+
+    return allNews.filter(item => {
+      const categories = Array.isArray(item.kategorier) ? item.kategorier : [];
+
+      if (date && item.datum !== date) return false;
+      if (source && item.källa !== source) return false;
+      if (title && !normalize(item.titel).includes(title)) return false;
+      if (language && item.språk !== language) return false;
+      if (category && !categories.includes(category)) return false;
+
+      return true;
+    });
+  }
+
+  function renderNews(items) {
     listEl.replaceChildren();
 
-    const items = Array.isArray(data.nyheter) ? data.nyheter : [];
-
     if (!items.length) {
-      statusEl.textContent = "Filen lästes, men innehåller inga nyheter.";
+      statusEl.textContent = "Inga nyheter matchar de valda filtren.";
       return;
     }
 
-    for (const item of items) {
+    const sorted = [...items].sort((a, b) => {
+      const byDate = String(b.datum || "").localeCompare(String(a.datum || ""));
+      if (byDate !== 0) return byDate;
+      return Number(a.id || 0) - Number(b.id || 0);
+    });
+
+    for (const item of sorted) {
       const article = document.createElement("article");
       article.className = "news";
 
       const h2 = document.createElement("h2");
       h2.textContent = item.titel || "Nyhet";
 
-      const source = document.createElement("div");
-      source.className = "source";
-      source.textContent = item.källa ? "Källa: " + item.källa : "";
+      const details = document.createElement("div");
+      details.className = "details";
+      const detailParts = [];
+      if (item.datum) detailParts.push("Datum: " + item.datum);
+      if (item.källa) detailParts.push("Källa: " + item.källa);
+      if (item.språk) detailParts.push("Språk: " + item.språk);
+      details.textContent = detailParts.join(" · ");
+
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = category;
+        tags.append(tag);
+      }
 
       const summary = document.createElement("div");
       summary.className = "summary";
@@ -97,11 +242,25 @@
       link.target = "_blank";
       link.rel = "noopener noreferrer";
 
-      article.append(h2, source, summary, link);
+      article.append(h2, details, tags, summary, link);
       listEl.append(article);
     }
 
-    statusEl.textContent = "Klart. " + items.length + " nyheter inlästa från Data.";
+    statusEl.textContent =
+      "Visar " + sorted.length + " av " + allNews.length + " nyheter.";
+  }
+
+  function applyFilters() {
+    renderNews(getFilteredNews());
+  }
+
+  function clearFilters() {
+    dateFilter.value = "";
+    sourceFilter.value = "";
+    titleFilter.value = "";
+    languageFilter.value = "";
+    categoryFilter.value = "";
+    applyFilters();
   }
 
   async function loadNews() {
@@ -131,15 +290,28 @@
       const file = await response.json();
       const jsonText = decodeBase64Utf8(file.content || "");
       const data = JSON.parse(jsonText);
-      render(data);
+
+      titleEl.textContent = data.rubrik || "AI-nyheter";
+      allNews = Array.isArray(data.nyheter) ? data.nyheter : [];
+      metaEl.textContent = allNews.length + " nyheter lagrade i Data.";
+
+      buildFilterOptions();
+      applyFilters();
     } catch (err) {
+      allNews = [];
       statusEl.textContent = "FEL:\n" + (err?.message || String(err));
     } finally {
       reloadBtn.disabled = false;
     }
   }
 
+  for (const control of [dateFilter, sourceFilter, languageFilter, categoryFilter]) {
+    control.addEventListener("change", applyFilters);
+  }
+  titleFilter.addEventListener("input", applyFilters);
+  clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
+
   loadNews();
 })();
 </script>
