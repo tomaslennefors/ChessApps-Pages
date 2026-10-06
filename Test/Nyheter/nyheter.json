@@ -9,7 +9,11 @@
       "titel": "OpenAI inför osynlig textmärkning i ChatGPT och Codex",
       "källa": "The Verge",
       "språk": "Engelska",
-      "kategorier": ["Artificiell intelligens","OpenAI","ChatGPT"],
+      "kategorier": [
+        "Artificiell intelligens",
+        "OpenAI",
+        "ChatGPT"
+      ],
       "sammanfattning": "OpenAI har börjat rulla ut en maskinläsbar, osynlig märkning av text från ChatGPT och Codex. Systemet kallas textGrain och införs först för användare i EU, bland annat för att möta krav på transparens kring AI-genererat innehåll. OpenAI säger att märkningen inte ska påverka modellernas prestanda, men den är inte ett säkert bevis på vem som har skrivit en text.",
       "länk": "https://www.theverge.com/ai-artificial-intelligence/1004880/openai-chatgpt-text-watermarks-eu-ai-act"
     },
@@ -19,7 +23,11 @@
       "titel": "OpenAI testar fler visuella annonser i ChatGPT",
       "källa": "The Verge",
       "språk": "Engelska",
-      "kategorier": ["Artificiell intelligens","OpenAI","ChatGPT"],
+      "kategorier": [
+        "Artificiell intelligens",
+        "OpenAI",
+        "ChatGPT"
+      ],
       "sammanfattning": "OpenAI uppger att man senare i oktober ska testa ett nytt visuellt annonsformat i ChatGPT i USA. Annonserna ska kunna innehålla bilder på sponsrade produkter och tjänster och hållas åtskilda från användarens genererade bilder. OpenAI säger också att annonserna inte ska påverka ChatGPT:s svar.",
       "länk": "https://www.theverge.com/ai-artificial-intelligence/1004655/openai-chatgpt-visual-ads"
     },
@@ -29,7 +37,12 @@
       "titel": "Tidigare AI-anställda varnar politiker i New York för säkerhetsrisker",
       "källa": "Associated Press",
       "språk": "Engelska",
-      "kategorier": ["Artificiell intelligens","OpenAI","Anthropic","Google"],
+      "kategorier": [
+        "Artificiell intelligens",
+        "OpenAI",
+        "Anthropic",
+        "Google"
+      ],
       "sammanfattning": "Tidigare anställda från bland annat Anthropic, OpenAI och Google DeepMind vittnade inför New Yorks stadsfullmäktige om riskerna med snabb AI-utveckling utan tillräcklig kontroll. De efterlyste mer insyn, oberoende granskning och starkare skydd för visselblåsare. Samtidigt diskuterar staden nya lokala regler för användning och kontroll av AI.",
       "länk": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24"
     },
@@ -39,7 +52,10 @@
       "titel": "AI-agenter börjar förändra hur människor använder digitala tjänster",
       "källa": "Axios",
       "språk": "Engelska",
-      "kategorier": ["Artificiell intelligens","AI-agenter"],
+      "kategorier": [
+        "Artificiell intelligens",
+        "AI-agenter"
+      ],
       "sammanfattning": "Axios beskriver hur AI-agenter i allt högre grad kan sköta uppgifter över flera tjänster, exempelvis e-post, kalender och betalningar, i stället för att användaren själv arbetar i varje app. Utvecklingen kan göra agentplattformarna mycket centrala, men också skapa inlåsning när stora mängder personlig och företagsrelaterad information knyts till en viss agent.",
       "länk": "https://www.axios.com/2026/10/05/ai-agents-consumers-business"
     },
@@ -49,9 +65,185 @@
       "titel": "Apple skärper åtkomsten efter oro för snokande AI-agenter",
       "källa": "Aapl.se",
       "språk": "Svenska",
-      "kategorier": ["Artificiell intelligens","AI-agenter","Apple","Meta"],
+      "kategorier": [
+        "Artificiell intelligens",
+        "AI-agenter",
+        "Apple",
+        "Meta"
+      ],
       "sammanfattning": "Apple uppges skärpa reglerna kring fullständig skivåtkomst på Mac efter uppgifter om att Metas AI-agent Muse kunnat hänvisa till privata meddelanden. Framöver ska användaren behöva göra ett mer uttryckligt val innan en app får så omfattande åtkomst. Förändringen visar hur AI-agenter som arbetar självständigt kan skapa nya integritetsrisker.",
       "länk": "https://aapl.se/podd/pilot-2026-10-05"
+    },
+    {
+      "id": 6,
+      "datum": "2026-10-06",
+      "titel": "Sydkorea: AI tycks ha använts i attacker mot banker",
+      "källa": "Reuters",
+      "språk": "Engelska",
+      "kategorier": [
+        "Säkerhet",
+        "Artificiell intelligens",
+        "Bank"
+      ],
+      "sammanfattning": "Sydkoreas president Lee Jae Myung uppgav att AI-modeller ser ut att ha använts i nyligen genomförda hackerattacker mot banker. Uttalandet ökar trycket på landet att utveckla cybersäkerhet som bättre kan hantera mer automatiserade och avancerade AI-drivna angrepp.",
+      "länk": "https://www.reuters.com/world/south-koreas-lee-says-ai-appears-have-been-used-bank-hacks-2026-10-06/"
+    },
+    {
+      "id": 7,
+      "datum": "2026-10-06",
+      "titel": "FBI drabbat av dataintrång efter utebliven säkerhetsuppdatering",
+      "källa": "Reuters",
+      "språk": "Engelska",
+      "kategorier": [
+        "Säkerhet",
+        "Dataintrång",
+        "Oracle"
+      ],
+      "sammanfattning": "En Accenture-konsult har tagits bort från sitt uppdrag hos FBI efter ett intrång där känsliga personuppgifter om tusentals FBI-anställda exponerades. Enligt Reuters hade en kritisk säkerhetsuppdatering i Oracle PeopleSoft inte installerats, vilket gav angripare möjlighet att komma åt uppgifter i personalsystemet.",
+      "länk": "https://www.reuters.com/technology/accenture-contractor-removed-fbi-following-damaging-data-breach-sources-say-2026-10-06/"
+    },
+    {
+      "id": 8,
+      "datum": "2026-10-01",
+      "titel": "RAM-bristen väntas fortsätta till 2028",
+      "källa": "Ars Technica",
+      "språk": "Engelska",
+      "kategorier": [
+        "Hårdvara",
+        "Minne",
+        "AI-infrastruktur"
+      ],
+      "sammanfattning": "Micron och Samsung bedömer att bristen på minneskretsar kommer att fortsätta i flera år. AI-servrar och datacenter prioriteras för HBM och DRAM, vilket begränsar tillgången till minne för vanliga datorer och andra konsumentprodukter och bidrar till högre priser.",
+      "länk": "https://arstechnica.com/information-technology/2026/10/memory-supplies-are-only-getting-tighter-micron-ceo-says/"
+    },
+    {
+      "id": 9,
+      "datum": "2026-09-30",
+      "titel": "Google presenterar Gemini 4-modellen Argon",
+      "källa": "Reuters",
+      "språk": "Engelska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "Google",
+        "Gemini"
+      ],
+      "sammanfattning": "Google presenterade sin nya flaggskeppsmodell Argon i Gemini 4-serien efter flera månaders förseningar. Modellen riktas först till utvalda cybersäkerhetspartner och Google framhåller bland annat hög kapacitet för avancerade arbetsuppgifter och säkerhetsrelaterade användningsfall.",
+      "länk": "https://www.reuters.com/legal/litigation/google-announces-gemini-4-flagship-ai-model-after-months-delays-2026-09-30/"
+    },
+    {
+      "id": 10,
+      "datum": "2026-09-30",
+      "titel": "Cloudflare planerar kvantsäkra TLS-certifikat",
+      "källa": "Ars Technica",
+      "språk": "Engelska",
+      "kategorier": [
+        "Säkerhet",
+        "Kryptering",
+        "Webb"
+      ],
+      "sammanfattning": "Cloudflare planerar att börja utfärda TLS-certifikat som är konstruerade för att tåla framtida kvantdatorattacker. Lösningen bygger på Merkle Tree Certificates och ska kunna införas utan den mycket stora dataökning som traditionella post-kvant-signaturer annars skulle ge i TLS-handshaken.",
+      "länk": "https://arstechnica.com/security/2026/09/cloudflare-plans-to-issue-quantum-safe-tls-certificates/"
+    },
+    {
+      "id": 11,
+      "datum": "2026-09-30",
+      "titel": "Kritisk Zimbra-sårbarhet utnyttjas för att stjäla e-post",
+      "källa": "Ars Technica",
+      "språk": "Engelska",
+      "kategorier": [
+        "Säkerhet",
+        "E-post",
+        "Sårbarhet"
+      ],
+      "sammanfattning": "Angripare har aktivt utnyttjat den kritiska Zimbra-sårbarheten CVE-2026-73570 för att köra kommandon på oskyddade servrar. Intrången har bland annat använts för att installera bakdörrar och samla in e-postdata och autentiseringsuppgifter.",
+      "länk": "https://arstechnica.com/security/2026/09/attackers-have-been-exploiting-critical-zimbra-flaw-to-steal-emails/"
+    },
+    {
+      "id": 12,
+      "datum": "2026-09-30",
+      "titel": "OpenAI lanserar personliga AI-assistenten Dots",
+      "källa": "Computer Sweden",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "OpenAI",
+        "AI-agenter"
+      ],
+      "sammanfattning": "OpenAI har presenterat Dots, personliga AI-assistenter baserade på GPT-6 Astra. En användare kan skapa flera assistenter för olika uppgifter och låta dem arbeta var för sig eller tillsammans, bland annat via Codex, Slack och Microsoft Teams.",
+      "länk": "https://computersweden.se/article/4228748/open-ai-lanserar-personliga-ai-assistenten-dots.html"
+    },
+    {
+      "id": 13,
+      "datum": "2026-09-30",
+      "titel": "Microsoft lägger till stöd för Linux-containrar i WSL",
+      "källa": "Computer Sweden",
+      "språk": "Svenska",
+      "kategorier": [
+        "Microsoft",
+        "Windows",
+        "Linux",
+        "Systemutveckling"
+      ],
+      "sammanfattning": "Microsoft har lagt till stöd för Linux-containrar direkt i Windows Subsystem for Linux. Uppdateringen innehåller bland annat kommandoradsverktyget wslc.exe och ett API som gör det möjligt för Windows-appar att arbeta med Linux-containrar.",
+      "länk": "https://computersweden.se/article/4228759/microsoft-lagger-till-stod-for-linux-containrar-i-wsl.html"
+    },
+    {
+      "id": 14,
+      "datum": "2026-09-30",
+      "titel": "Chrome OS ska avvecklas 2034",
+      "källa": "Computer Sweden",
+      "språk": "Svenska",
+      "kategorier": [
+        "Google",
+        "Operativsystem",
+        "Datorer"
+      ],
+      "sammanfattning": "Google har meddelat att de sista uppdateringarna för Chrome OS ska skickas ut i mitten av 2034. Plattformen ska på sikt ersättas av Googlebook OS, ett nytt operativsystem som enligt uppgifterna har mer gemensamt med Android.",
+      "länk": "https://computersweden.se/article/4228750/bekraftat-chrome-os-gar-i-graven-2034.html"
+    },
+    {
+      "id": 15,
+      "datum": "2026-09-28",
+      "titel": "Nvidia lanserar säkerhetsplattform för AI-agenter",
+      "källa": "Computer Sweden",
+      "språk": "Svenska",
+      "kategorier": [
+        "Nvidia",
+        "Artificiell intelligens",
+        "Säkerhet",
+        "AI-agenter"
+      ],
+      "sammanfattning": "Nvidia har lanserat Open Agent Safety Platform som ett extra säkerhetslager runt AI-agenter. Plattformen ska begränsa vilka system och resurser agenter får komma åt, och delar av tekniken släpps som öppen källkod.",
+      "länk": "https://computersweden.se/article/4227581/nvidias-nya-sakerhetsplattform-ska-halla-ai-agenter-i-styr.html"
+    },
+    {
+      "id": 16,
+      "datum": "2026-09-28",
+      "titel": "AI-användningen på svenska arbetsplatser har fördubblats",
+      "källa": "Computer Sweden",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "Sverige",
+        "Arbetsliv"
+      ],
+      "sammanfattning": "56 procent av förvärvsarbetande svenskar uppger nu att de använder AI i arbetet, enligt undersökningen Svenskarna och internet. Det är en fördubbling jämfört med 2025, även om många fortfarande uppger att reglerna för AI-användning på arbetsplatsen är otydliga.",
+      "länk": "https://computersweden.se/article/4226624/ai-explosion-pa-svenska-arbetsplatser.html"
+    },
+    {
+      "id": 17,
+      "datum": "2026-09-28",
+      "titel": "Ny svart marknad för kapade AI-konton växer fram",
+      "källa": "Computer Sweden",
+      "språk": "Svenska",
+      "kategorier": [
+        "Säkerhet",
+        "Artificiell intelligens",
+        "Cyberbrott"
+      ],
+      "sammanfattning": "Google Threat Intelligence Group varnar för så kallad LLM-jacking, där angripare stjäl konton eller molnresurser för att få tillgång till dyr AI-kapacitet. Stulna inloggningsuppgifter till AI-tjänster säljs på svarta marknader och företag med egen AI-infrastruktur pekas ut som attraktiva mål.",
+      "länk": "https://computersweden.se/article/4227591/hackare-kapar-ai-konton-ny-svart-marknad-vaxer-fram.html"
     }
-  ]
+  ],
+  "senast_uppdaterad": "2026-10-06"
 }
