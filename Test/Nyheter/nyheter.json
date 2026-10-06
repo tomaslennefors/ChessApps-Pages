@@ -1,0 +1,57 @@
+{
+  "rubrik": "IT-Nyheter",
+  "skapad_av": "ChatGPT",
+  "sammanfattningsspråk": "Svenska",
+  "nyheter": [
+    {
+      "id": 1,
+      "datum": "2026-10-05",
+      "titel": "OpenAI inför osynlig textmärkning i ChatGPT och Codex",
+      "källa": "The Verge",
+      "språk": "Engelska",
+      "kategorier": ["Artificiell intelligens","OpenAI","ChatGPT"],
+      "sammanfattning": "OpenAI har börjat rulla ut en maskinläsbar, osynlig märkning av text från ChatGPT och Codex. Systemet kallas textGrain och införs först för användare i EU, bland annat för att möta krav på transparens kring AI-genererat innehåll. OpenAI säger att märkningen inte ska påverka modellernas prestanda, men den är inte ett säkert bevis på vem som har skrivit en text.",
+      "länk": "https://www.theverge.com/ai-artificial-intelligence/1004880/openai-chatgpt-text-watermarks-eu-ai-act"
+    },
+    {
+      "id": 2,
+      "datum": "2026-10-05",
+      "titel": "OpenAI testar fler visuella annonser i ChatGPT",
+      "källa": "The Verge",
+      "språk": "Engelska",
+      "kategorier": ["Artificiell intelligens","OpenAI","ChatGPT"],
+      "sammanfattning": "OpenAI uppger att man senare i oktober ska testa ett nytt visuellt annonsformat i ChatGPT i USA. Annonserna ska kunna innehålla bilder på sponsrade produkter och tjänster och hållas åtskilda från användarens genererade bilder. OpenAI säger också att annonserna inte ska påverka ChatGPT:s svar.",
+      "länk": "https://www.theverge.com/ai-artificial-intelligence/1004655/openai-chatgpt-visual-ads"
+    },
+    {
+      "id": 3,
+      "datum": "2026-10-05",
+      "titel": "Tidigare AI-anställda varnar politiker i New York för säkerhetsrisker",
+      "källa": "Associated Press",
+      "språk": "Engelska",
+      "kategorier": ["Artificiell intelligens","OpenAI","Anthropic","Google"],
+      "sammanfattning": "Tidigare anställda från bland annat Anthropic, OpenAI och Google DeepMind vittnade inför New Yorks stadsfullmäktige om riskerna med snabb AI-utveckling utan tillräcklig kontroll. De efterlyste mer insyn, oberoende granskning och starkare skydd för visselblåsare. Samtidigt diskuterar staden nya lokala regler för användning och kontroll av AI.",
+      "länk": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24"
+    },
+    {
+      "id": 4,
+      "datum": "2026-10-05",
+      "titel": "AI-agenter börjar förändra hur människor använder digitala tjänster",
+      "källa": "Axios",
+      "språk": "Engelska",
+      "kategorier": ["Artificiell intelligens","AI-agenter"],
+      "sammanfattning": "Axios beskriver hur AI-agenter i allt högre grad kan sköta uppgifter över flera tjänster, exempelvis e-post, kalender och betalningar, i stället för att användaren själv arbetar i varje app. Utvecklingen kan göra agentplattformarna mycket centrala, men också skapa inlåsning när stora mängder personlig och företagsrelaterad information knyts till en viss agent.",
+      "länk": "https://www.axios.com/2026/10/05/ai-agents-consumers-business"
+    },
+    {
+      "id": 5,
+      "datum": "2026-10-05",
+      "titel": "Apple skärper åtkomsten efter oro för snokande AI-agenter",
+      "källa": "Aapl.se",
+      "språk": "Svenska",
+      "kategorier": ["Artificiell intelligens","AI-agenter","Apple","Meta"],
+      "sammanfattning": "Apple uppges skärpa reglerna kring fullständig skivåtkomst på Mac efter uppgifter om att Metas AI-agent Muse kunnat hänvisa till privata meddelanden. Framöver ska användaren behöva göra ett mer uttryckligt val innan en app får så omfattande åtkomst. Förändringen visar hur AI-agenter som arbetar självständigt kan skapa nya integritetsrisker.",
+      "länk": "https://aapl.se/podd/pilot-2026-10-05"
+    }
+  ]
+}
