@@ -885,7 +885,7 @@
     },
     {
       "datum": "2026-10-05",
-      "titel": "Experten om AI-varningarna: ”Kan utplåna mänskligheten”",
+      "titel": "AI-experter varnar för mycket stora risker",
       "källa": "SVT",
       "språk": "Svenska",
       "kategorier": [
@@ -894,15 +894,14 @@
         "Existentiell risk",
         "Reglering"
       ],
-      "sammanfattning": "Cybersäkerhetsexperten Marcus Murray säger att varningar från AI-forskare och tidigare AI-toppar måste tas på allvar. Artikeln beskriver risker med allt kraftfullare AI-system, bland annat att AI redan kan angripa datorstyrda system, och lyfter behovet av reglering och styrning för att minska risken för allvarliga konsekvenser.",
+      "sammanfattning": "Flera personer med lång erfarenhet av AI varnar för att utvecklingen kan gå snabbare än säkerhetsarbetet. En svensk cybersäkerhetsexpert tycker att riskerna måste tas på allvar och vill se tydligare regler och bättre kontroll.",
       "länk": "https://www.svt.se/nyheter/inrikes/experten-om-ai-varningarna-kan-utplana-manskligheten",
       "id": 42,
-      "läsvy": "Artikeln utgår från varningar från flera personer med bakgrund i ledande AI-företag. Geoffrey Irving, som tidigare arbetat bland annat på OpenAI, har skrivit att han bedömer risken som omkring 50 procent att mänskligheten dör på grund av AI-system som blir smartare än människor, och att de kommande två till tio åren kan bli avgörande.\n\nSVT intervjuar cybersäkerhetsexperten Marcus Murray, som säger att det är svårt att bedöma hur sannolika de värsta scenarierna är men att varningarna måste tas på allvar. Han framhåller att viktiga samhällssystem, som sjukvård och vapensystem, redan är datorstyrda och att AI har visat förmåga att hacka sådana system.\n\nMurray beskriver också utvecklingen som exponentiell och pekar på att AI redan används i stor omfattning för att skriva ny kod. Det innebär att AI i praktiken hjälper till att bygga nästa generation AI.\n\nHans slutsats är att utvecklingen inte måste sluta illa, men att varningarna bör ses som ett tecken på att samhället behöver agera. Framför allt efterlyser han reglering och styrning så att tekniken kan fortsätta utvecklas på ett säkert sätt.",
-      "originalutdrag": "”AI är så kraftfull att den kan utplåna mänskligheten på lång sikt, men om vi hanterar den rätt så kommer den inte göra det.”"
+      "läsvy": "Utvecklingen av artificiell intelligens går mycket snabbt. Flera personer som har arbetat med avancerade AI-system varnar för att framtida system kan bli så kraftfulla att människor får svårt att kontrollera dem.\n\nCybersäkerhetsexperten Marcus Murray säger att det är svårt att veta hur stor risken verkligen är. Han tycker ändå att varningarna är viktiga. Samhället använder redan datorstyrda system inom till exempel sjukvård, energi, transporter och försvar. Om mycket avancerad AI kan påverka sådana system kan följderna bli stora.\n\nAI används också allt mer för att skriva programkod. Det betyder att AI kan hjälpa till att bygga ännu mer avancerade AI-system. Utvecklingen kan därför gå snabbare än människor hinner förstå och kontrollera.\n\nBudskapet är inte att en katastrof säkert kommer att inträffa. Poängen är att riskerna bör tas på allvar i god tid. Murray vill se tydligare regler, bättre säkerhetsarbete och mer kontroll innan systemen blir ännu kraftfullare."
     },
     {
       "datum": "2026-10-03",
-      "titel": "Fler AI-toppar varnar: ”Pausa utvecklingen”",
+      "titel": "Tidigare AI-chefer vill bromsa utvecklingen",
       "källa": "SVT",
       "språk": "Svenska",
       "kategorier": [
@@ -911,15 +910,14 @@
         "OpenAI",
         "Existentiell risk"
       ],
-      "sammanfattning": "SVT rapporterar om David Robinson och Geoffrey Irving, två profiler med bakgrund inom ledande AI-organisationer, som varnar för att dagens AI-utveckling går snabbare än säkerhetsarbetet. Irving argumenterar för att utvecklingen av mycket avancerad AI bör pausas medan Robinson kritiserar brister i säkerhetskulturen hos AI-företag.",
+      "sammanfattning": "Två personer med stor erfarenhet av AI-säkerhet anser att utvecklingen går för fort. De vill att de mest avancerade systemen bromsas tills säkerheten har hunnit ikapp.",
       "länk": "https://www.svt.se/nyheter/utrikes/fler-ai-toppar-varnar-pausa-utvecklingen",
       "id": 43,
-      "läsvy": "SVT beskriver hur ytterligare två personer med tung erfarenhet från AI-säkerhet offentligt varnar för utvecklingen.\n\nDavid Robinson, som varit teamchef för säkerhetssystem på OpenAI, lämnar företaget och kritiserar det han kallar en trasig företagskultur. Han menar att OpenAI går från produktlansering till produktlansering utan att uppnå den säkerhetsnivå som tekniken kräver. Enligt Robinson borde AI-företag arbeta mer som kärnkraftsanläggningar eller flygplatser, med flera oberoende skyddsnivåer och noggrann planering så att ett mänskligt misstag inte kan leda till katastrof.\n\nGeoffrey Irving, tidigare verksam på OpenAI, DeepMind och som chefsforskare vid UK AI Security Institute, bedömer riskerna ännu hårdare. Han skriver att han tror att risken är omkring 50 procent att alla människor dör på grund av AI-system som blir smartare än människor.\n\nIrving anser att hur världen agerar under de närmaste två till tio åren kan avgöra utfallet. Trots osäkerheten menar han därför att utvecklingen av de mest avancerade AI-systemen bör pausas nu.",
-      "originalutdrag": "”Trots att mycket fortfarande är oklart måste vi pausa utvecklingen av AI nu, menar han.”"
+      "läsvy": "Två personer som har arbetat med säkerhet kring avancerad AI varnar för att företagen utvecklar nya system snabbare än de hinner göra dem säkra.\n\nDavid Robinson har haft ansvar för säkerhetssystem på OpenAI. Han kritiserar hur snabbt nya produkter lanseras och menar att säkerheten inte alltid får tillräckligt hög prioritet. Han jämför med områden som flyg och kärnkraft, där flera olika säkerhetssystem ska minska risken för att ett enda misstag får stora följder.\n\nGeoffrey Irving har arbetat på flera stora AI-organisationer och med statligt AI-säkerhetsarbete i Storbritannien. Han bedömer att framtida AI kan innebära mycket stora risker om systemen blir smartare och mer självständiga än dagens.\n\nBåda anser att det behövs mer försiktighet. Irving går längst och vill pausa utvecklingen av de allra mest avancerade systemen tills forskare och myndigheter bättre förstår riskerna och vet hur systemen kan kontrolleras."
     },
     {
       "datum": "2026-10-04",
-      "titel": "Trump bildar sin AI-styrka",
+      "titel": "USA skapar särskild grupp för AI",
       "källa": "SVT",
       "språk": "Svenska",
       "kategorier": [
@@ -928,15 +926,14 @@
         "Politik",
         "Donald Trump"
       ],
-      "sammanfattning": "USA:s president Donald Trump har presenterat en federal AI-styrka som ska samordna regeringens resurser och bidra till att USA behåller en ledande position inom AI. Den så kallade Super Intelligence Force ska rapportera direkt till presidenten, men exakt vilka uppgifter organisationen får är ännu oklart.",
+      "sammanfattning": "USA:s regering skapar en särskild grupp som ska samla landets arbete med artificiell intelligens. Målet är att stärka USA:s ställning i den globala konkurrensen om AI.",
       "länk": "https://www.svt.se/nyheter/utrikes/trump-bildar-sin-ai-styrka",
       "id": 44,
-      "läsvy": "USA har enligt president Donald Trump bildat en särskild AI-styrka som ska samordna den federala regeringens resurser och bidra till att USA förblir världsledande inom artificiell intelligens.\n\nTrump använder själv ordet ”superintelligens” när han beskriver tekniken. I presentationen framställs AI som en utveckling som enligt vissa kan bli större än både den industriella revolutionen och internet, och som ska skydda och förbättra amerikanernas liv.\n\nDen nya organisationen kallas Super Intelligence Force, förkortat SIF. Exakt vad styrkans praktiska arbete ska bestå av framgår inte av beskedet. Den ska ledas av den nationelle underrättelsechefen Jay Clayton och rapportera direkt till presidenten och presidentens stabschef.\n\nTrump hade redan i mitten av september meddelat att han ville skapa en sådan AI-styrka. Vid det tillfället avfärdade han varningar om AI-risker som en bluff och betonade i stället att USA inte får förlora AI-kapplöpningen mot Kina.",
-      "originalutdrag": "”USA har bildat sin AI-styrka, som ska samordna regeringens resurser för att se till att USA förblir världsledande inom AI.”"
+      "läsvy": "USA:s president Donald Trump har presenterat en särskild grupp för artificiell intelligens. Gruppen ska samla och samordna delar av den federala regeringens arbete med AI.\n\nSyftet är att USA ska fortsätta ligga långt framme inom tekniken. Trump beskriver AI som en mycket viktig framtidsfråga och ser utvecklingen som en del av konkurrensen mellan stora länder, framför allt mellan USA och Kina.\n\nGruppen kallas Super Intelligence Force, SIF. Den ska rapportera högt upp i den amerikanska regeringen. Exakt vilka arbetsuppgifter gruppen ska ha är ännu inte helt tydligt.\n\nTrump har tidigare sagt att USA behöver satsa mer på AI och inte får halka efter andra länder. Samtidigt har han tonat ned flera varningar om långsiktiga AI-risker. Den nya gruppen visar att regeringen ser AI både som en teknisk möjlighet och som en strategisk fråga för ekonomi, säkerhet och internationell konkurrens."
     },
     {
       "datum": "2026-10-05",
-      "titel": "Norge vill införa förbud mot AI-glasögon",
+      "titel": "Norge vill begränsa AI-glasögon på offentliga platser",
       "källa": "SVT",
       "språk": "Svenska",
       "kategorier": [
@@ -945,11 +942,10 @@
         "Norge",
         "AI-glasögon"
       ],
-      "sammanfattning": "Norges regering vill tillfälligt förbjuda AI-glasögon på offentliga platser som sjukhus, skolor, parker och köpcentrum. Motivet är risken att människor fotograferas, filmas eller spelas in utan att veta om det. En expertgrupp ska samtidigt ta fram underlag för mer permanent nationell reglering.",
+      "sammanfattning": "Norges regering vill tillfälligt begränsa AI-glasögon på platser där många människor vistas. Orsaken är oro för att personer kan bli filmade eller inspelade utan att märka det.",
       "länk": "https://www.svt.se/nyheter/utrikes/norge-vill-infora-forbud-mot-ai-glasogon",
       "id": 45,
-      "läsvy": "Norges regering vill införa ett tillfälligt förbud mot AI-glasögon på vissa offentliga platser. Förslaget motiveras med oro för att människor kan bli fotograferade, filmade eller ljudinspelade utan att känna till det.\n\nDigitaliserings- och förvaltningsminister Torgeir Micaelsen säger enligt NRK att regeringen inte vill ha ett samhälle där människor går omkring och oroar sig för att bli övervakade. Det tillfälliga förbudet är tänkt att gälla på platser som sjukhus, skolor, parker och köpcentrum.\n\nMicaelsen pekar särskilt på att tekniken kombinerar diskreta kameror och mikrofoner med kraftfull AI och därmed kan göra det svårt för omgivningen att veta när inspelning sker.\n\nPrivat användning ska fortfarande vara tillåten, liksom användning i situationer där andra personer inte riskerar att bli filmade utan sitt samtycke.\n\nParallellt ska Norge tillsätta en expertgrupp som ska ge råd om hur en permanent nationell reglering bör utformas. Regeringen uppger att ett lagförslag därefter ska läggas fram för Stortinget så snart som möjligt.",
-      "originalutdrag": "”Vi vill inte ha ett samhälle där människor oroar sig för att bli övervakade.”"
+      "läsvy": "Norges regering vill införa ett tillfälligt förbud mot AI-glasögon på vissa offentliga platser. Det kan till exempel gälla skolor, sjukhus, parker och köpcentrum.\n\nAI-glasögon kan ha små kameror och mikrofoner som är svåra för andra att upptäcka. Med hjälp av AI kan de också analysera det som filmas eller spelas in. Regeringen är därför orolig för att människor kan bli övervakade utan att veta om det.\n\nTanken är inte att förbjuda tekniken överallt. Privat användning ska fortfarande kunna vara tillåten, särskilt när andra personer inte riskerar att bli inspelade utan sitt samtycke.\n\nSamtidigt vill regeringen tillsätta en expertgrupp. Den ska undersöka hur mer långsiktiga regler bör utformas. Målet är att hitta en balans där ny teknik kan användas utan att människors personliga integritet försämras."
     }
   ],
   "senast_uppdaterad": "2026-10-06"
