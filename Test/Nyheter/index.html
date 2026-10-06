@@ -94,7 +94,7 @@
     <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
   </div>
 
-  <div class="rules-area">
+  <div id="rulesArea" class="rules-area" hidden>
     <button id="rulesBtn" type="button">Regler</button>
     <textarea id="rulesText" readonly hidden aria-label="Regler för IT-Nyheter"></textarea>
   </div>
@@ -264,6 +264,7 @@
   const metaEl = document.getElementById("meta");
   const privateViewControl = document.getElementById("privateViewControl");
   const privateViewCheckbox = document.getElementById("privateViewCheckbox");
+  const rulesArea = document.getElementById("rulesArea");
   const rulesBtn = document.getElementById("rulesBtn");
   const rulesText = document.getElementById("rulesText");
   const statusEl = document.getElementById("status");
@@ -449,12 +450,14 @@
 
     if (!ownerAuthenticated) {
       privateViewControl.hidden = true;
+      rulesArea.hidden = true;
       ownerPanel.hidden = true;
       ownerSplitter.hidden = true;
       return;
     }
 
     privateViewControl.hidden = false;
+    rulesArea.hidden = false;
     privateViewCheckbox.checked = ownerMode;
 
     if (ownerMode) {
@@ -1451,12 +1454,14 @@
       ownerPanel.hidden = true;
       ownerSplitter.hidden = true;
       privateViewControl.hidden = true;
+      rulesArea.hidden = true;
       sourceFilter.value = "";
       setPrivacyUi();
     }
   }
 
   async function toggleRules() {
+    if (!ownerAuthenticated) return;
     if (!rulesText.hidden) {
       rulesText.hidden = true;
       rulesBtn.textContent = "Regler";
