@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 00:26
+Senast uppdaterad: 2026-10-07 01:07
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -190,6 +190,13 @@ När användaren trycker på **Spara önskemål** och sparningen har lyckats ska
 **Önskemålen är hämtade.**
 
 Meddelandet ska försvinna automatiskt så fort användaren klickar eller trycker någon annanstans i appen.
+
+### 6f. Tangentbordsscrollning i detaljerad artikel
+
+När en detaljerad artikel är öppen gäller:
+- **Pil upp / Pil ned** byter fortfarande mellan artiklar.
+- **Shift + Pil upp / Shift + Pil ned** scrollar inne i den öppna artikeln.
+- Varje tryck på Shift + pil ska flytta texten ungefär **två textrader** uppåt eller nedåt, beräknat från artikeltextens faktiska radavstånd.
 
 ### 6e. Uppdatera filtrering laddar om appen
 
