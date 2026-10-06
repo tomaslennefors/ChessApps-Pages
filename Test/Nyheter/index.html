@@ -1192,6 +1192,14 @@
     return true;
   }
 
+  function scrollDetailedArticle(direction) {
+    const article = listEl.querySelector(".news.article-detailed");
+    if (!article) return false;
+    const distance = Math.max(120, article.clientHeight * 0.75);
+    article.scrollBy({top: direction * distance, behavior:"smooth"});
+    return true;
+  }
+
   function playSelectedYoutube() {
     if (!exactTitleFilter.value) return false;
     const iframe = listEl.querySelector(".youtube-player iframe");
@@ -1672,6 +1680,22 @@
   exactTitleFilter.addEventListener("keydown", event => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
 
+    if (event.shiftKey && event.key === "ArrowDown") {
+      if (scrollDetailedArticle(1)) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return;
+    }
+
+    if (event.shiftKey && event.key === "ArrowUp") {
+      if (scrollDetailedArticle(-1)) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return;
+    }
+
     if (event.key === " ") {
       event.preventDefault();
       event.stopPropagation();
@@ -1700,6 +1724,16 @@
   document.addEventListener("keydown", event => {
     if (!keyboardShortcutAllowed(event)) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+    if (event.shiftKey && event.key === "ArrowDown") {
+      if (scrollDetailedArticle(1)) event.preventDefault();
+      return;
+    }
+
+    if (event.shiftKey && event.key === "ArrowUp") {
+      if (scrollDetailedArticle(-1)) event.preventDefault();
+      return;
+    }
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
