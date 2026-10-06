@@ -457,7 +457,11 @@
     }
 
     privateViewControl.hidden = false;
-    rulesArea.hidden = false;
+    rulesArea.hidden = !ownerMode;
+    if (!ownerMode) {
+      rulesText.hidden = true;
+      rulesBtn.textContent = "Regler";
+    }
     privateViewCheckbox.checked = ownerMode;
 
     if (ownerMode) {
@@ -1461,7 +1465,7 @@
   }
 
   async function toggleRules() {
-    if (!ownerAuthenticated) return;
+    if (!ownerAuthenticated || !ownerMode) return;
     if (!rulesText.hidden) {
       rulesText.hidden = true;
       rulesBtn.textContent = "Regler";
