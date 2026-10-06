@@ -46,10 +46,14 @@
     .count{font-weight:650}
     .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
     .save-explanation{margin-top:10px;padding:10px 12px;background:#f6f8fa;border:1px solid var(--line);border-radius:8px}
-    .section-splitter{border:0;border-top:2px solid var(--line);margin:22px 0}
-    .link-history-item{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding:7px 0}
-    .link-history-item:first-child{border-top:0}
-    .link-history-item a{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--blue);flex:1}
+    .section-splitter{position:relative;width:100%;height:25px;margin:2px 0 10px;padding:0;border:0;background:transparent;cursor:pointer}
+    .section-splitter::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px solid var(--line)}
+    .section-splitter span{position:relative;display:inline-block;padding:1px 10px;background:var(--bg);color:var(--muted);font-size:.82rem}
+    .section-splitter:hover{background:transparent}
+    .saved-listboxes{display:grid;gap:9px;margin-top:16px}
+    .saved-listboxes label{margin:0}
+    .saved-listboxes select{margin-top:4px}
+    .full-title-filter{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:10px 0 12px}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
     [hidden]{display:none!important}
     .request-history{margin-top:16px}
@@ -80,8 +84,8 @@
     </label>
 
     <label style="margin-top:12px">
-      Länkförslag
-      <textarea id="requestLinks" placeholder="En webbadress per rad. Sparade länkar behålls så att de inte försvinner."></textarea>
+      Nya länkförslag
+      <textarea id="requestLinks" placeholder="En ny webbadress per rad. Sparade länkar ligger i listboxarna nedan."></textarea>
     </label>
 
     <div class="actions">
@@ -90,22 +94,27 @@
 
     <div class="save-explanation small">
       <strong>När du trycker på Spara önskemål:</strong>
-      fritexten sparas som aktuellt önskemål och läggs i fritext-historiken; nya länkar läggs till i den permanenta länklistan utan att tidigare länkar tas bort; allt sparas lokalt i denna webbläsare och i den privata filen <code>Data/Test/Nyheter/HamtaNyheter.json</code>; slutligen kopieras det aktuella önskemålet (fritext + alla sparade länkar) till Urklipp. Vid nästa nyhetshämtning läser GPT den aktuella fritexten och den sparade länklistan från denna Data-fil.
+      fritexten sparas som aktuellt önskemål och läggs i fritext-historiken; nya länkar delas automatiskt upp i YouTube-länkar och övriga länkar, dubbletter tas bort och tidigare länkar behålls; allt sparas lokalt i denna webbläsare och i den privata filen <code>Data/Test/Nyheter/HamtaNyheter.json</code>; slutligen kopieras det aktuella önskemålet (fritext + alla sparade länkar) till Urklipp. Rutan Nya länkförslag töms efter en lyckad sparning.
     </div>
 
-    <div class="request-history">
-      <h3>Fritext-historik</h3>
-      <div id="freeTextHistory"></div>
-    </div>
-
-    <div class="request-history">
-      <h3>Sparade länkar</h3>
-      <div id="linkHistory"></div>
+    <div class="saved-listboxes">
+      <label>
+        Fritext-historik
+        <select id="freeTextHistorySelect" aria-label="Fritext-historik"></select>
+      </label>
+      <label>
+        YouTube-länkar
+        <select id="youtubeLinksSelect" aria-label="Sparade YouTube-länkar"></select>
+      </label>
+      <label>
+        Övriga länkar
+        <select id="otherLinksSelect" aria-label="Sparade övriga länkar"></select>
+      </label>
     </div>
   </section>
-  <hr id="ownerSplitter" class="section-splitter" hidden>
+  <button id="ownerSplitter" class="section-splitter" type="button" hidden aria-expanded="true"><span>▲ Dölj HämtaNyheter</span></button>
 
-  <div class="filters">
+  <div id="filterPanel" class="filters">
     <div class="filter-grid">
       <label>
         <span class="label-row">Datum <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
@@ -135,11 +144,6 @@
       <label>
         <span class="label-row">Rubrik <input class="sortno" data-sort="titel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <input id="titleFilter" type="search" placeholder="Sök i rubrik">
-      </label>
-
-      <label>
-        <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
-        <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
       </label>
 
       <label>
@@ -201,9 +205,17 @@
     </div>
     <p class="small">Sorteringsnummer: 1 sorteras först, 2 därefter osv. Lämna tomt eller 0 för att inte använda fältet vid sortering. Datum sorteras nyast först; textfält A–Ö.</p>
   </div>
-  <hr class="section-splitter">
+  <button id="filterSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj filtrering</span></button>
 
   <div id="status">Hämtar nyheter...</div>
+
+  <div class="full-title-filter">
+    <label>
+      <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+      <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
+    </label>
+  </div>
+
   <div id="list"></div>
 
   <p class="small">
@@ -229,11 +241,14 @@
   const clearBtn = document.getElementById("clearBtn");
   const ownerPanel = document.getElementById("ownerPanel");
   const ownerSplitter = document.getElementById("ownerSplitter");
+  const filterPanel = document.getElementById("filterPanel");
+  const filterSplitter = document.getElementById("filterSplitter");
   const savePromptBtn = document.getElementById("savePromptBtn");
   const requestFreeText = document.getElementById("requestFreeText");
   const requestLinks = document.getElementById("requestLinks");
-  const freeTextHistory = document.getElementById("freeTextHistory");
-  const linkHistory = document.getElementById("linkHistory");
+  const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
+  const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
+  const otherLinksSelect = document.getElementById("otherLinksSelect");
   const dateFilter = document.getElementById("dateFilter");
   const sourceFilter = document.getElementById("sourceFilter");
   const publisherFilter = document.getElementById("publisherFilter");
@@ -319,16 +334,40 @@
         savedRequestLinks: savedLinks,
         currentFreeText: typeof p.currentFreeText === "string" ? p.currentFreeText : (draftSplit.text || latestFree?.text || ""),
         currentFreeTextSavedAt: typeof p.currentFreeTextSavedAt === "string" ? p.currentFreeTextSavedAt : (latestFree?.savedAt || ""),
-        linkDraft: typeof p.linkDraft === "string" ? p.linkDraft : savedLinks.join("\n")
+        linkDraft: p.requestUiVersion === 2 && typeof p.linkDraft === "string" ? p.linkDraft : "",
+        ownerCollapsed: !!p.ownerCollapsed,
+        filterCollapsed: !!p.filterCollapsed
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:""};
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false};
     }
   }
 
   function savePrefs() {
     prefs.filterSchemaVersion = filterSchemaVersion;
+    prefs.requestUiVersion = 2;
     localStorage.setItem(storageKey, JSON.stringify(prefs));
+  }
+
+  function isYoutubeUrl(value) {
+    try {
+      const u = new URL(String(value || "").trim());
+      const host = u.hostname.toLowerCase();
+      return host === "youtu.be" || host === "youtube.com" || host.endsWith(".youtube.com");
+    } catch {
+      return false;
+    }
+  }
+
+  function alphabeticLinks(values) {
+    return uniqueLinks(values).sort((a,b) => a.localeCompare(b, "sv", {sensitivity:"base"}));
+  }
+
+  function setSectionCollapsed(panel, splitter, collapsed, label) {
+    panel.hidden = !!collapsed;
+    splitter.setAttribute("aria-expanded", String(!collapsed));
+    const span = splitter.querySelector("span");
+    if (span) span.textContent = collapsed ? "▼ Visa " + label : "▲ Dölj " + label;
   }
 
   function itemKey(item) {
@@ -498,7 +537,7 @@
     archiveFilter.value = f.archive || "all";
     typeFilter.value = f.type || "";
     requestFreeText.value = prefs.currentFreeText || "";
-    requestLinks.value = prefs.linkDraft || prefs.savedRequestLinks.join("\n");
+    requestLinks.value = prefs.linkDraft || "";
     sortInputs.forEach(input => {
       input.value = prefs.sort[input.dataset.sort] || "";
     });
@@ -882,11 +921,22 @@
     let currentFreeText = "", currentLinks = [], currentSavedAt = parsed.aktuell?.sparad || "";
     let freeHistoryRecords = [], linkHistoryRecords = [];
 
-    if (typeof parsed.aktuell?.fritext === "string" || Array.isArray(parsed.aktuell?.lankar)) {
+    if (typeof parsed.aktuell?.fritext === "string" || Array.isArray(parsed.aktuell?.lankar) || Array.isArray(parsed.aktuell?.youtube_lankar) || Array.isArray(parsed.aktuell?.ovriga_lankar)) {
       currentFreeText = String(parsed.aktuell?.fritext || "").trim();
-      currentLinks = uniqueLinks(parsed.aktuell?.lankar || []);
+      currentLinks = uniqueLinks([
+        ...(Array.isArray(parsed.aktuell?.lankar) ? parsed.aktuell.lankar : []),
+        ...(Array.isArray(parsed.aktuell?.youtube_lankar) ? parsed.aktuell.youtube_lankar : []),
+        ...(Array.isArray(parsed.aktuell?.ovriga_lankar) ? parsed.aktuell.ovriga_lankar : [])
+      ]);
       freeHistoryRecords = Array.isArray(parsed.historik_fritext) ? parsed.historik_fritext : [];
-      linkHistoryRecords = Array.isArray(parsed.historik_lankar) ? parsed.historik_lankar : [];
+      if (Array.isArray(parsed.youtube_lankar) || Array.isArray(parsed.ovriga_lankar)) {
+        linkHistoryRecords = [
+          ...(Array.isArray(parsed.youtube_lankar) ? parsed.youtube_lankar : []),
+          ...(Array.isArray(parsed.ovriga_lankar) ? parsed.ovriga_lankar : [])
+        ];
+      } else {
+        linkHistoryRecords = Array.isArray(parsed.historik_lankar) ? parsed.historik_lankar : [];
+      }
     } else {
       const legacyCurrent = splitLegacyRequest(parsed.aktuell?.text || "");
       currentFreeText = legacyCurrent.text; currentLinks = legacyCurrent.links;
@@ -906,9 +956,22 @@
     const cleanFreeHistory = uniqueFreeTextHistory(freeHistoryRecords);
     const cleanLinkHistory = uniqueLinkHistory(linkHistoryRecords);
     const links = cleanLinkHistory.map(x => x.url);
+    const youtubeRecords = cleanLinkHistory.filter(x => isYoutubeUrl(x.url)).sort((a,b) => a.url.localeCompare(b.url, "sv", {sensitivity:"base"}));
+    const otherRecords = cleanLinkHistory.filter(x => !isYoutubeUrl(x.url)).sort((a,b) => a.url.localeCompare(b.url, "sv", {sensitivity:"base"}));
+    const youtubeLinks = youtubeRecords.map(x => x.url);
+    const otherLinks = otherRecords.map(x => x.url);
     const body = {
-      aktuell:{fritext:String(currentFreeText||"").trim(), lankar:links, text:combinedRequestText(currentFreeText,links), sparad:currentSavedAt},
+      aktuell:{
+        fritext:String(currentFreeText||"").trim(),
+        youtube_lankar:youtubeLinks,
+        ovriga_lankar:otherLinks,
+        lankar:[...youtubeLinks, ...otherLinks],
+        text:combinedRequestText(currentFreeText,[...youtubeLinks, ...otherLinks]),
+        sparad:currentSavedAt
+      },
       historik_fritext:cleanFreeHistory.map(x => ({text:x.text,sparad:x.savedAt})),
+      youtube_lankar:youtubeRecords.map(x => ({url:x.url,sparad:x.savedAt})),
+      ovriga_lankar:otherRecords.map(x => ({url:x.url,sparad:x.savedAt})),
       historik_lankar:cleanLinkHistory.map(x => ({url:x.url,sparad:x.savedAt}))
     };
     const payload={message:"Uppdatera HämtaNyheter",content:encodeBase64Utf8(JSON.stringify(body,null,2)+"\n"),branch:requestBranch};
@@ -935,9 +998,8 @@
     prefs.savedRequestLinks=uniqueLinks(mergedLinks.map(x=>x.url));
     prefs.currentFreeText=currentFreeText;
     prefs.currentFreeTextSavedAt=currentSavedAt;
-    prefs.linkDraft=prefs.savedRequestLinks.join("\n");
     requestFreeText.value=currentFreeText;
-    requestLinks.value=prefs.linkDraft;
+    requestLinks.value=prefs.linkDraft || "";
     savePrefs(); renderRequestLists();
     const remoteLinks=uniqueLinks(remote.linkHistory.map(x=>x.url));
     if((remote.currentFreeText!==currentFreeText || remote.freeHistory.length!==mergedFree.length || remoteLinks.length!==prefs.savedRequestLinks.length) && (currentFreeText || prefs.savedRequestLinks.length)){
@@ -945,29 +1007,52 @@
     }
   }
 
-  function makeExpandableHistoryItem(record,isCurrent) {
-    const item=document.createElement("div"); item.className="request-item"; item.tabIndex=0; item.setAttribute("role","button"); item.setAttribute("aria-expanded","false");
-    const head=document.createElement("div"); head.className="request-head";
-    const date=document.createElement("span"); date.className="request-date"; date.textContent=(isCurrent?"Aktuellt · ":"")+formatSavedAt(record.savedAt);
-    const preview=document.createElement("span"); preview.className="request-preview"; preview.textContent=record.text.replace(/\s+/g," ").trim();
-    const copy=makeButton("Kopiera","",event=>{event?.stopPropagation?.();copyText(record.text,"Fritexten är kopierad.");}); copy.addEventListener("click",e=>e.stopPropagation());
-    const body=document.createElement("div"); body.className="request-text"; body.textContent=record.text; body.addEventListener("click",e=>e.stopPropagation());
-    const toggle=()=>{const expanded=item.classList.toggle("expanded");item.setAttribute("aria-expanded",String(expanded));};
-    item.addEventListener("click",toggle);
-    item.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle();}});
-    head.append(date,preview,copy); item.append(head,body); return item;
+  function optionPreview(text, max = 120) {
+    const oneLine = String(text || "").replace(/\s+/g, " ").trim();
+    return oneLine.length > max ? oneLine.slice(0, max - 1) + "…" : oneLine;
+  }
+
+  function fillSavedSelect(select, placeholder, entries) {
+    select.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = placeholder;
+    select.append(first);
+    for (const entry of entries) {
+      const option = document.createElement("option");
+      option.value = entry.value;
+      option.textContent = entry.label;
+      option.title = entry.value;
+      select.append(option);
+    }
+    select.value = "";
   }
 
   function renderRequestLists() {
-    freeTextHistory.replaceChildren();
-    const free=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
-    if(!free.length){const p=document.createElement("p");p.className="small";p.textContent="Ingen fritext har sparats ännu.";freeTextHistory.append(p);}
-    else [...free].reverse().forEach(record=>freeTextHistory.append(makeExpandableHistoryItem(record,record.text===prefs.currentFreeText)));
+    const free = uniqueFreeTextHistory(prefs.freeTextHistory || []);
+    const freeEntries = [...free].reverse().map(record => ({
+      value:record.text,
+      label:(record.text === prefs.currentFreeText ? "Aktuellt · " : "") + optionPreview(record.text)
+    }));
+    fillSavedSelect(
+      freeTextHistorySelect,
+      "Fritext-historik (" + freeEntries.length + ")",
+      freeEntries
+    );
 
-    linkHistory.replaceChildren();
-    const links=uniqueLinks(prefs.savedRequestLinks||[]);
-    if(!links.length){const p=document.createElement("p");p.className="small";p.textContent="Inga länkar har sparats ännu.";linkHistory.append(p);}
-    else links.forEach(url=>{const row=document.createElement("div");row.className="link-history-item";const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener noreferrer";a.textContent=url;const copy=makeButton("Kopiera","",()=>copyText(url,"Länken är kopierad."));row.append(a,copy);linkHistory.append(row);});
+    const youtube = alphabeticLinks((prefs.savedRequestLinks || []).filter(isYoutubeUrl));
+    fillSavedSelect(
+      youtubeLinksSelect,
+      "YouTube-länkar (" + youtube.length + ")",
+      youtube.map(url => ({value:url,label:url}))
+    );
+
+    const other = alphabeticLinks((prefs.savedRequestLinks || []).filter(url => !isYoutubeUrl(url)));
+    fillSavedSelect(
+      otherLinksSelect,
+      "Övriga länkar (" + other.length + ")",
+      other.map(url => ({value:url,label:url}))
+    );
   }
 
   async function saveCurrentRequest() {
@@ -985,16 +1070,15 @@
     prefs.savedRequestLinks=allLinks;
     prefs.currentFreeText=freeText;
     prefs.currentFreeTextSavedAt=now;
-    prefs.linkDraft=allLinks.join("\n");
-    requestLinks.value=prefs.linkDraft;
+    prefs.linkDraft=requestLinks.value;
     savePrefs();renderRequestLists();
     try{
       const remote=await readRequestsFromData();
       const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...prefs.freeTextHistory]);
       const mergedLinkHistory=uniqueLinkHistory([...remote.linkHistory,...linkRecords]);
       prefs.savedRequestLinks=uniqueLinks(mergedLinkHistory.map(x=>x.url));
-      prefs.linkDraft=prefs.savedRequestLinks.join("\n");
-      requestLinks.value=prefs.linkDraft;
+      prefs.linkDraft="";
+      requestLinks.value="";
       savePrefs();renderRequestLists();
       await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha);
       await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"Önskemålet är sparat i Data och kopierat till Urklipp.");
@@ -1019,8 +1103,8 @@
       });
       if (response.ok) {
         ownerToken = token;
-        ownerPanel.hidden = false;
         ownerSplitter.hidden = false;
+        setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
         renderRequestLists();
         try {
           await syncRequestsWithData();
@@ -1115,9 +1199,21 @@
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
 
+  ownerSplitter.addEventListener("click", () => {
+    prefs.ownerCollapsed = !prefs.ownerCollapsed;
+    savePrefs();
+    setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
+  });
+  filterSplitter.addEventListener("click", () => {
+    prefs.filterCollapsed = !prefs.filterCollapsed;
+    savePrefs();
+    setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
+  });
+
   requestFreeText.value = prefs.currentFreeText || "";
-  requestLinks.value = prefs.linkDraft || prefs.savedRequestLinks.join("\n");
+  requestLinks.value = prefs.linkDraft || "";
   renderRequestLists();
+  setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   detectOwnerMode();
   loadNews();
 })();
