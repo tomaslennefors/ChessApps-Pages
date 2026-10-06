@@ -33,6 +33,8 @@
     .details{font-size:.92rem;color:var(--muted);margin-bottom:10px}
     .summary{white-space:pre-wrap}
     .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
+    .web-address{font-size:.88rem;color:var(--muted);margin:6px 0 10px;overflow-wrap:anywhere}
+    .web-address a{color:var(--blue)}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -98,6 +100,11 @@
       <label>
         <span class="label-row">Kanal <input class="sortno" data-sort="kanal" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Webbadress <input class="sortno" data-sort="webbadress" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <input id="webAddressFilter" type="search" placeholder="Sök i webbadress">
       </label>
 
       <label>
@@ -186,7 +193,7 @@
   const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
-  const filterSchemaVersion = 3;
+  const filterSchemaVersion = 4;
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -203,6 +210,7 @@
   const sourceFilter = document.getElementById("sourceFilter");
   const publisherFilter = document.getElementById("publisherFilter");
   const channelFilter = document.getElementById("channelFilter");
+  const webAddressFilter = document.getElementById("webAddressFilter");
   const titleFilter = document.getElementById("titleFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
   const summaryFilter = document.getElementById("summaryFilter");
@@ -369,12 +377,46 @@
     return {items: unique, removed};
   }
 
+  async function hydrateYoutubeBasics(items) {
+    const jobs = items.filter(isYoutube).map(async item => {
+      const address = String(item.webbadress || item.länk || item.youtube_länk || item.youtube_url || "").trim();
+      if (!address) return;
+      item.webbadress = address;
+
+      const needsTitle = !item.titel || /^YouTube-klipp\b/i.test(item.titel) || /^YouTube-video\b/i.test(item.titel);
+      const needsChannel = !item.kanal || item.kanal === "Inte verifierad";
+      const needsPublisher = !item.utgivare || item.utgivare === "Inte verifierad";
+
+      if (!needsTitle && !needsChannel && !needsPublisher) return;
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      try {
+        const endpoint = "https://www.youtube.com/oembed?url=" + encodeURIComponent(address) + "&format=json";
+        const response = await fetch(endpoint, {signal: controller.signal});
+        if (!response.ok) return;
+        const meta = await response.json();
+
+        if (needsTitle && meta?.title) item.titel = meta.title;
+        if (needsChannel && meta?.author_name) item.kanal = meta.author_name;
+        if (needsPublisher && meta?.author_name) item.utgivare = meta.author_name;
+      } catch {
+        // Behåll befintliga värden om YouTube inte lämnar ut metadata.
+      } finally {
+        clearTimeout(timer);
+      }
+    });
+
+    await Promise.allSettled(jobs);
+  }
+
   function restoreControls() {
     const f = prefs.filters;
     dateFilter.value = f.date || "";
     sourceFilter.value = f.source || "";
     publisherFilter.value = f.publisher || "";
     channelFilter.value = f.channel || "";
+    webAddressFilter.value = f.webAddress || "";
     titleFilter.value = f.title || "";
     exactTitleFilter.value = f.exactTitle || "";
     summaryFilter.value = f.summary || "";
@@ -397,6 +439,7 @@
       source: sourceFilter.value,
       publisher: publisherFilter.value,
       channel: channelFilter.value,
+      webAddress: webAddressFilter.value,
       title: titleFilter.value,
       exactTitle: exactTitleFilter.value,
       summary: summaryFilter.value,
@@ -422,6 +465,7 @@
     const source = sourceFilter.value;
     const publisher = publisherFilter.value;
     const channel = channelFilter.value;
+    const webAddress = normalize(webAddressFilter.value.trim());
     const title = normalize(titleFilter.value.trim());
     const exactTitle = exactTitleFilter.value;
     const summary = normalize(summaryFilter.value.trim());
@@ -444,6 +488,7 @@
       if (source && item.källa !== source) return false;
       if (publisher && item.utgivare !== publisher) return false;
       if (channel && item.kanal !== channel) return false;
+      if (webAddress && !normalize(item.webbadress || item.länk).includes(webAddress)) return false;
       if (title && !normalize(item.titel).includes(title)) return false;
       if (exactTitle && item.titel !== exactTitle) return false;
       if (summary && !normalize(item.sammanfattning).includes(summary)) return false;
@@ -473,6 +518,7 @@
     if (field === "källa") return String(item.källa || "");
     if (field === "utgivare") return String(item.utgivare || "");
     if (field === "kanal") return String(item.kanal || "");
+    if (field === "webbadress") return String(item.webbadress || item.länk || "");
     if (field === "titel" || field === "fullTitel") return String(item.titel || "");
     if (field === "sammanfattning") return String(item.sammanfattning || "");
     if (field === "språk") return String(item.språk || "");
@@ -556,6 +602,19 @@
       if (archived) parts.push("Arkiverad");
       details.textContent = parts.join(" · ");
 
+      const webAddress = document.createElement("div");
+      webAddress.className = "web-address";
+      if (youtube) {
+        const addr = String(item.webbadress || item.länk || "");
+        const label = document.createTextNode("Webbadress: ");
+        const a = document.createElement("a");
+        a.href = addr;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = addr;
+        webAddress.append(label, a);
+      }
+
       const tags = document.createElement("div");
       tags.className = "tags";
       for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
@@ -614,7 +673,9 @@
       });
       actions.append(archiveBtn);
 
-      article.append(star, h2, details, tags, summary);
+      article.append(star, h2, details);
+      if (youtube) article.append(webAddress);
+      article.append(tags, summary);
       if (youtube) article.append(transcriptInfo);
       article.append(actions);
       listEl.append(article);
@@ -635,6 +696,7 @@
     sourceFilter.value = "";
     publisherFilter.value = "";
     channelFilter.value = "";
+    webAddressFilter.value = "";
     titleFilter.value = "";
     exactTitleFilter.value = "";
     summaryFilter.value = "";
@@ -965,6 +1027,14 @@
       const deduped = dedupeNews(data.nyheter);
       allNews = deduped.items;
       duplicateCount = deduped.removed;
+
+      for (const item of allNews.filter(isYoutube)) {
+        item.webbadress = String(item.webbadress || item.länk || item.youtube_länk || item.youtube_url || "").trim();
+      }
+
+      statusEl.textContent = "Hämtar YouTube-rubriker...";
+      await hydrateYoutubeBasics(allNews);
+
       metaEl.textContent = allNews.length + " gemensamma nyheter ligger i den publika JSON-filen."
         + (duplicateCount ? " " + duplicateCount + " dubblett" + (duplicateCount === 1 ? "" : "er") + " doldes automatiskt." : "");
 
@@ -977,6 +1047,7 @@
         sourceFilter.value = "";
         publisherFilter.value = "";
         channelFilter.value = "";
+        webAddressFilter.value = "";
         titleFilter.value = "";
         exactTitleFilter.value = "";
         summaryFilter.value = "";
@@ -1005,7 +1076,7 @@
   for (const control of [dateFilter, sourceFilter, publisherFilter, channelFilter, exactTitleFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
     control.addEventListener("change", applyFilters);
   }
-  for (const control of [titleFilter, summaryFilter, transcriptFilter]) {
+  for (const control of [webAddressFilter, titleFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", applyFilters);
   }
   sortInputs.forEach(x => x.addEventListener("change", applyFilters));
