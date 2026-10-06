@@ -14,6 +14,8 @@
     .private-view-control{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:.92rem}
     .private-view-control label{display:flex;align-items:center;gap:8px;font-weight:650;cursor:pointer}
     .private-view-control input{width:auto;margin:0}
+    .rules-area{margin:8px 0 14px}
+    .rules-area textarea{min-height:260px;max-height:520px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.45;background:#fff}
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
@@ -90,6 +92,11 @@
 
   <div id="privateViewControl" class="private-view-control" hidden>
     <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
+  </div>
+
+  <div class="rules-area">
+    <button id="rulesBtn" type="button">Regler</button>
+    <textarea id="rulesText" readonly hidden aria-label="Regler för IT-Nyheter"></textarea>
   </div>
 
   <section id="ownerPanel" class="panel" hidden>
@@ -243,6 +250,7 @@
 <script>
 (() => {
   const dataUrl = "./nyheter.json";
+  const rulesUrl = "./Regler_Nyheter.md";
   const storageKey = "ITNyheter_Settings_V2";
   const tokenKey = "ChessApps_GitHubToken";
   const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
@@ -256,6 +264,8 @@
   const metaEl = document.getElementById("meta");
   const privateViewControl = document.getElementById("privateViewControl");
   const privateViewCheckbox = document.getElementById("privateViewCheckbox");
+  const rulesBtn = document.getElementById("rulesBtn");
+  const rulesText = document.getElementById("rulesText");
   const statusEl = document.getElementById("status");
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
@@ -822,7 +832,7 @@
     if (categories.length) parts.push("Kategorier: " + categories.join(", "));
 
     if (item.sammanfattning) parts.push(String(item.sammanfattning));
-    if (detailedArticle) {
+    if (!youtube) {
       const body = String(item.läsvy || item.lasvy || "").trim();
       if (body && body !== String(item.sammanfattning || "").trim()) parts.push(body);
     }
@@ -882,7 +892,7 @@
       return;
     }
 
-    const showSingle = sorted.length === 1;
+    const showSingle = !!exactTitleFilter.value && sorted.length === 1;
 
     for (const item of sorted) {
       const key = itemKey(item);
@@ -1014,7 +1024,7 @@
       article.append(actions);
       listEl.append(article);
 
-      if (showSingle && youtube && exactTitleFilter.value) {
+      if (showSingle && youtube) {
         const videoId = youtubeVideoId(item);
         if (videoId) {
           const player = document.createElement("div");
@@ -1446,6 +1456,27 @@
     }
   }
 
+  async function toggleRules() {
+    if (!rulesText.hidden) {
+      rulesText.hidden = true;
+      rulesBtn.textContent = "Regler";
+      return;
+    }
+
+    rulesBtn.disabled = true;
+    try {
+      const response = await fetch(rulesUrl + "?t=" + Date.now(), {cache:"no-store"});
+      if (!response.ok) throw new Error("Kunde inte läsa Regler_Nyheter.md. HTTP " + response.status);
+      rulesText.value = await response.text();
+      rulesText.hidden = false;
+      rulesBtn.textContent = "Dölj regler";
+    } catch (err) {
+      statusEl.textContent = "FEL:\n" + (err?.message || String(err));
+    } finally {
+      rulesBtn.disabled = false;
+    }
+  }
+
   async function loadNews() {
     reloadBtn.disabled = true;
     statusEl.textContent = "Hämtar nyheter...";
@@ -1581,6 +1612,7 @@
     savePrefs();
   });
   savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
+  rulesBtn.addEventListener("click", toggleRules);
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
 
