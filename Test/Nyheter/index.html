@@ -121,9 +121,9 @@
       <label>
         Arkiv
         <select id="archiveFilter">
+          <option value="all" selected>Alla</option>
           <option value="active">Ej arkiverade</option>
           <option value="archived">Endast arkiverade</option>
-          <option value="all">Alla</option>
         </select>
       </label>
 
@@ -223,7 +223,27 @@
   }
 
   function itemKey(item) {
-    return String(item.id ?? item.länk ?? item.titel ?? "");
+    const rawUrl = String(item.länk || item.youtube_länk || item.youtube_url || "").trim();
+    if (rawUrl) {
+      try {
+        const u = new URL(rawUrl);
+        const host = u.hostname.toLowerCase();
+        if (host.includes("youtube.com")) {
+          const videoId = u.searchParams.get("v");
+          if (videoId) return "youtube:" + videoId;
+        }
+        if (host === "youtu.be") {
+          const videoId = u.pathname.replace(/^\/+/, "").split("/")[0];
+          if (videoId) return "youtube:" + videoId;
+        }
+      } catch {}
+      const url = canonicalUrl(rawUrl);
+      if (url) return "url:" + url;
+    }
+
+    const title = normalizedTitle(item.titel || "");
+    if (title) return "title:" + title + "|" + String(item.datum || "");
+    return "id:" + String(item.id ?? "");
   }
 
   function isYoutube(item) {
@@ -324,7 +344,7 @@
     languageFilter.value = f.language || "";
     categoryFilter.value = f.category || "";
     favoriteFilter.value = f.favorite || "";
-    archiveFilter.value = f.archive || "active";
+    archiveFilter.value = f.archive || "all";
     typeFilter.value = f.type || "";
     fetchMoreText.value = prefs.fetchMoreDraft || (prefs.fetchRequests.length ? prefs.fetchRequests[prefs.fetchRequests.length - 1].text : "");
     sortInputs.forEach(input => {
@@ -533,7 +553,7 @@
     languageFilter.value = "";
     categoryFilter.value = "";
     favoriteFilter.value = "";
-    archiveFilter.value = "active";
+    archiveFilter.value = "all";
     typeFilter.value = "";
     sortInputs.forEach(x => x.value = "");
     applyFilters();
