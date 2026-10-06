@@ -565,7 +565,7 @@
     savePrefs();
   }
 
-  function getFilteredNews() {
+  function getFilteredNews(ignoreExactTitle = false) {
     const date = dateFilter.value;
     const source = sourceFilter.value;
     const publisher = publisherFilter.value;
@@ -595,7 +595,7 @@
       if (channel && item.kanal !== channel) return false;
       if (webAddress && !normalize(item.webbadress || item.länk).includes(webAddress)) return false;
       if (title && !normalize(item.titel).includes(title)) return false;
-      if (exactTitle && item.titel !== exactTitle) return false;
+      if (!ignoreExactTitle && exactTitle && item.titel !== exactTitle) return false;
       if (summary && !normalize(item.sammanfattning).includes(summary)) return false;
       if (language && item.språk !== language) return false;
       if (transcriptStatus && item.transkribering_status !== transcriptStatus) return false;
@@ -791,7 +791,18 @@
     statusEl.textContent = "Visar " + sorted.length + " av " + allNews.length + " nyheter. Favoriter: " + favCount + ". Arkiverade: " + archCount + ".";
   }
 
-  function applyFilters() {
+  function updateExactTitleOptions() {
+    const current = exactTitleFilter.value;
+    const matching = getFilteredNews(true);
+    const titles = uniqueSorted(matching.map(x => x.titel));
+    fillSelect(exactTitleFilter, titles, "Alla rubriker (" + titles.length + ")");
+    if (current && titles.includes(current)) {
+      exactTitleFilter.value = current;
+    }
+  }
+
+  function applyFilters(updateTitles = true) {
+    if (updateTitles) updateExactTitleOptions();
     captureControls();
     renderNews(getFilteredNews());
   }
@@ -1141,6 +1152,7 @@
 
       buildFilterOptions();
       restoreControls();
+      updateExactTitleOptions();
 
       let initialItems = getFilteredNews();
       if (!initialItems.length && allNews.length) {
@@ -1160,6 +1172,7 @@
         archiveFilter.value = "all";
         typeFilter.value = "";
         sortInputs.forEach(x => x.value = "");
+        updateExactTitleOptions();
         captureControls();
         initialItems = getFilteredNews();
         statusEl.textContent = "Sparade filter gav 0 träffar och återställdes automatiskt.";
@@ -1174,13 +1187,14 @@
     }
   }
 
-  for (const control of [dateFilter, sourceFilter, publisherFilter, channelFilter, exactTitleFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
-    control.addEventListener("change", applyFilters);
+  for (const control of [dateFilter, sourceFilter, publisherFilter, channelFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
+    control.addEventListener("change", () => applyFilters(true));
   }
+  exactTitleFilter.addEventListener("change", () => applyFilters(false));
   for (const control of [webAddressFilter, titleFilter, summaryFilter, transcriptFilter]) {
-    control.addEventListener("input", applyFilters);
+    control.addEventListener("input", () => applyFilters(true));
   }
-  sortInputs.forEach(x => x.addEventListener("change", applyFilters));
+  sortInputs.forEach(x => x.addEventListener("change", () => applyFilters(false)));
   requestFreeText.addEventListener("input", () => {
     prefs.currentFreeText = requestFreeText.value;
     savePrefs();
