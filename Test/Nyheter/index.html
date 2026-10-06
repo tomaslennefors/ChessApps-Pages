@@ -46,11 +46,16 @@
     [hidden]{display:none!important}
     .request-history{margin-top:16px}
     .request-history h3{margin:0 0 8px;font-size:1rem}
-    .request-item{border-top:1px solid var(--line);padding:12px 0}
+    .request-item{border-top:1px solid var(--line);padding:8px 0;cursor:pointer}
     .request-item:first-child{border-top:0}
-    .request-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
-    .request-date{font-size:.82rem;color:var(--muted)}
-    .request-text{white-space:pre-wrap;background:#f6f8fa;border:1px solid var(--line);border-radius:7px;padding:9px;font-size:.9rem}
+    .request-item:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:7px}
+    .request-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+    .request-date{font-size:.82rem;color:var(--muted);white-space:nowrap}
+    .request-preview{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
+    .request-text{display:none;white-space:pre-wrap;background:#f6f8fa;border:1px solid var(--line);border-radius:7px;padding:12px;font-size:.95rem;line-height:1.5;margin-top:9px;min-height:150px;max-height:420px;overflow:auto;cursor:text}
+    .request-item.expanded .request-text{display:block}
+    .request-item.expanded .request-preview{font-weight:650}
+    @media(max-width:600px){.request-head{grid-template-columns:1fr auto}.request-date{grid-column:1}.request-preview{grid-column:1 / -1;grid-row:2}.request-head button{grid-column:2;grid-row:1}}
     @media(max-width:600px){body{margin-top:16px}.news{padding:15px}.news h2{margin-right:42px}}
   </style>
 </head>
@@ -715,6 +720,10 @@
       const originalIndex = requests.length - 1 - reverseIndex;
       const item = document.createElement("div");
       item.className = "request-item";
+      item.tabIndex = 0;
+      item.setAttribute("role", "button");
+      item.setAttribute("aria-expanded", "false");
+      item.title = "Klicka för att visa hela önskemålet";
 
       const head = document.createElement("div");
       head.className = "request-head";
@@ -723,15 +732,36 @@
       date.className = "request-date";
       date.textContent = (originalIndex === requests.length - 1 ? "Aktuellt · " : "") + formatSavedAt(request.savedAt);
 
-      const copy = makeButton("Kopiera", "", () => {
+      const preview = document.createElement("span");
+      preview.className = "request-preview";
+      preview.textContent = request.text.replace(/\s+/g, " ").trim();
+
+      const copy = makeButton("Kopiera", "", (event) => {
+        event?.stopPropagation?.();
         copyText(request.text, "Det sparade önskemålet är kopierat. Det aktuella önskemålet har inte ändrats.");
       });
+      copy.addEventListener("click", event => event.stopPropagation());
 
       const body = document.createElement("div");
       body.className = "request-text";
       body.textContent = request.text;
+      body.addEventListener("click", event => event.stopPropagation());
 
-      head.append(date, copy);
+      function toggleExpanded() {
+        const expanded = item.classList.toggle("expanded");
+        item.setAttribute("aria-expanded", String(expanded));
+        item.title = expanded ? "Klicka för att fälla ihop önskemålet" : "Klicka för att visa hela önskemålet";
+      }
+
+      item.addEventListener("click", toggleExpanded);
+      item.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggleExpanded();
+        }
+      });
+
+      head.append(date, preview, copy);
       item.append(head, body);
       requestHistory.append(item);
     });
