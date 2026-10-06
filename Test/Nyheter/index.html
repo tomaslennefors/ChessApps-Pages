@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AI-nyheter</title>
+  <title>IT-Nyheter</title>
   <style>
     *{box-sizing:border-box}
     body{font-family:system-ui,Arial,sans-serif;max-width:980px;margin:28px auto;padding:0 16px;line-height:1.55;background:#fafafa;color:#1f2328}
@@ -31,7 +31,7 @@
   </style>
 </head>
 <body>
-  <h1 id="title">AI-nyheter</h1>
+  <h1 id="title">IT-Nyheter</h1>
   <div id="meta"></div>
 
   <div class="filters">
@@ -51,6 +51,13 @@
       <label>
         Rubrik
         <input id="titleFilter" type="search" placeholder="Sök i rubrik">
+      </label>
+
+      <label>
+        Fullständig rubrik
+        <select id="exactTitleFilter">
+          <option value="">Alla rubriker</option>
+        </select>
       </label>
 
       <label>
@@ -100,6 +107,7 @@
   const dateFilter = document.getElementById("dateFilter");
   const sourceFilter = document.getElementById("sourceFilter");
   const titleFilter = document.getElementById("titleFilter");
+  const exactTitleFilter = document.getElementById("exactTitleFilter");
   const languageFilter = document.getElementById("languageFilter");
   const categoryFilter = document.getElementById("categoryFilter");
 
@@ -157,6 +165,12 @@
     );
 
     fillSelect(
+      exactTitleFilter,
+      uniqueSorted(allNews.map(item => item.titel)),
+      "Alla rubriker"
+    );
+
+    fillSelect(
       languageFilter,
       uniqueSorted(allNews.map(item => item.språk)),
       "Alla språk"
@@ -177,6 +191,7 @@
     const date = dateFilter.value;
     const source = sourceFilter.value;
     const title = normalize(titleFilter.value.trim());
+    const exactTitle = exactTitleFilter.value;
     const language = languageFilter.value;
     const category = categoryFilter.value;
 
@@ -186,6 +201,7 @@
       if (date && item.datum !== date) return false;
       if (source && item.källa !== source) return false;
       if (title && !normalize(item.titel).includes(title)) return false;
+      if (exactTitle && item.titel !== exactTitle) return false;
       if (language && item.språk !== language) return false;
       if (category && !categories.includes(category)) return false;
 
@@ -258,6 +274,7 @@
     dateFilter.value = "";
     sourceFilter.value = "";
     titleFilter.value = "";
+    exactTitleFilter.value = "";
     languageFilter.value = "";
     categoryFilter.value = "";
     applyFilters();
@@ -291,7 +308,7 @@
       const jsonText = decodeBase64Utf8(file.content || "");
       const data = JSON.parse(jsonText);
 
-      titleEl.textContent = data.rubrik || "AI-nyheter";
+      titleEl.textContent = data.rubrik || "IT-Nyheter";
       allNews = Array.isArray(data.nyheter) ? data.nyheter : [];
       metaEl.textContent = allNews.length + " nyheter lagrade i Data.";
 
@@ -305,7 +322,7 @@
     }
   }
 
-  for (const control of [dateFilter, sourceFilter, languageFilter, categoryFilter]) {
+  for (const control of [dateFilter, sourceFilter, exactTitleFilter, languageFilter, categoryFilter]) {
     control.addEventListener("change", applyFilters);
   }
   titleFilter.addEventListener("input", applyFilters);
