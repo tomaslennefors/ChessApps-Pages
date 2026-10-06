@@ -11,6 +11,9 @@
     h1{font-size:1.9rem;margin:0 0 4px}
     h2{margin-top:0}
     #meta{color:var(--muted);margin-bottom:16px}
+    .private-view-control{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:.92rem}
+    .private-view-control label{display:flex;align-items:center;gap:8px;font-weight:650;cursor:pointer}
+    .private-view-control input{width:auto;margin:0}
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
@@ -80,6 +83,10 @@
 <body>
   <h1 id="title">IT-Nyheter</h1>
   <div id="meta"></div>
+
+  <div id="privateViewControl" class="private-view-control" hidden>
+    <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
+  </div>
 
   <section id="ownerPanel" class="panel" hidden>
     <h2>HämtaNyheter</h2>
@@ -243,6 +250,8 @@
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
+  const privateViewControl = document.getElementById("privateViewControl");
+  const privateViewCheckbox = document.getElementById("privateViewCheckbox");
   const statusEl = document.getElementById("status");
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
@@ -280,6 +289,7 @@
   let allNews = [];
   let duplicateCount = 0;
   let ownerToken = "";
+  let ownerAuthenticated = false;
   let ownerMode = false;
   let privateNewsById = new Map();
   let prefs = loadPrefs();
@@ -349,10 +359,11 @@
         currentFreeTextSavedAt: typeof p.currentFreeTextSavedAt === "string" ? p.currentFreeTextSavedAt : (latestFree?.savedAt || ""),
         linkDraft: p.requestUiVersion === 2 && typeof p.linkDraft === "string" ? p.linkDraft : "",
         ownerCollapsed: !!p.ownerCollapsed,
-        filterCollapsed: !!p.filterCollapsed
+        filterCollapsed: !!p.filterCollapsed,
+        privateView: p.privateView !== false
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false};
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true};
     }
   }
 
@@ -421,6 +432,34 @@
     dateFilter.type = ownerMode ? "date" : "month";
     dateFilterCaption.textContent = ownerMode ? "Datum" : "Månad";
     exactTitleCaption.textContent = ownerMode ? "Fullständig rubrik" : "Omskriven rubrik";
+
+    if (!ownerAuthenticated) {
+      privateViewControl.hidden = true;
+      ownerPanel.hidden = true;
+      ownerSplitter.hidden = true;
+      return;
+    }
+
+    privateViewControl.hidden = false;
+    privateViewCheckbox.checked = ownerMode;
+
+    if (ownerMode) {
+      ownerSplitter.hidden = false;
+      setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
+    } else {
+      ownerPanel.hidden = true;
+      ownerSplitter.hidden = true;
+      sourceFilter.value = "";
+    }
+  }
+
+  function refreshViewAfterPrivacyChange() {
+    setPrivacyUi();
+    if (!allNews.length) return;
+    buildFilterOptions();
+    restoreControls();
+    updateExactTitleOptions();
+    renderNews(getFilteredNews());
   }
 
   async function readPrivateNewsMetadata() {
@@ -440,7 +479,7 @@
   }
 
   function applyPrivateNewsMetadata() {
-    if (!ownerMode || !privateNewsById.size) return;
+    if (!ownerAuthenticated || !privateNewsById.size) return;
     for (const item of allNews) {
       const extra = privateNewsById.get(String(item.id));
       if (extra) Object.assign(item, extra);
@@ -1262,6 +1301,8 @@
   async function detectOwnerMode() {
     ownerPanel.hidden = true;
     ownerSplitter.hidden = true;
+    privateViewControl.hidden = true;
+    ownerAuthenticated = false;
     ownerMode = false;
     setPrivacyUi();
 
@@ -1283,21 +1324,15 @@
 
       if (response.ok) {
         ownerToken = token;
-        ownerMode = true;
+        ownerAuthenticated = true;
+        ownerMode = prefs.privateView !== false;
         setPrivacyUi();
-        ownerSplitter.hidden = false;
-        setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
         renderRequestLists();
 
         try {
           privateNewsById = await readPrivateNewsMetadata();
           applyPrivateNewsMetadata();
-          if (allNews.length) {
-            buildFilterOptions();
-            restoreControls();
-            updateExactTitleOptions();
-            renderNews(getFilteredNews());
-          }
+          refreshViewAfterPrivacyChange();
         } catch (err) {
           statusEl.textContent = "Ägardelen är öppnad, men privat artikelmetadata kunde inte läsas: " + (err?.message || String(err));
         }
@@ -1308,20 +1343,18 @@
           statusEl.textContent = "Ägardelen är öppnad, men HämtaNyheter kunde inte synkroniseras med Data: " + (err?.message || String(err));
         }
       } else {
+        ownerAuthenticated = false;
         ownerMode = false;
         sourceFilter.value = "";
         setPrivacyUi();
-        if (allNews.length) {
-          buildFilterOptions();
-          restoreControls();
-          updateExactTitleOptions();
-          renderNews(getFilteredNews());
-        }
+        if (allNews.length) refreshViewAfterPrivacyChange();
       }
     } catch {
+      ownerAuthenticated = false;
       ownerMode = false;
       ownerPanel.hidden = true;
       ownerSplitter.hidden = true;
+      privateViewControl.hidden = true;
       sourceFilter.value = "";
       setPrivacyUi();
     }
@@ -1460,6 +1493,14 @@
   savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
+
+  privateViewCheckbox.addEventListener("change", () => {
+    if (!ownerAuthenticated) return;
+    prefs.privateView = privateViewCheckbox.checked;
+    savePrefs();
+    ownerMode = privateViewCheckbox.checked;
+    refreshViewAfterPrivacyChange();
+  });
 
   ownerSplitter.addEventListener("click", () => {
     prefs.ownerCollapsed = !prefs.ownerCollapsed;
