@@ -350,13 +350,7 @@
   }
 
   function isYoutubeUrl(value) {
-    try {
-      const u = new URL(String(value || "").trim());
-      const host = u.hostname.toLowerCase();
-      return host === "youtu.be" || host === "youtube.com" || host.endsWith(".youtube.com");
-    } catch {
-      return false;
-    }
+    return /^https?:\/\/(?:www\.)?(?:youtube\.com\/|youtu\.be\/)/i.test(String(value || "").trim());
   }
 
   function alphabeticLinks(values) {
