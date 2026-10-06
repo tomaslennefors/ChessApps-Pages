@@ -35,8 +35,10 @@
     .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
     .web-address{font-size:.88rem;color:var(--muted);margin:6px 0 10px;overflow-wrap:anywhere}
     .web-address a{color:var(--blue)}
-    .youtube-player{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-    .youtube-player iframe{display:block;width:100%;height:100%;border:0}
+    .youtube-player,.article-viewer{width:100%;aspect-ratio:16/9;margin:-4px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .youtube-player{background:#000}
+    .article-viewer{background:#fff}
+    .youtube-player iframe,.article-viewer iframe{display:block;width:100%;height:100%;border:0}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -216,7 +218,7 @@
       <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
       <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
     </label>
-    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa rubrik · Mellanslag = starta vald YouTube-video.</div>
+    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa artikel eller video · Mellanslag = starta vald YouTube-video.</div>
   </div>
 
   <div id="list"></div>
@@ -824,6 +826,18 @@
           player.append(iframe);
           listEl.append(player);
         }
+      } else if (showEmbeddedVideo && !youtube && item.länk) {
+        const viewer = document.createElement("div");
+        viewer.className = "article-viewer";
+
+        const iframe = document.createElement("iframe");
+        iframe.src = item.länk;
+        iframe.title = item.titel || "Artikel";
+        iframe.loading = "lazy";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+        viewer.append(iframe);
+        listEl.append(viewer);
       }
     }
 
