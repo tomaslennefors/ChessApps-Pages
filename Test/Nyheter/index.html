@@ -43,6 +43,14 @@
     .count{font-weight:650}
     .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
+    [hidden]{display:none!important}
+    .request-history{margin-top:16px}
+    .request-history h3{margin:0 0 8px;font-size:1rem}
+    .request-item{border-top:1px solid var(--line);padding:12px 0}
+    .request-item:first-child{border-top:0}
+    .request-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+    .request-date{font-size:.82rem;color:var(--muted)}
+    .request-text{white-space:pre-wrap;background:#f6f8fa;border:1px solid var(--line);border-radius:7px;padding:9px;font-size:.9rem}
     @media(max-width:600px){body{margin-top:16px}.news{padding:15px}.news h2{margin-right:42px}}
   </style>
 </head>
@@ -50,13 +58,18 @@
   <h1 id="title">IT-Nyheter</h1>
   <div id="meta"></div>
 
-  <section class="panel">
-    <h2>Hämta fler nyheter</h2>
+  <section id="ownerPanel" class="panel" hidden>
+    <h2>HämtaNyheter</h2>
     <textarea id="fetchMoreText" placeholder="Skriv instruktioner till GPT om vilka nyheter som ska hämtas nästa gång..."></textarea>
     <div class="actions">
-      <button id="copyPromptBtn" class="primary" type="button">Kopiera till GPT</button>
+      <button id="savePromptBtn" class="primary" type="button">Spara aktuellt önskemål</button>
+      <button id="copyPromptBtn" type="button">Kopiera aktuellt</button>
     </div>
-    <p class="prompt-note">Texten sparas automatiskt i den här webbläsarens localStorage.</p>
+    <p class="prompt-note">Varje sparad formulering läggs i historiken. Endast den senast sparade formuleringen är aktuell och ska användas för nästa nyhetshämtning.</p>
+    <div class="request-history">
+      <h3>Tidigare önskemål</h3>
+      <div id="requestHistory"></div>
+    </div>
   </section>
 
   <div class="filters">
@@ -130,13 +143,15 @@
   <div id="list"></div>
 
   <p class="small">
-    Nyhetsfilen ligger publikt tillsammans med appen på GitHub Pages. Filter, sorteringsordning, favoriter, arkivering och texten ovan sparas bara lokalt i respektive webbläsare.
+    Nyhetsfilen ligger publikt tillsammans med appen på GitHub Pages. Filter, sorteringsordning, favoriter och arkivering sparas bara lokalt i respektive webbläsare. Ägardelen HämtaNyheter visas endast för en webbläsare vars GitHub-token har åtkomst till det privata Data-repot.
   </p>
 
 <script>
 (() => {
   const dataUrl = "./nyheter.json";
   const storageKey = "ITNyheter_Settings_V2";
+  const tokenKey = "ChessApps_GitHubToken";
+  const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -144,8 +159,11 @@
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
   const clearBtn = document.getElementById("clearBtn");
+  const ownerPanel = document.getElementById("ownerPanel");
+  const savePromptBtn = document.getElementById("savePromptBtn");
   const copyPromptBtn = document.getElementById("copyPromptBtn");
   const fetchMoreText = document.getElementById("fetchMoreText");
+  const requestHistory = document.getElementById("requestHistory");
   const dateFilter = document.getElementById("dateFilter");
   const sourceFilter = document.getElementById("sourceFilter");
   const titleFilter = document.getElementById("titleFilter");
@@ -163,15 +181,28 @@
   function loadPrefs() {
     try {
       const p = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      const legacyText = typeof p.fetchMoreText === "string" ? p.fetchMoreText.trim() : "";
+      let requests = Array.isArray(p.fetchRequests)
+        ? p.fetchRequests.filter(x => x && typeof x.text === "string" && x.text.trim()).map(x => ({
+            text: x.text.trim(),
+            savedAt: typeof x.savedAt === "string" ? x.savedAt : ""
+          }))
+        : [];
+      if (!requests.length && legacyText) {
+        requests = [{text: legacyText, savedAt: ""}];
+      }
       return {
         favorites: p.favorites && typeof p.favorites === "object" ? p.favorites : {},
         archived: p.archived && typeof p.archived === "object" ? p.archived : {},
         filters: p.filters && typeof p.filters === "object" ? p.filters : {},
         sort: p.sort && typeof p.sort === "object" ? p.sort : {},
-        fetchMoreText: typeof p.fetchMoreText === "string" ? p.fetchMoreText : ""
+        fetchRequests: requests,
+        fetchMoreDraft: typeof p.fetchMoreDraft === "string"
+          ? p.fetchMoreDraft
+          : (requests.length ? requests[requests.length - 1].text : legacyText)
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, fetchMoreText:""};
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, fetchRequests:[], fetchMoreDraft:""};
     }
   }
 
@@ -231,7 +262,7 @@
     favoriteFilter.value = f.favorite || "";
     archiveFilter.value = f.archive || "active";
     typeFilter.value = f.type || "";
-    fetchMoreText.value = prefs.fetchMoreText || "";
+    fetchMoreText.value = prefs.fetchMoreDraft || (prefs.fetchRequests.length ? prefs.fetchRequests[prefs.fetchRequests.length - 1].text : "");
     sortInputs.forEach(input => {
       input.value = prefs.sort[input.dataset.sort] || "";
     });
@@ -249,7 +280,7 @@
       archive: archiveFilter.value,
       type: typeFilter.value
     };
-    prefs.fetchMoreText = fetchMoreText.value;
+    prefs.fetchMoreDraft = fetchMoreText.value;
     prefs.sort = {};
     sortInputs.forEach(input => {
       const n = Number(input.value);
@@ -444,20 +475,114 @@
     applyFilters();
   }
 
-  async function copyPrompt() {
-    captureControls();
-    const text = fetchMoreText.value.trim();
-    if (!text) {
-      statusEl.textContent = "Skriv först något i Hämta fler nyheter.";
-      return;
-    }
+  function formatSavedAt(value) {
+    if (!value) return "Tidigare sparat önskemål";
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? value : d.toLocaleString("sv-SE");
+  }
+
+  async function copyText(text, message) {
     try {
       await navigator.clipboard.writeText(text);
-      statusEl.textContent = "Texten i Hämta fler nyheter är kopierad.";
+      statusEl.textContent = message;
     } catch {
-      fetchMoreText.select();
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      temp.style.position = "fixed";
+      temp.style.opacity = "0";
+      document.body.append(temp);
+      temp.select();
       document.execCommand("copy");
-      statusEl.textContent = "Texten i Hämta fler nyheter är kopierad.";
+      temp.remove();
+      statusEl.textContent = message;
+    }
+  }
+
+  function renderRequestHistory() {
+    requestHistory.replaceChildren();
+    const requests = Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : [];
+    if (!requests.length) {
+      const p = document.createElement("p");
+      p.className = "small";
+      p.textContent = "Inga tidigare önskemål sparade ännu.";
+      requestHistory.append(p);
+      return;
+    }
+
+    [...requests].reverse().forEach((request, reverseIndex) => {
+      const originalIndex = requests.length - 1 - reverseIndex;
+      const item = document.createElement("div");
+      item.className = "request-item";
+
+      const head = document.createElement("div");
+      head.className = "request-head";
+
+      const date = document.createElement("span");
+      date.className = "request-date";
+      date.textContent = (originalIndex === requests.length - 1 ? "Aktuellt · " : "") + formatSavedAt(request.savedAt);
+
+      const copy = makeButton("Kopiera", "", () => {
+        copyText(request.text, "Det sparade önskemålet är kopierat. Det aktuella önskemålet har inte ändrats.");
+      });
+
+      const body = document.createElement("div");
+      body.className = "request-text";
+      body.textContent = request.text;
+
+      head.append(date, copy);
+      item.append(head, body);
+      requestHistory.append(item);
+    });
+  }
+
+  function saveCurrentRequest() {
+    const text = fetchMoreText.value.trim();
+    if (!text) {
+      statusEl.textContent = "Skriv först ett önskemål i HämtaNyheter.";
+      return false;
+    }
+
+    const requests = Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : [];
+    const latest = requests.length ? requests[requests.length - 1].text : "";
+    if (latest !== text) {
+      requests.push({text, savedAt: new Date().toISOString()});
+      prefs.fetchRequests = requests;
+    }
+    prefs.fetchMoreDraft = text;
+    savePrefs();
+    renderRequestHistory();
+    statusEl.textContent = latest === text
+      ? "Detta är redan det aktuella önskemålet."
+      : "Önskemålet är sparat och är nu det enda aktuella alternativet.";
+    return true;
+  }
+
+  async function copyPrompt() {
+    if (!saveCurrentRequest()) return;
+    const current = prefs.fetchRequests[prefs.fetchRequests.length - 1]?.text || "";
+    await copyText(current, "Det aktuella önskemålet är kopierat.");
+  }
+
+  async function detectOwnerMode() {
+    ownerPanel.hidden = true;
+    const token = localStorage.getItem(tokenKey);
+    if (!token) return;
+
+    try {
+      const response = await fetch(ownerRepoUrl, {
+        headers: {
+          "Accept": "application/vnd.github+json",
+          "Authorization": "Bearer " + token,
+          "X-GitHub-Api-Version": "2022-11-28"
+        },
+        cache: "no-store"
+      });
+      if (response.ok) {
+        ownerPanel.hidden = false;
+        renderRequestHistory();
+      }
+    } catch {
+      ownerPanel.hidden = true;
     }
   }
 
@@ -492,14 +617,16 @@
   titleFilter.addEventListener("input", applyFilters);
   sortInputs.forEach(x => x.addEventListener("change", applyFilters));
   fetchMoreText.addEventListener("input", () => {
-    prefs.fetchMoreText = fetchMoreText.value;
+    prefs.fetchMoreDraft = fetchMoreText.value;
     savePrefs();
   });
+  savePromptBtn.addEventListener("click", saveCurrentRequest);
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
   copyPromptBtn.addEventListener("click", copyPrompt);
 
-  fetchMoreText.value = prefs.fetchMoreText || "";
+  fetchMoreText.value = prefs.fetchMoreDraft || (prefs.fetchRequests.length ? prefs.fetchRequests[prefs.fetchRequests.length - 1].text : "");
+  detectOwnerMode();
   loadNews();
 })();
 </script>
