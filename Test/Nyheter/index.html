@@ -152,6 +152,9 @@
   const storageKey = "ITNyheter_Settings_V2";
   const tokenKey = "ChessApps_GitHubToken";
   const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
+  const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
+  const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
+  const requestBranch = "main";
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -176,6 +179,8 @@
   const sortInputs = [...document.querySelectorAll(".sortno")];
 
   let allNews = [];
+  let duplicateCount = 0;
+  let ownerToken = "";
   let prefs = loadPrefs();
 
   function loadPrefs() {
@@ -249,6 +254,58 @@
 
   function normalize(text) {
     return String(text || "").toLocaleLowerCase("sv");
+  }
+
+  function normalizedTitle(text) {
+    return normalize(text)
+      .normalize("NFKC")
+      .replace(/[^a-z0-9åäö]+/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function canonicalUrl(value) {
+    if (!value) return "";
+    try {
+      const u = new URL(value);
+      u.hash = "";
+      for (const key of [...u.searchParams.keys()]) {
+        if (/^(utm_|fbclid$|gclid$|mc_cid$|mc_eid$)/i.test(key)) {
+          u.searchParams.delete(key);
+        }
+      }
+      let href = u.toString();
+      if (u.pathname !== "/" && href.endsWith("/")) href = href.slice(0, -1);
+      return href.toLocaleLowerCase("sv");
+    } catch {
+      return String(value).trim().toLocaleLowerCase("sv");
+    }
+  }
+
+  function dedupeNews(items) {
+    const seenUrls = new Set();
+    const seenTitles = new Set();
+    const unique = [];
+    let removed = 0;
+
+    for (const item of (Array.isArray(items) ? items : [])) {
+      const url = canonicalUrl(item.länk || item.youtube_länk || item.youtube_url || "");
+      const title = normalizedTitle(item.titel || "");
+
+      const duplicateByUrl = url && seenUrls.has(url);
+      const duplicateByTitle = title && seenTitles.has(title);
+
+      if (duplicateByUrl || duplicateByTitle) {
+        removed++;
+        continue;
+      }
+
+      if (url) seenUrls.add(url);
+      if (title) seenTitles.add(title);
+      unique.push(item);
+    }
+
+    return {items: unique, removed};
   }
 
   function restoreControls() {
@@ -498,6 +555,151 @@
     }
   }
 
+  function decodeBase64Utf8(base64) {
+    const binary = atob(String(base64 || "").replace(/\n/g, ""));
+    const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+
+  function encodeBase64Utf8(text) {
+    const bytes = new TextEncoder().encode(text);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(binary);
+  }
+
+  function githubHeaders(token) {
+    return {
+      "Accept": "application/vnd.github+json",
+      "Authorization": "Bearer " + token,
+      "X-GitHub-Api-Version": "2022-11-28"
+    };
+  }
+
+  function requestRecord(x) {
+    if (!x || typeof x.text !== "string" || !x.text.trim()) return null;
+    return {
+      text: x.text.trim(),
+      savedAt: typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")
+    };
+  }
+
+  function uniqueRequests(requests) {
+    const out = [];
+    const seen = new Set();
+    for (const raw of requests) {
+      const x = requestRecord(raw);
+      if (!x) continue;
+      const key = x.text;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(x);
+    }
+    return out.sort((a,b) => String(a.savedAt).localeCompare(String(b.savedAt)));
+  }
+
+  async function readRequestsFromData() {
+    if (!ownerToken) return {sha:null, requests:[], current:null};
+    const response = await fetch(requestDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      headers: githubHeaders(ownerToken),
+      cache: "no-store"
+    });
+
+    if (response.status === 404) return {sha:null, requests:[], current:null};
+    if (!response.ok) throw new Error("Kunde inte läsa HämtaNyheter från Data. HTTP " + response.status);
+
+    const file = await response.json();
+    const parsed = JSON.parse(decodeBase64Utf8(file.content || ""));
+    const remoteHistory = Array.isArray(parsed.historik) ? parsed.historik : [];
+    const current = requestRecord(parsed.aktuell);
+    return {
+      sha: file.sha || null,
+      requests: uniqueRequests([...remoteHistory, ...(current ? [current] : [])]),
+      current
+    };
+  }
+
+  async function writeRequestsToData(currentRequest, requests, knownSha = null) {
+    if (!ownerToken) throw new Error("Ägarens GitHub-token saknas.");
+
+    const body = {
+      aktuell: {
+        text: currentRequest.text,
+        sparad: currentRequest.savedAt
+      },
+      historik: uniqueRequests(requests).map(x => ({
+        text: x.text,
+        sparad: x.savedAt
+      }))
+    };
+
+    const payload = {
+      message: "Uppdatera HämtaNyheter",
+      content: encodeBase64Utf8(JSON.stringify(body, null, 2) + "\n"),
+      branch: requestBranch
+    };
+    if (knownSha) payload.sha = knownSha;
+
+    const response = await fetch(requestDataUrl, {
+      method: "PUT",
+      headers: {...githubHeaders(ownerToken), "Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      let detail = "";
+      try {
+        const err = await response.json();
+        detail = err?.message ? ": " + err.message : "";
+      } catch {}
+      throw new Error("Kunde inte spara HämtaNyheter i Data. HTTP " + response.status + detail);
+    }
+    return response.json();
+  }
+
+  async function syncRequestsWithData() {
+    if (!ownerToken) return;
+
+    const remote = await readRequestsFromData();
+    const localRequests = uniqueRequests(Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : []);
+    const merged = uniqueRequests([...remote.requests, ...localRequests]);
+
+    const localCurrent = localRequests.length ? localRequests[localRequests.length - 1] : null;
+    const remoteCurrent = remote.current;
+    let current = remoteCurrent || localCurrent;
+
+    if (localCurrent && (!remoteCurrent || String(localCurrent.savedAt) > String(remoteCurrent.savedAt))) {
+      current = localCurrent;
+    }
+
+    if (!current && prefs.fetchMoreDraft && prefs.fetchMoreDraft.trim()) {
+      current = {text:prefs.fetchMoreDraft.trim(), savedAt:new Date().toISOString()};
+      merged.push(current);
+    }
+
+    if (!current) {
+      prefs.fetchRequests = merged;
+      savePrefs();
+      renderRequestHistory();
+      return;
+    }
+
+    const finalRequests = uniqueRequests([...merged, current]);
+    prefs.fetchRequests = finalRequests;
+    prefs.fetchMoreDraft = current.text;
+    fetchMoreText.value = current.text;
+    savePrefs();
+    renderRequestHistory();
+
+    const remoteCurrentText = remoteCurrent?.text || "";
+    const remoteCurrentDate = remoteCurrent?.savedAt || "";
+    if (remoteCurrentText !== current.text || remoteCurrentDate !== current.savedAt || remote.requests.length !== finalRequests.length) {
+      await writeRequestsToData(current, finalRequests, remote.sha);
+    }
+  }
+
   function renderRequestHistory() {
     requestHistory.replaceChildren();
     const requests = Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : [];
@@ -535,7 +737,7 @@
     });
   }
 
-  function saveCurrentRequest() {
+  async function saveCurrentRequest() {
     const text = fetchMoreText.value.trim();
     if (!text) {
       statusEl.textContent = "Skriv först ett önskemål i HämtaNyheter.";
@@ -544,21 +746,36 @@
 
     const requests = Array.isArray(prefs.fetchRequests) ? prefs.fetchRequests : [];
     const latest = requests.length ? requests[requests.length - 1].text : "";
+    let current;
+
     if (latest !== text) {
-      requests.push({text, savedAt: new Date().toISOString()});
-      prefs.fetchRequests = requests;
+      current = {text, savedAt: new Date().toISOString()};
+      requests.push(current);
+      prefs.fetchRequests = uniqueRequests(requests);
+    } else {
+      current = prefs.fetchRequests[prefs.fetchRequests.length - 1];
+      if (!current.savedAt) current.savedAt = new Date().toISOString();
     }
+
     prefs.fetchMoreDraft = text;
     savePrefs();
     renderRequestHistory();
-    statusEl.textContent = latest === text
-      ? "Detta är redan det aktuella önskemålet."
-      : "Önskemålet är sparat och är nu det enda aktuella alternativet.";
-    return true;
+
+    try {
+      const remote = await readRequestsFromData();
+      await writeRequestsToData(current, prefs.fetchRequests, remote.sha);
+      statusEl.textContent = latest === text
+        ? "Det aktuella önskemålet är sparat i Data."
+        : "Önskemålet är sparat i Data och är nu det enda aktuella alternativet.";
+      return true;
+    } catch (err) {
+      statusEl.textContent = "Önskemålet sparades lokalt, men inte i Data: " + (err?.message || String(err));
+      return false;
+    }
   }
 
   async function copyPrompt() {
-    if (!saveCurrentRequest()) return;
+    if (!await saveCurrentRequest()) return;
     const current = prefs.fetchRequests[prefs.fetchRequests.length - 1]?.text || "";
     await copyText(current, "Det aktuella önskemålet är kopierat.");
   }
@@ -578,8 +795,14 @@
         cache: "no-store"
       });
       if (response.ok) {
+        ownerToken = token;
         ownerPanel.hidden = false;
         renderRequestHistory();
+        try {
+          await syncRequestsWithData();
+        } catch (err) {
+          statusEl.textContent = "Ägardelen är öppnad, men HämtaNyheter kunde inte synkroniseras med Data: " + (err?.message || String(err));
+        }
       }
     } catch {
       ownerPanel.hidden = true;
@@ -597,8 +820,11 @@
       const data = await response.json();
 
       titleEl.textContent = data.rubrik || "IT-Nyheter";
-      allNews = Array.isArray(data.nyheter) ? data.nyheter : [];
-      metaEl.textContent = allNews.length + " gemensamma nyheter ligger i den publika JSON-filen.";
+      const deduped = dedupeNews(data.nyheter);
+      allNews = deduped.items;
+      duplicateCount = deduped.removed;
+      metaEl.textContent = allNews.length + " gemensamma nyheter ligger i den publika JSON-filen."
+        + (duplicateCount ? " " + duplicateCount + " dubblett" + (duplicateCount === 1 ? "" : "er") + " doldes automatiskt." : "");
 
       buildFilterOptions();
       restoreControls();
@@ -620,7 +846,7 @@
     prefs.fetchMoreDraft = fetchMoreText.value;
     savePrefs();
   });
-  savePromptBtn.addEventListener("click", saveCurrentRequest);
+  savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", loadNews);
   copyPromptBtn.addEventListener("click", copyPrompt);
