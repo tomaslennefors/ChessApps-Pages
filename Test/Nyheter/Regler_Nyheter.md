@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-06 13:23
+Senast uppdaterad: 2026-10-06 13:43
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -90,7 +90,7 @@ Följande typer av innehåll är beständiga sammanställningar och inte vanliga
 - **!AI-begrepp ...**
 
 Regler:
-- den fullständiga rubriken ska alltid börja med tecknet **!**,
+- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!**,
 - dessa poster ska alltid tillhöra kategorin **AI-sammanställningar**,
 - tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
 
