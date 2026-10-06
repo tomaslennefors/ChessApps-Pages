@@ -882,6 +882,66 @@
       "transkript_nyckelord": [],
       "transkriptutdrag": "",
       "webbadress": "https://www.youtube.com/watch?v=ZeBFUuFQqaw"
+    },
+    {
+      "datum": "2026-10-05",
+      "titel": "Experten om AI-varningarna: ”Kan utplåna mänskligheten”",
+      "källa": "SVT Nyheter",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "AI-säkerhet",
+        "Existentiell risk",
+        "Reglering"
+      ],
+      "sammanfattning": "Cybersäkerhetsexperten Marcus Murray säger att varningar från AI-forskare och tidigare AI-toppar måste tas på allvar. Artikeln beskriver risker med allt kraftfullare AI-system, bland annat att AI redan kan angripa datorstyrda system, och lyfter behovet av reglering och styrning för att minska risken för allvarliga konsekvenser.",
+      "länk": "https://www.svt.se/nyheter/inrikes/experten-om-ai-varningarna-kan-utplana-manskligheten",
+      "id": 42
+    },
+    {
+      "datum": "2026-10-03",
+      "titel": "Fler AI-toppar varnar: ”Pausa utvecklingen”",
+      "källa": "SVT Nyheter",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "AI-säkerhet",
+        "OpenAI",
+        "Existentiell risk"
+      ],
+      "sammanfattning": "SVT rapporterar om David Robinson och Geoffrey Irving, två profiler med bakgrund inom ledande AI-organisationer, som varnar för att dagens AI-utveckling går snabbare än säkerhetsarbetet. Irving argumenterar för att utvecklingen av mycket avancerad AI bör pausas medan Robinson kritiserar brister i säkerhetskulturen hos AI-företag.",
+      "länk": "https://www.svt.se/nyheter/utrikes/fler-ai-toppar-varnar-pausa-utvecklingen",
+      "id": 43
+    },
+    {
+      "datum": "2026-10-04",
+      "titel": "Trump bildar sin AI-styrka",
+      "källa": "SVT Nyheter",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "USA",
+        "Politik",
+        "Donald Trump"
+      ],
+      "sammanfattning": "USA:s president Donald Trump har presenterat en federal AI-styrka som ska samordna regeringens resurser och bidra till att USA behåller en ledande position inom AI. Den så kallade Super Intelligence Force ska rapportera direkt till presidenten, men exakt vilka uppgifter organisationen får är ännu oklart.",
+      "länk": "https://www.svt.se/nyheter/utrikes/trump-bildar-sin-ai-styrka",
+      "id": 44
+    },
+    {
+      "datum": "2026-10-05",
+      "titel": "Norge vill införa förbud mot AI-glasögon",
+      "källa": "SVT Nyheter",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "Integritet",
+        "Norge",
+        "AI-glasögon"
+      ],
+      "sammanfattning": "Norges regering vill tillfälligt förbjuda AI-glasögon på offentliga platser som sjukhus, skolor, parker och köpcentrum. Motivet är risken att människor fotograferas, filmas eller spelas in utan att veta om det. En expertgrupp ska samtidigt ta fram underlag för mer permanent nationell reglering.",
+      "länk": "https://www.svt.se/nyheter/utrikes/norge-vill-infora-forbud-mot-ai-glasogon",
+      "id": 45
     }
   ],
   "senast_uppdaterad": "2026-10-06"
