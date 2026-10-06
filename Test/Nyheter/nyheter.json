@@ -247,17 +247,31 @@
     {
       "id": 18,
       "datum": "",
-      "titel": "YouTube-klipp 2",
+      "titel": "Folkets Radio | Hotet från artificiell intelligens",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "AI-säkerhet",
+        "Existentiell risk"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Ett samtal om riskerna med avancerad artificiell intelligens och varför AI-säkerhet behöver diskuteras öppet. Fokus ligger på möjligheten att mycket kraftfull AI kan utvecklas snabbare än samhällets förmåga att kontrollera den.",
       "länk": "https://www.youtube.com/watch?v=OFsDWCjyGvU",
       "youtube_id": "OFsDWCjyGvU",
-      "spellisteindex": 2
+      "spellisteindex": 2,
+      "utgivare": "Folkets Radio",
+      "kanal": "Folkets Radio",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "AI-säkerhet",
+        "existentiell risk",
+        "kontroll av AI"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 19,
@@ -272,97 +286,192 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=QMJogOLqRXE",
       "youtube_id": "QMJogOLqRXE",
-      "spellisteindex": 3
+      "spellisteindex": 3,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 20,
       "datum": "",
-      "titel": "YouTube-klipp 7",
+      "titel": "Vad är artificiell intelligens? – Max Tegmark",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "Max Tegmark"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Samtal med fysikern och AI-forskaren Max Tegmark om vad artificiell intelligens är, hur tekniken utvecklas och vilka större samhällsfrågor utvecklingen väcker.",
       "länk": "https://www.youtube.com/watch?v=PDFeEufLLS4",
       "youtube_id": "PDFeEufLLS4",
-      "spellisteindex": 7
+      "spellisteindex": 7,
+      "utgivare": "Alexander Pärleros",
+      "kanal": "Alexander Pärleros",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "artificiell intelligens",
+        "Max Tegmark",
+        "AI-utveckling"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 21,
       "datum": "",
-      "titel": "YouTube-klipp 9",
+      "titel": "Folkets Radio | Kan vi lita på artificiell intelligens?",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "AI-säkerhet",
+        "Reglering"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Programmet tar upp hur moderna AI-modeller kan ge felaktiga eller manipulativa svar och diskuterar vilka risker detta innebär. Även Max Tegmarks varningar om maktkoncentration, säkerhet och behovet av reglering behandlas.",
       "länk": "https://www.youtube.com/watch?v=foWISRR3XdY",
       "youtube_id": "foWISRR3XdY",
-      "spellisteindex": 9
+      "spellisteindex": 9,
+      "utgivare": "Folkets Radio",
+      "kanal": "Folkets Radio",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "AI-tillit",
+        "manipulation",
+        "AI-säkerhet",
+        "reglering"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 22,
       "datum": "",
-      "titel": "YouTube-klipp 10",
+      "titel": "Fysikern om Artificiell intelligens: ”Nu har vi chansen att tänka igenom saker” – Nyhetsmorgon",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "Max Tegmark",
+        "TV4"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Max Tegmark medverkar i Nyhetsmorgon och resonerar om den snabba AI-utvecklingen och om hur samhället kan styra tekniken så att den blir till nytta för människor.",
       "länk": "https://www.youtube.com/watch?v=4h1mCWmz_7g",
       "youtube_id": "4h1mCWmz_7g",
-      "spellisteindex": 10
+      "spellisteindex": 10,
+      "utgivare": "TV4",
+      "kanal": "Nyhetsmorgon",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "Max Tegmark",
+        "AI-utveckling",
+        "AI-säkerhet"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 23,
       "datum": "",
-      "titel": "YouTube-klipp 11",
+      "titel": "Seminarium om Alan Turing",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Alan Turing",
+        "Datorhistoria",
+        "Artificiell intelligens"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Seminarium om Alan Turings liv och idéer, hans betydelse för datorutveckling och kryptanalys samt Turingtestets koppling till frågor om maskinell intelligens.",
       "länk": "https://www.youtube.com/watch?v=DRqx9KVc4hE",
       "youtube_id": "DRqx9KVc4hE",
-      "spellisteindex": 11
+      "spellisteindex": 11,
+      "utgivare": "Fri Tanke",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "Alan Turing",
+        "Turingtestet",
+        "datorhistoria",
+        "artificiell intelligens"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 24,
       "datum": "",
-      "titel": "YouTube-klipp 13",
+      "titel": "Elon Musks dolda AI-plan & Varför han fryser ner sitt huvud",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "Framtid",
+        "Elon Musk"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Samtal med framtidsforskaren Anders Sandberg om framtida teknik, AI-utveckling och långsiktiga scenarier. Avsnittet tar också upp livsförlängning och idéer om att bevara hjärnan eller kroppen för framtida teknik.",
       "länk": "https://www.youtube.com/watch?v=56OQWGUaN9c",
       "youtube_id": "56OQWGUaN9c",
-      "spellisteindex": 13
+      "spellisteindex": 13,
+      "utgivare": "Framgångspodden",
+      "kanal": "Framgångspodden",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "framtidsteknik",
+        "AI",
+        "Anders Sandberg",
+        "livsförlängning"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 25,
       "datum": "",
-      "titel": "YouTube-klipp 20",
+      "titel": "AI kan utrota mänskligheten inom 10 år – Jonas von Essen",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "AI-säkerhet",
+        "Existentiell risk"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Intervju med Jonas von Essen om den snabba AI-utvecklingen, möjliga nyttor och allvarliga risker. Samtalet berör bland annat cyberkrig, autonoma vapen, biologiska hot, manipulation och hur sannolikheten för mycket allvarliga AI-scenarier kan bedömas.",
       "länk": "https://www.youtube.com/watch?v=pJYNQtctAao",
       "youtube_id": "pJYNQtctAao",
-      "spellisteindex": 20
+      "spellisteindex": 20,
+      "utgivare": "Alexander Pärleros",
+      "kanal": "Alexander Pärleros",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "AI-säkerhet",
+        "p(doom)",
+        "cyberkrig",
+        "autonoma vapen",
+        "biologiska risker"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 26,
@@ -377,37 +486,77 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=GDphnKg-hgg",
       "youtube_id": "GDphnKg-hgg",
-      "spellisteindex": 21
+      "spellisteindex": 21,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 27,
       "datum": "",
-      "titel": "YouTube-klipp 22",
+      "titel": "panik över abonnemanget på 200 dollar",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "OpenAI",
+        "ChatGPT",
+        "Microsoft",
+        "Artificiell intelligens"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Videon diskuterar ekonomin bakom AI-tjänster och relationerna mellan OpenAI, ChatGPT och Microsoft, med fokus på kostnader, abonnemang och de stora investeringarna bakom tekniken.",
       "länk": "https://www.youtube.com/watch?v=bvYp7_GFGQQ",
       "youtube_id": "bvYp7_GFGQQ",
-      "spellisteindex": 22
+      "spellisteindex": 22,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "OpenAI",
+        "ChatGPT",
+        "Microsoft",
+        "AI-ekonomi"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 28,
       "datum": "",
-      "titel": "YouTube-klipp 25",
+      "titel": "Podd 362: AI-kapprustningen mellan USA och Kina",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "Cybersäkerhet",
+        "USA",
+        "Kina"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Bli säker-podden diskuterar AI-kapplöpningen mellan USA och Kina, öppna AI-modeller och säkerhetstester. Avsnittet tar även upp andra aktuella säkerhetsfrågor inom internet och autentisering.",
       "länk": "https://www.youtube.com/watch?v=4I9PputSKn4",
       "youtube_id": "4I9PputSKn4",
-      "spellisteindex": 25
+      "spellisteindex": 25,
+      "utgivare": "Nikka Systems",
+      "kanal": "Nikka Systems Sverige",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "USA",
+        "Kina",
+        "AI-kapprustning",
+        "öppna AI-modeller",
+        "cybersäkerhet"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 29,
@@ -422,7 +571,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=sjoriSHxEs0",
       "youtube_id": "sjoriSHxEs0",
-      "spellisteindex": 29
+      "spellisteindex": 29,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 30,
@@ -437,37 +593,73 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=95HTm5zbFH4",
       "youtube_id": "95HTm5zbFH4",
-      "spellisteindex": 30
+      "spellisteindex": 30,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 31,
       "datum": "",
-      "titel": "YouTube-klipp 43",
+      "titel": "Max Tegmark dödar 5 myter om AI",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "Max Tegmark"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Max Tegmark bemöter vanliga missuppfattningar om artificiell intelligens, bland annat föreställningar om medvetande, ondska och hur snabbt AI kan komma att överträffa människor på olika förmågor.",
       "länk": "https://www.youtube.com/watch?v=1QyDYs7rI18",
       "youtube_id": "1QyDYs7rI18",
-      "spellisteindex": 43
+      "spellisteindex": 43,
+      "utgivare": "Framsteg",
+      "kanal": "Framsteg",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "AI-myter",
+        "Max Tegmark",
+        "medvetande",
+        "AI-risker"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 32,
       "datum": "",
-      "titel": "YouTube-klipp 49",
+      "titel": "AI i Vardagen – Jonas von Essen om AI-säkerhet",
       "källa": "YouTube",
-      "språk": "Okänt",
+      "språk": "Svenska",
       "typ": "youtube",
       "kategorier": [
-        "YouTube"
+        "YouTube",
+        "Artificiell intelligens",
+        "AI-säkerhet",
+        "Jonas von Essen"
       ],
-      "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
+      "sammanfattning": "Samtal med Jonas von Essen om varför exponentiell AI-utveckling är svår att intuitivt förstå, alignment-problemet och vilka gränser människor kan vilja sätta för hur AI används i personliga sammanhang.",
       "länk": "https://www.youtube.com/watch?v=JtXPedIXZpo",
       "youtube_id": "JtXPedIXZpo",
-      "spellisteindex": 49
+      "spellisteindex": 49,
+      "utgivare": "AI i Vardagen",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [
+        "AI-säkerhet",
+        "alignment",
+        "exponentiell utveckling",
+        "Jonas von Essen"
+      ],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 33,
@@ -482,7 +674,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=KFNxEGSXX18",
       "youtube_id": "KFNxEGSXX18",
-      "spellisteindex": 50
+      "spellisteindex": 50,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 34,
@@ -497,7 +696,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=_Gqoy1r5LvY",
       "youtube_id": "_Gqoy1r5LvY",
-      "spellisteindex": 51
+      "spellisteindex": 51,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 35,
@@ -512,7 +718,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=5ifRRr_-hYA",
       "youtube_id": "5ifRRr_-hYA",
-      "spellisteindex": 52
+      "spellisteindex": 52,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 36,
@@ -527,7 +740,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=5fPK2gtB91Q",
       "youtube_id": "5fPK2gtB91Q",
-      "spellisteindex": 55
+      "spellisteindex": 55,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 37,
@@ -542,7 +762,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=ZtjkbZj80Hw",
       "youtube_id": "ZtjkbZj80Hw",
-      "spellisteindex": 56
+      "spellisteindex": 56,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 38,
@@ -557,7 +784,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=0v5amb1PInk",
       "youtube_id": "0v5amb1PInk",
-      "spellisteindex": 57
+      "spellisteindex": 57,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 39,
@@ -572,7 +806,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=nrNdriwsvnw",
       "youtube_id": "nrNdriwsvnw",
-      "spellisteindex": 58
+      "spellisteindex": 58,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 40,
@@ -587,7 +828,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=HDVM6GyIjW4",
       "youtube_id": "HDVM6GyIjW4",
-      "spellisteindex": 59
+      "spellisteindex": 59,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     },
     {
       "id": 41,
@@ -602,7 +850,14 @@
       "sammanfattning": "Sammanfattning och kategorisering kompletteras efter analys av videons metadata, beskrivning eller transkribering.",
       "länk": "https://www.youtube.com/watch?v=ZeBFUuFQqaw",
       "youtube_id": "ZeBFUuFQqaw",
-      "spellisteindex": 61
+      "spellisteindex": 61,
+      "utgivare": "Inte verifierad",
+      "kanal": "Inte verifierad",
+      "transkribering_status": "Inte kontrollerad",
+      "transkriberingsspråk": "",
+      "transkript_ämnen": [],
+      "transkript_nyckelord": [],
+      "transkriptutdrag": ""
     }
   ],
   "senast_uppdaterad": "2026-10-06"
