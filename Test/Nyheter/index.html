@@ -216,6 +216,7 @@
       <span class="label-row">Fullständig rubrik <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
       <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
     </label>
+    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa rubrik · Mellanslag = starta vald YouTube-video.</div>
   </div>
 
   <div id="list"></div>
@@ -841,6 +842,50 @@
     }
   }
 
+  function stepExactTitle(direction) {
+    const maxIndex = exactTitleFilter.options.length - 1;
+    if (maxIndex < 1) return false;
+
+    let index = exactTitleFilter.selectedIndex;
+    if (direction > 0) {
+      index = index <= 0 ? 1 : Math.min(maxIndex, index + 1);
+    } else {
+      index = index <= 0 ? maxIndex : Math.max(1, index - 1);
+    }
+
+    if (index === exactTitleFilter.selectedIndex) return false;
+    exactTitleFilter.selectedIndex = index;
+    applyFilters(false);
+    return true;
+  }
+
+  function playSelectedYoutube() {
+    if (!exactTitleFilter.value) return false;
+    const iframe = listEl.querySelector(".youtube-player iframe");
+    if (!iframe) return false;
+
+    const selected = getFilteredNews();
+    if (selected.length !== 1 || !isYoutube(selected[0])) return false;
+
+    const videoId = youtubeVideoId(selected[0]);
+    if (!videoId) return false;
+
+    iframe.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(videoId) + "?rel=0&autoplay=1";
+    iframe.focus();
+    return true;
+  }
+
+  function keyboardShortcutAllowed(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) return true;
+    if (target === exactTitleFilter) return true;
+    if (target.isContentEditable) return false;
+
+    const tag = target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || tag === "A") return false;
+    return true;
+  }
+
   function applyFilters(updateTitles = true) {
     if (updateTitles) updateExactTitleOptions();
     captureControls();
@@ -1231,6 +1276,31 @@
     control.addEventListener("change", () => applyFilters(true));
   }
   exactTitleFilter.addEventListener("change", () => applyFilters(false));
+
+  document.addEventListener("keydown", event => {
+    if (!keyboardShortcutAllowed(event)) return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      stepExactTitle(1);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      stepExactTitle(-1);
+      return;
+    }
+
+    if (event.key === " " || event.code === "Space") {
+      if (exactTitleFilter.value) {
+        event.preventDefault();
+        playSelectedYoutube();
+      }
+    }
+  });
+
   for (const control of [webAddressFilter, titleFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
