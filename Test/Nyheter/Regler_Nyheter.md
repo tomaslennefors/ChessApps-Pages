@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 12:40
+Senast uppdaterad: 2026-10-07 13:40
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -129,6 +129,21 @@ När hela önskemålet har genomförts utan fel ska GPT uppdatera `HamtaNyheter.
 Om Tomas vill köra exakt samma önskemål igen ska han först ta bort krysset. Då sparas statusen **Nytt önskemål** i Data och önskemålet får behandlas igen.
 
 Om Tomas ändrar själva önskemålet och sparar den ändrade texten eller lägger till nya länkar ska det ändrade önskemålet få status **Nytt önskemål**. Att bara trycka på **Spara önskemål** utan att ändra det färdigbehandlade önskemålet ska inte återaktivera det.
+
+### 3b. Fritexten ska bevaras exakt
+
+Texten i **Önskemål i fritext** ska behandlas som användarens originalinstruktion och ska bevaras exakt som den sparades.
+
+Appen, GPT eller en statusändring får inte:
+- trimma bort inledande eller avslutande radbrytningar,
+- ändra mellanslag,
+- slå ihop eller dela rader,
+- omformulera texten,
+- ersätta texten med en bearbetad version.
+
+Endast när Tomas själv redigerar fritexten och sparar ett nytt önskemål får innehållet ändras.
+
+Kontroller som exempelvis avgör om rutan är tom får använda en tillfälligt trimmad kopia, men den sparade originaltexten får inte ändras.
 
 ## 4. Upphovsrätt och omskrivning
 
