@@ -19,8 +19,8 @@
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
-    label.filter-active{color:var(--blue)}
-    label.filter-active>input:not(.sortno),label.filter-active>select{border-color:var(--blue);background:#ddf4ff;box-shadow:0 0 0 2px rgba(9,105,218,.14)}
+    .filter-grid>label.filter-active,.full-title-box>label.filter-active{color:var(--blue);background:#ddf4ff;border-radius:7px;box-shadow:0 0 0 5px #ddf4ff}
+    label.filter-active>input:not(.sortno),label.filter-active>select{border-color:var(--blue);background:#b6e3ff;box-shadow:0 0 0 2px rgba(9,105,218,.14)}
     .save-request-message{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
     .request-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#f6f8fa}
     .request-status label{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;cursor:pointer}
@@ -172,8 +172,9 @@
   <div id="filterPanel" class="filters">
     <div class="filter-grid">
       <label>
-        <span class="label-row"><span id="dateFilterCaption">Månad</span> <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
-        <input id="dateFilter" type="month">
+        <span class="label-row"><span id="dateFilterCaption">Datum</span> <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <input id="dateFilter" type="search" list="dateFilterOptions" placeholder="ÅÅÅÅ, ÅÅÅÅ-MM eller ÅÅÅÅ-MM-DD" autocomplete="off">
+        <datalist id="dateFilterOptions"></datalist>
       </label>
 
       <label id="sourceFilterWrap" hidden>
@@ -313,6 +314,7 @@
   const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
   const otherLinksSelect = document.getElementById("otherLinksSelect");
   const dateFilter = document.getElementById("dateFilter");
+  const dateFilterOptions = document.getElementById("dateFilterOptions");
   const dateFilterCaption = document.getElementById("dateFilterCaption");
   const sourceFilterWrap = document.getElementById("sourceFilterWrap");
   const sourceFilter = document.getElementById("sourceFilter");
@@ -478,8 +480,9 @@
 
   function setPrivacyUi() {
     sourceFilterWrap.hidden = !ownerMode;
-    dateFilter.type = ownerMode ? "date" : "month";
-    dateFilterCaption.textContent = ownerMode ? "Datum" : "Månad";
+    dateFilter.type = "search";
+    dateFilterCaption.textContent = "Datum";
+    dateFilter.placeholder = "ÅÅÅÅ, ÅÅÅÅ-MM eller ÅÅÅÅ-MM-DD";
     exactTitleCaption.textContent = ownerMode ? "Fullständig rubrik" : "Omskriven rubrik";
 
     if (!ownerAuthenticated) {
@@ -601,7 +604,28 @@
     if ([...exactTitleFilter.options].some(o => o.value === current)) exactTitleFilter.value = current;
   }
 
+  function buildDateFilterOptions() {
+    const values = new Set();
+
+    for (const item of allNews) {
+      const value = displayDate(item);
+      if (/^\d{4}/.test(value)) values.add(value.slice(0, 4));
+      if (/^\d{4}-\d{2}/.test(value)) values.add(value.slice(0, 7));
+      if (/^\d{4}-\d{2}-\d{2}/.test(value)) values.add(value.slice(0, 10));
+    }
+
+    const current = dateFilter.value;
+    dateFilterOptions.replaceChildren();
+    [...values].sort((a,b) => b.localeCompare(a)).forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      dateFilterOptions.append(option);
+    });
+    dateFilter.value = current;
+  }
+
   function buildFilterOptions() {
+    buildDateFilterOptions();
     fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
     fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
     fillSelect(channelFilter, uniqueSorted(allNews.map(x => x.kanal)), "Alla kanaler");
@@ -726,7 +750,7 @@
   function restoreControls() {
     const f = prefs.filters;
     const savedDate = f.date || "";
-    dateFilter.value = ownerMode ? savedDate : savedDate.slice(0, 7);
+    dateFilter.value = savedDate;
     sourceFilter.value = ownerMode ? (f.source || "") : "";
     publisherFilter.value = f.publisher || "";
     channelFilter.value = f.channel || "";
@@ -801,7 +825,7 @@
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
 
-      if (date && (ownerMode ? item.datum !== date : String(item.datum || "").slice(0,7) !== date)) return false;
+      if (date && !displayDate(item).startsWith(date)) return false;
       if (source && item.källa !== source) return false;
       if (publisher && item.utgivare !== publisher) return false;
       if (channel && item.kanal !== channel) return false;
@@ -1784,7 +1808,7 @@
     }
   }
 
-  for (const control of [dateFilter, sourceFilter, publisherFilter, channelFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
+  for (const control of [sourceFilter, publisherFilter, channelFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
     control.addEventListener("change", () => applyFilters(true));
   }
   exactTitleFilter.addEventListener("change", () => applyFilters(false));
@@ -1867,7 +1891,7 @@
     }
   });
 
-  for (const control of [webAddressFilter, titleFilter, summaryFilter, transcriptFilter]) {
+  for (const control of [dateFilter, webAddressFilter, titleFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
   sortInputs.forEach(x => x.addEventListener("change", () => applyFilters(false)));
@@ -1920,6 +1944,7 @@
   rulesBtn.addEventListener("click", toggleRules);
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", () => {
+    captureControls();
     window.location.reload();
   });
 
