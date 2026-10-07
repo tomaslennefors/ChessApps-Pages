@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 00:10</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 01:24</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -285,9 +285,9 @@
   const rulesUrl = "./Regler_Nyheter.md";
   const storageKey = "ITNyheter_Settings_V2";
   const tokenKey = "ChessApps_GitHubToken";
-  const userIdKey = "userId";
-  const userNameKey = "userName";
-  const userRoleKey = "userRole";
+  const userIdKey = "ITNyheter_UserId";
+  const userNameKey = "ITNyheter_UserName";
+  const userRoleKey = "ITNyheter_UserRole";
   const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
   const usersDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Users.json";
   const userLogDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/UserLog.json";
@@ -298,15 +298,31 @@
   const filterSchemaVersion = 5;
 
   // Begränsad delad Data-token för PUBLIC/VIP-loggning.
-  // Payloaden lämnas tom tills en separat, begränsad token har skapats.
-  const _t0 = "";
-  const _t1 = value => String(value || "").split("").reverse().join("");
-  const _t2 = value => {
-    try { return atob(value); } catch { return ""; }
+  // Värdet nedan genereras av GitHub Actions från Repository Secret.
+  // Själva tokenen lagras aldrig i klartext i repositoryts filer.
+  const _k7 = ["","","",""]; // ITNYHETER_LOG_TOKEN_PAYLOAD
+
+  const _q2 = a => {
+    const z = a.map(v => String(v || ""));
+    let r = "";
+    const m = Math.max(0, ...z.map(v => v.length));
+    for (let i = 0; i < m; i++) {
+      for (let j = 0; j < z.length; j++) {
+        if (i < z[j].length) r += z[j][i];
+      }
+    }
+    return r;
   };
+
+  const _p4 = (c, i) => c ^ ((((i * 73 + 41) ^ (i >> 1) ^ 167)) & 255);
+
   function sharedDataToken() {
-    if (!_t0) return "";
-    return _t1(_t2(_t0));
+    if (!_k7.some(Boolean)) return "";
+    let b = "";
+    try { b = atob(_q2(_k7)); } catch { return ""; }
+    const x = new Uint8Array(b.length);
+    for (let i = 0; i < b.length; i++) x[i] = _p4(b.charCodeAt(i), i);
+    try { return new TextDecoder().decode(x); } catch { return ""; }
   }
 
   const titleEl = document.getElementById("title");
