@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 14:24
+Senast uppdaterad: 2026-10-07 15:05
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -214,13 +214,15 @@ Detaljerad information om AI-bolag, deras modellfamiljer och verktyg ska ligga i
 
 I **!AI-historik** ska däremot korta årtalsnotiser finnas kvar så att den historiska tidslinjen fortfarande visar när viktiga händelser inom AI-schack och AI-bolag/modeller inträffade.
 
-### 6c. Markering av aktiva filter
+### 6c. Markering av aktiva filter och knappar
 
-Alla aktiva filtervillkor ska markeras tydligt med blå färg i appen.
+Alla aktiva filtervillkor ska markeras tydligt med **röd bakgrundsfärg** i appen.
 
-När ett filtervillkor inte längre är aktivt ska den blå markeringen försvinna.
+När ett filtervillkor inte längre är aktivt ska den röda markeringen försvinna.
 
-När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla blå filtermarkeringar försvinna.
+När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla röda filtermarkeringar försvinna.
+
+Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
 ### 6d. Meddelande efter Spara önskemål
 
