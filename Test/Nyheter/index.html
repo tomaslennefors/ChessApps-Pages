@@ -53,9 +53,13 @@
     .article-body{line-height:1.72;margin-top:18px}
     .article-section-heading{font-size:1.08rem;font-weight:800;line-height:1.35;margin:26px 0 10px}
     .article-section-heading:first-child{margin-top:4px}
+    .article-subsection-heading{font-size:1rem;font-weight:800;line-height:1.35;margin:20px 0 8px}
     .article-paragraph{white-space:pre-wrap;margin:0 0 15px}
     .article-paragraph strong{font-weight:800}
-    .article-paragraph a,.article-section-heading a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+    .article-ordered-list,.article-unordered-list{margin:0 0 15px;padding-left:28px;line-height:1.72}
+    .article-ordered-list li,.article-unordered-list li{margin:4px 0}
+    .article-paragraph a,.article-section-heading a,.article-subsection-heading a,
+    .article-ordered-list a,.article-unordered-list a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
     .tag{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#f6f8fa}
     .card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
@@ -907,23 +911,51 @@
   function renderStructuredArticleBody(container, text) {
     container.replaceChildren();
     const blocks = String(text || "").split("\n\n").map(x => x.trim()).filter(Boolean);
+
     for (const block of blocks) {
-      const element = document.createElement("div");
-      if (block.startsWith("## ")) {
-        element.className = "article-section-heading";
-        appendBoldText(element, block.slice(3));
-      } else {
-        element.className = "article-paragraph";
-        appendBoldText(element, block);
+      if (block.startsWith("### ")) {
+        const heading = document.createElement("div");
+        heading.className = "article-subsection-heading";
+        appendBoldText(heading, block.slice(4));
+        container.append(heading);
+        continue;
       }
-      container.append(element);
+
+      if (block.startsWith("## ")) {
+        const heading = document.createElement("div");
+        heading.className = "article-section-heading";
+        appendBoldText(heading, block.slice(3));
+        container.append(heading);
+        continue;
+      }
+
+      const lines = block.split("\n");
+      const ordered = lines.length > 1 && lines.every(line => /^\d+\.\s+/.test(line));
+      const unordered = lines.length > 1 && lines.every(line => /^[-*]\s+/.test(line));
+
+      if (ordered || unordered) {
+        const list = document.createElement(ordered ? "ol" : "ul");
+        list.className = ordered ? "article-ordered-list" : "article-unordered-list";
+        for (const line of lines) {
+          const item = document.createElement("li");
+          appendBoldText(item, line.replace(ordered ? /^\d+\.\s+/ : /^[-*]\s+/, ""));
+          list.append(item);
+        }
+        container.append(list);
+        continue;
+      }
+
+      const paragraph = document.createElement("div");
+      paragraph.className = "article-paragraph";
+      appendBoldText(paragraph, block);
+      container.append(paragraph);
     }
   }
 
   function plainArticleText(text) {
     return String(text || "")
       .split("\n")
-      .map(line => line.startsWith("## ") ? line.slice(3) : line)
+      .map(line => line.startsWith("### ") ? line.slice(4) : (line.startsWith("## ") ? line.slice(3) : line))
       .join("\n")
       .split("**").join("")
       .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, "$1 ($2)");
