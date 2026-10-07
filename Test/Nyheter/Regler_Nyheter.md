@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 13:59
+Senast uppdaterad: 2026-10-07 14:04
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -141,6 +141,8 @@ När appen eller GPT behöver bearbeta, kontrollera, trimma, dela upp, omformate
 Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras med **F5** eller **Uppdatera filtrering** ska exakt samma text visas igen, även om Tomas ännu inte har tryckt **Spara önskemål**.
 
 **Spara önskemål** betyder att texten skickas till den privata Data-filen. Det är inte samma sak som att appen får ändra innehållet i textrutan.
+
+Önskemål-rutans höjd ska kunna ändras genom att dra i den horisontella nederkanten. Kontrollerna under rutan ska ligga i normalt dokumentflöde och därför följa med när rutan görs högre eller lägre. Den valda höjden sparas lokalt i webbläsaren.
 ## 4. Upphovsrätt och omskrivning
 
 För vanliga webbartiklar ska den publika texten skrivas med egna ord.
