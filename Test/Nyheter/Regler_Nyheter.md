@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 14:16
+Senast uppdaterad: 2026-10-07 14:24
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -157,6 +157,8 @@ GPT ska:
 Målet är att ge en sakligt korrekt och lättläst återgivning utan att återpublicera originalartikeln.
 
 ## 5. Appens visning, storleksändring och lokal lagring
+
+En diskret **appversion** ska visas intill rubriken **IT-Nyheter**. Versionsvärdet avser versionen av appens HTML-kod och används för att kontrollera att webbläsaren verkligen har laddat den senaste GitHub Pages-versionen.
 
 ### 5a. Statistik för markerad text
 
