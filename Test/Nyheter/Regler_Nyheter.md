@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:43
+Senast uppdaterad: 2026-10-07 17:37
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -54,7 +54,7 @@ För YouTube får följande vara synligt även för andra användare:
 
 ## 2. Rubrik, ingress och fullt dokument
 
-**Terminologi i appen:** Det gemensamma användarordet är **Dokument**. Det omfattar bland annat vanliga webbdokument, faktadokument och YouTube-klipp. Filtret heter **Dokumenttyp**. Den synliga typen **IT-Dokument** motsvarar av kompatibilitetsskäl fortfarande det interna datavärdet `IT-Nyheter`. Appens huvudrubrik **IT-Nyheter** samt tekniska filnamn och kommandot `HämtaNyheter` behålls.
+**Terminologi i appen:** Det gemensamma användarordet är **Dokument**. Dokumenttypen är **IT-Fakta**, **IT-Nyhet** eller **IT-YouTube**. Filtret heter **Dokumenttyp**. Appens huvudrubrik **IT-Nyheter** samt tekniska filnamn och kommandot `HämtaNyheter` behålls.
 
 Ingressen ska vara cirka **100 ord** och ge en korrekt sammanfattning av det viktigaste i nyheten.
 
@@ -73,7 +73,7 @@ Språket ska vara lätt att förstå. Viktig innebörd får inte tas bort bara f
 När användaren väljer en bestämt dokument i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
 - rubrik,
 - metadata enligt användarens behörighet,
-- **Dokumenttyp** så att det framgår om dokumentet är **IT-Fakta**, **IT-Dokument** eller **IT-YouTube**,
+- **Dokumenttyp** så att det framgår om dokumentet är **IT-Fakta**, **IT-Nyhet** eller **IT-YouTube**,
 - kategorier,
 - ingress,
 - hela den längre omskrivna dokumenttexten.
@@ -89,15 +89,22 @@ När flera dokument visas samtidigt ska varje vanlig dokument endast visa ingres
 
 Alla poster ska ha en av följande typer:
 - **IT-Fakta** – beständiga faktabaserade referens- och sammanställningsdokument som GPT skapar.
-- **IT-Dokument** – vanliga tidsbundna dokument.
+- **IT-Nyhet** – vanliga tidsbundna nyhetsdokument.
 - **IT-YouTube** – dokument som bygger på en YouTube-video.
+
+Dokumentnamnets prefix ska göra dokumenttypen synlig direkt:
+- **!** = IT-Fakta.
+- **N:** = IT-Nyhet.
+- **Y:** = IT-YouTube.
+
+För IT-Nyhet och IT-YouTube ska prefixet lagras i den publika rubriken `titel`. En privat `fullständig_rubrik` som återger källans originalrubrik ska däremot inte skrivas om; appen lägger till rätt prefix när den visar dokumentnamnet.
 
 Samma tre typnamn ska användas både som **Dokumenttyp** i varje dokument och som alternativ i appens filter **Dokumenttyp**.
 
 Filtret **Dokumenttyp** ska visa antal poster inom parentes för samtliga val:
 - **Alla (antal)**
 - **IT-Fakta (antal)**
-- **IT-Dokument (antal)**
+- **IT-Nyhet (antal)**
 - **IT-YouTube (antal)**
 
 Antalen ska räknas från den aktuella dokumentfilen när appen läser in dokumenten och räknas därför om automatiskt vid **Uppdatera filtrering** eller F5.
