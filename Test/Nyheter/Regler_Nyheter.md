@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:30
+Senast uppdaterad: 2026-10-07 16:34
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -260,6 +260,10 @@ Filtret **Favorit** ska på motsvarande sätt alltid visa:
 - **Ej favoriter (antal)**
 
 Favoritantalen ska uppdateras direkt när en innehållspost markeras som favorit eller tas bort från favoriter.
+
+Filtret **Kategori** ska visa antal innehållsposter inom parentes för varje kategori. Första valet ska visa **Alla kategorier (totalt antal innehållsposter)**. Varje övrigt val ska visa kategoriens namn följt av hur många innehållsposter som innehåller just den kategorin, till exempel **ChatGPT (7)**.
+
+Om en innehållspost har flera kategorier ska den räknas en gång i varje kategori som den tillhör. Summan av kategoriernas antal kan därför vara större än det totala antalet innehållsposter.
 
 Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
