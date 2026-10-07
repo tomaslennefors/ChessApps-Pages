@@ -130,21 +130,15 @@ Om Tomas vill köra exakt samma önskemål igen ska han först ta bort krysset. 
 
 Om Tomas ändrar själva önskemålet och sparar den ändrade texten eller lägger till nya länkar ska det ändrade önskemålet få status **Nytt önskemål**. Att bara trycka på **Spara önskemål** utan att ändra det färdigbehandlade önskemålet ska inte återaktivera det.
 
-### 3b. Fritexten ska bevaras exakt
+### 3b. Fritextrutan ägs av Tomas
 
-Texten i **Önskemål i fritext** ska behandlas som användarens originalinstruktion och ska bevaras exakt som den sparades.
+Texten i **Önskemål i fritext** får bara ändras av Tomas.
 
-Appen, GPT eller en statusändring får inte:
-- trimma bort inledande eller avslutande radbrytningar,
-- ändra mellanslag,
-- slå ihop eller dela rader,
-- omformulera texten,
-- ersätta texten med en bearbetad version.
+Appen och GPT får aldrig ändra texten i själva textrutan.
 
-Endast när Tomas själv redigerar fritexten och sparar ett nytt önskemål får innehållet ändras.
+När appen eller GPT behöver bearbeta, kontrollera, trimma, dela upp, omformatera eller på annat sätt förändra texten ska en **kopia** av texten användas. Originaltexten i textrutan ska alltid lämnas orörd.
 
-Kontroller som exempelvis avgör om rutan är tom får använda en tillfälligt trimmad kopia, men den sparade originaltexten får inte ändras.
-
+När appen öppnas får tidigare sparad originaltext återställas exakt som Tomas senast sparade den.
 ## 4. Upphovsrätt och omskrivning
 
 För vanliga webbartiklar ska den publika texten skrivas med egna ord.
