@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 17:37
+Senast uppdaterad: 2026-10-07 22:07
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -72,6 +72,7 @@ Språket ska vara lätt att förstå. Viktig innebörd får inte tas bort bara f
 
 När användaren väljer en bestämt dokument i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
 - rubrik,
+- synligt **ID-nummer** för dokumentposten,
 - metadata enligt användarens behörighet,
 - **Dokumenttyp** så att det framgår om dokumentet är **IT-Fakta**, **IT-Nyhet** eller **IT-YouTube**,
 - kategorier,
@@ -83,6 +84,8 @@ Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Dokumentet" 
 ### 2b. Flera dokument samtidigt
 
 När flera dokument visas samtidigt ska varje vanlig dokument endast visa ingressen, inte den längre dokumenttexten.
+
+ID-numret ska vara synligt i informationsraden för varje dokumentpost, oavsett dokumenttyp.
 
 
 ## 2c. Dokumenttyper
