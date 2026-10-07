@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 15:52</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:14</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -242,8 +242,8 @@
       <label>
         Arkiv
         <select id="archiveFilter">
-          <option value="all" selected>Alla</option>
-          <option value="active">Ej arkiverade</option>
+          <option value="all">Alla</option>
+          <option value="active" selected>Ej arkiverade</option>
           <option value="archived">Endast arkiverade</option>
         </select>
       </label>
@@ -486,7 +486,7 @@
 
   function displayDate(item) {
     const value = String(item.datum || "");
-    return (ownerMode || isYoutube(item)) ? value : value.slice(0, 7);
+    return (ownerMode || isYoutube(item) || displayType(item) === "IT-Fakta") ? value : value.slice(0, 7);
   }
 
   function setPrivacyUi() {
@@ -595,7 +595,7 @@
   function fillExactTitleSelect(items, firstText) {
     const current = exactTitleFilter.value;
     const entries = items
-      .map(item => ({value:String(item.id), label:displayTitle(item)}))
+      .map(item => ({value:String(item.id), label:displayTitle(item) + (item.version ? " · " + item.version : "")}))
       .filter(x => x.value && x.label)
       .sort((a,b) => a.label.localeCompare(b.label, "sv", {sensitivity:"base"}));
 
@@ -774,7 +774,7 @@
     transcriptFilter.value = f.transcript || "";
     categoryFilter.value = f.category || "";
     favoriteFilter.value = f.favorite || "";
-    archiveFilter.value = f.archive || "all";
+    archiveFilter.value = f.archive || "active";
     typeFilter.value = f.type || "";
     requestFreeText.value = prefs.currentFreeText || "";
     requestLinks.value = prefs.linkDraft || "";
@@ -1150,12 +1150,14 @@
       details.className = "details";
       const parts = [];
       const shownDate = displayDate(item);
-      if (shownDate) parts.push(((ownerMode || youtube) ? "Datum: " : "Månad: ") + shownDate);
+      const exactDate = ownerMode || youtube || displayType(item) === "IT-Fakta";
+      if (shownDate) parts.push((exactDate ? "Datum: " : "Månad: ") + shownDate);
       if ((ownerMode || youtube) && item.källa) parts.push("Källa: " + item.källa);
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
       parts.push("Innehållstyp: " + displayType(item));
+      if (item.version) parts.push("Version: " + item.version);
       if (youtube && item.transkribering_status) parts.push("Transkribering: " + item.transkribering_status);
       if (archived) parts.push("Arkiverad");
       details.textContent = parts.join(" · ");
