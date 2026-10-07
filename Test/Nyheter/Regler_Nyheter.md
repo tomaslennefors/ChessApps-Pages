@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 13:08
+Senast uppdaterad: 2026-10-07 12:40
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -234,3 +234,17 @@ Efter en lyckad **Spara önskemål** ska meddelandet även påminna:
 
 Den tidigare regeln gäller fortfarande att meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
 
+### 6g. Datumfilter
+
+Datumfiltret ska kunna användas på tre nivåer:
+- **År**, till exempel `2026`.
+- **År–månad**, till exempel `2026-10`.
+- **År–månad–dag**, till exempel `2026-10-07`.
+
+När bara år anges ska alla nyheter under året matcha. När år och månad anges ska alla nyheter under månaden matcha. När fullständigt datum anges ska nyheter från just det datumet matcha, när exakt datum finns tillgängligt i användarens visningsläge.
+
+Alla datumvärden som finns tillgängliga för den aktuella användaren ska byggas upp som valbara sökvillkor i datumfältet. År och år–månad ska också skapas från de fullständiga datumen.
+
+Det valda datumvillkoret och övriga filtervillkor ska sparas lokalt och ligga kvar synliga efter **Uppdatera filtrering** och den fullständiga siduppdateringen.
+
+Alla aktiva filtervillkor ska markeras med **blå bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den blå markeringen.
