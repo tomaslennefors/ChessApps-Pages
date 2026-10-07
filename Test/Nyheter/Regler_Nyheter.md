@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-08 00:10
+Senast uppdaterad: 2026-10-08 01:28
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -45,12 +45,12 @@ Privat dokumentmetadata ligger i `Data/Test/Nyheter/nyheter_privata.json`.
 Den privata ägarinloggningen med Tomas befintliga GitHub-token ska alltid kontrolleras först. Om tokenen finns och verifieras ska PUBLIC/VIP-rutinerna inte köras på den datorn och Tomas ska komma in i appen på vanligt sätt.
 
 För andra användare används följande tre värden i `localStorage`:
-- `userId` – ett slumpmässigt permanent ID för den aktuella webbläsarprofilen,
-- `userName`,
-- `userRole` – `PUBLIC` eller `VIP`.
+- `ITNyheter_UserId` – ett slumpmässigt permanent ID för den aktuella webbläsarprofilen,
+- `ITNyheter_UserName`,
+- `ITNyheter_UserRole` – `PUBLIC` eller `VIP`.
 
-Vid första appstarten, när `userId` saknas:
-- appen skapar ett nytt `userId`,
+Vid första appstarten, när `ITNyheter_UserId` saknas:
+- appen skapar ett nytt `ITNyheter_UserId`,
 - grundrollen sätts till `PUBLIC`,
 - en login-ruta visas automatiskt med texten **Login:** och informationen **Stäng login med ESC eller ENTER**,
 - tomt svar eller ESC ger `userName = OKÄND` och `userRole = PUBLIC`,
@@ -60,13 +60,15 @@ Vid första appstarten, när `userId` saknas:
 
 Vid senare appstarter visas ingen automatisk login-ruta om `userId` redan finns.
 
-Högerklick på app-rubriken **IT-Nyheter** ska öppna login-rutan igen för PUBLIC/VIP-användare. `userId` ska då behållas, medan `userName` och `userRole` får ändras.
+Högerklick på app-rubriken **IT-Nyheter** ska öppna login-rutan igen för PUBLIC/VIP-användare. `ITNyheter_UserId` ska då behållas, medan `ITNyheter_UserName` och `ITNyheter_UserRole` får ändras.
 
 Två filer används i privata repot **Data**:
 - `Test/Nyheter/Users.json` – en unik post per `userId` med `userId`, `userName` och `userRole`,
 - `Test/Nyheter/UserLog.json` – en loggrad vid varje appstart med `userId`, `userName`, `userRole` och datum/tid i formen `YYYY-MM-DD  HH:MM:SS`.
 
-Skrivning från PUBLIC/VIP-användare till Data sker via en separat begränsad GitHub-token som får bäddas in obfuskerad i appens JavaScript. Den tokenen ska inte vara Tomas vanliga privata token och ska ha så små rättigheter som möjligt. Om den delade tokenen inte är konfigurerad ska lokal identitet och login fortfarande fungera, men ingen PUBLIC/VIP-logg skrivs till Data.
+Den separata begränsade GitHub-tokenen lagras som Repository Secret med namnet `ITNYHETER_LOG_TOKEN` i `ChessApps-Pages`. Workflow-filen `.github/workflows/itnyheter-check-token.yml` kontrollerar att Secret-värdet fungerar mot privata repot Data och loggfilerna.
+
+Appen har en förberedd skyddad token-payload för PUBLIC/VIP-loggning. Så länge den payloaden är tom fungerar lokal identitet och login, men ingen PUBLIC/VIP-logg skrivs till Data.
 
 ### YouTube är ett undantag
 
