@@ -372,7 +372,7 @@
 
       let freeHistory = Array.isArray(p.freeTextHistory)
         ? p.freeTextHistory.filter(x => x && typeof x.text === "string" && x.text.trim()).map(x => ({
-            text:x.text.trim(),
+            text:x.text,
             savedAt:typeof x.savedAt === "string" ? x.savedAt : ""
           }))
         : [];
@@ -1418,7 +1418,7 @@
 
   function freeTextRecord(x) {
     if (!x || typeof x.text !== "string" || !x.text.trim()) return null;
-    return {text:x.text.trim(), savedAt:typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")};
+    return {text:x.text, savedAt:typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")};
   }
 
   function uniqueFreeTextHistory(records) {
@@ -1455,7 +1455,8 @@
   }
 
   function combinedRequestText(freeText, links) {
-    return [String(freeText || "").trim(), ...uniqueLinks(links)].filter(Boolean).join("\n");
+    const exactFreeText = String(freeText ?? "");
+    return [exactFreeText.trim() ? exactFreeText : "", ...uniqueLinks(links)].filter(Boolean).join("\n");
   }
 
   function setRequestStatusUi(completed, changedAt = "") {
@@ -1483,7 +1484,7 @@
     let freeHistoryRecords = [], linkHistoryRecords = [];
 
     if (typeof parsed.aktuell?.fritext === "string" || Array.isArray(parsed.aktuell?.lankar) || Array.isArray(parsed.aktuell?.youtube_lankar) || Array.isArray(parsed.aktuell?.ovriga_lankar)) {
-      currentFreeText = String(parsed.aktuell?.fritext || "").trim();
+      currentFreeText = typeof parsed.aktuell?.fritext === "string" ? parsed.aktuell.fritext : "";
       currentLinks = uniqueLinks([
         ...(Array.isArray(parsed.aktuell?.lankar) ? parsed.aktuell.lankar : []),
         ...(Array.isArray(parsed.aktuell?.youtube_lankar) ? parsed.aktuell.youtube_lankar : []),
@@ -1523,7 +1524,7 @@
     const otherLinks = otherRecords.map(x => x.url);
     const body = {
       aktuell:{
-        fritext:String(currentFreeText||"").trim(),
+        fritext:String(currentFreeText ?? ""),
         youtube_lankar:youtubeLinks,
         ovriga_lankar:otherLinks,
         lankar:[...youtubeLinks, ...otherLinks],
@@ -1621,10 +1622,10 @@
   }
 
   async function saveCurrentRequest() {
-    const freeText=requestFreeText.value.trim();
+    const freeText=requestFreeText.value;
     let enteredLinks;
     try{enteredLinks=parseLinkBox(requestLinks.value);}catch(err){statusEl.textContent=err?.message||String(err);return false;}
-    if(!freeText && !enteredLinks.length && !(prefs.savedRequestLinks||[]).length){statusEl.textContent="Skriv ett önskemål eller lägg in minst en länk.";return false;}
+    if(!freeText.trim() && !enteredLinks.length && !(prefs.savedRequestLinks||[]).length){statusEl.textContent="Skriv ett önskemål eller lägg in minst en länk.";return false;}
     const now=new Date().toISOString();
     const freeHistory=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
     if(freeText && !freeHistory.some(x=>x.text===freeText)) freeHistory.push({text:freeText,savedAt:now});
