@@ -1,0 +1,42 @@
+name: IT-Nyheter - kontrollera loggtoken
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/itnyheter-check-token.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kontrollera åtkomst till Data
+        env:
+          ITNYHETER_LOG_TOKEN: ${{ secrets.ITNYHETER_LOG_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os
+          from urllib.request import Request, urlopen
+
+          token = os.environ.get("ITNYHETER_LOG_TOKEN", "")
+          if not token:
+              raise SystemExit("Secret ITNYHETER_LOG_TOKEN saknas eller är tom.")
+
+          request = Request(
+              "https://api.github.com/repos/tomaslennefors/Data",
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": "Bearer " + token,
+                  "X-GitHub-Api-Version": "2022-11-28",
+                  "User-Agent": "ITNyheter-Token-Check"
+              }
+          )
+          with urlopen(request, timeout=20) as response:
+              if response.status != 200:
+                  raise SystemExit("Tokenen kunde inte läsa Data-repot.")
+
+          print("ITNYHETER_LOG_TOKEN fungerar mot Data-repot.")
+          PY
