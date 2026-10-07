@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:23</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:31</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -647,6 +647,7 @@
 
   function buildFilterOptions() {
     buildDateFilterOptions();
+    updateContentTypeFilterCounts();
     fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
     fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
     fillSelect(channelFilter, uniqueSorted(allNews.map(x => x.kanal)), "Alla kanaler");
@@ -768,6 +769,31 @@
     }
   }
 
+  function updateContentTypeFilterCounts() {
+    const current = typeFilter.value;
+    const counts = {
+      "IT-Fakta": 0,
+      "IT-Nyheter": 0,
+      "IT-YouTube": 0
+    };
+    for (const item of allNews) {
+      const type = displayType(item);
+      if (Object.prototype.hasOwnProperty.call(counts, type)) counts[type]++;
+    }
+    const labels = {
+      "": "Alla (" + allNews.length + ")",
+      "IT-Fakta": "IT-Fakta (" + counts["IT-Fakta"] + ")",
+      "IT-Nyheter": "IT-Nyheter (" + counts["IT-Nyheter"] + ")",
+      "IT-YouTube": "IT-YouTube (" + counts["IT-YouTube"] + ")"
+    };
+    for (const option of typeFilter.options) {
+      if (Object.prototype.hasOwnProperty.call(labels, option.value)) {
+        option.textContent = labels[option.value];
+      }
+    }
+    typeFilter.value = current;
+  }
+
   function updateArchiveFilterCounts() {
     const current = archiveFilter.value || "active";
     let archivedCount = 0;
@@ -811,6 +837,7 @@
       input.value = prefs.sort[input.dataset.sort] || "";
     });
     updateArchiveFilterCounts();
+    updateContentTypeFilterCounts();
     updateActiveFilterStyles();
   }
 
