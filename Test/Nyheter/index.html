@@ -342,6 +342,7 @@
   let privateNewsById = new Map();
   let requestCompleted = false;
   let requestStatusChangedAt = "";
+  let requestFreeTextUserTouched = false;
   let prefs = loadPrefs();
 
   function splitLegacyRequest(value) {
@@ -1553,23 +1554,36 @@
     const localLinks=uniqueLinkHistory((prefs.savedRequestLinks||[]).map(url=>({url,savedAt:""})));
     const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...localFree]);
     const mergedLinks=uniqueLinkHistory([...remote.linkHistory,...localLinks]);
-    let currentFreeText=remote.currentFreeText||prefs.currentFreeText||"";
-    let currentSavedAt=remote.currentSavedAt||prefs.currentFreeTextSavedAt||"";
-    if(prefs.currentFreeText && (!remote.currentFreeText || String(prefs.currentFreeTextSavedAt||"") > String(remote.currentSavedAt||""))){
-      currentFreeText=prefs.currentFreeText;
-      currentSavedAt=prefs.currentFreeTextSavedAt||new Date().toISOString();
+
+    // Textrutan ägs av användaren. Synkronisering arbetar bara med en kopia.
+    // Endast vid första återställning, när ingen lokal text finns och användaren
+    // ännu inte har rört rutan, får exakt tidigare sparad text visas igen.
+    if (!requestFreeTextUserTouched && !requestFreeText.value && !prefs.currentFreeText && remote.currentFreeText) {
+      requestFreeText.value = remote.currentFreeText;
+      prefs.currentFreeText = remote.currentFreeText;
+      prefs.currentFreeTextSavedAt = remote.currentSavedAt || "";
     }
+
+    const requestTextCopy = requestFreeText.value;
+    const requestSavedAtCopy = prefs.currentFreeTextSavedAt || remote.currentSavedAt || "";
+
     prefs.freeTextHistory=mergedFree;
     prefs.savedRequestLinks=uniqueLinks(mergedLinks.map(x=>x.url));
-    prefs.currentFreeText=currentFreeText;
-    prefs.currentFreeTextSavedAt=currentSavedAt;
-    requestFreeText.value=currentFreeText;
     requestLinks.value=prefs.linkDraft || "";
     setRequestStatusUi(remote.completed, remote.statusChangedAt);
     savePrefs(); renderRequestLists();
+
     const remoteLinks=uniqueLinks(remote.linkHistory.map(x=>x.url));
-    if((remote.currentFreeText!==currentFreeText || remote.freeHistory.length!==mergedFree.length || remoteLinks.length!==prefs.savedRequestLinks.length) && (currentFreeText || prefs.savedRequestLinks.length)){
-      await writeRequestsToData(currentFreeText,currentSavedAt||new Date().toISOString(),mergedFree,mergedLinks,remote.sha,remote.completed,remote.statusChangedAt);
+    if((remote.freeHistory.length!==mergedFree.length || remoteLinks.length!==prefs.savedRequestLinks.length) && (requestTextCopy || prefs.savedRequestLinks.length)){
+      await writeRequestsToData(
+        remote.currentFreeText,
+        remote.currentSavedAt || requestSavedAtCopy,
+        mergedFree,
+        mergedLinks,
+        remote.sha,
+        remote.completed,
+        remote.statusChangedAt
+      );
     }
   }
 
@@ -1874,6 +1888,7 @@
   }
   sortInputs.forEach(x => x.addEventListener("change", () => applyFilters(false)));
   requestFreeText.addEventListener("input", () => {
+    requestFreeTextUserTouched = true;
     prefs.currentFreeText = requestFreeText.value;
     savePrefs();
   });
