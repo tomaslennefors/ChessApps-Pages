@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:30</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:35</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -602,6 +602,42 @@
     if ([...select.options].some(o => o.value === current)) select.value = current;
   }
 
+  function fillCategorySelect() {
+    const current = categoryFilter.value;
+    const counts = new Map();
+
+    for (const item of allNews) {
+      const categories = Array.isArray(item.kategorier)
+        ? [...new Set(item.kategorier.filter(Boolean))]
+        : [];
+      for (const category of categories) {
+        counts.set(category, (counts.get(category) || 0) + 1);
+      }
+    }
+
+    const categories = [...counts.keys()].sort((a,b) =>
+      String(a).localeCompare(String(b), "sv", {sensitivity:"base"})
+    );
+
+    categoryFilter.replaceChildren();
+
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = "Alla kategorier (" + allNews.length + ")";
+    categoryFilter.append(first);
+
+    for (const category of categories) {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category + " (" + counts.get(category) + ")";
+      categoryFilter.append(option);
+    }
+
+    if ([...categoryFilter.options].some(o => o.value === current)) {
+      categoryFilter.value = current;
+    }
+  }
+
   function fillExactTitleSelect(items, firstText) {
     const current = exactTitleFilter.value;
     const entries = items
@@ -654,7 +690,7 @@
     fillExactTitleSelect(allNews, "Alla rubriker (" + allNews.length + ")");
     fillSelect(languageFilter, uniqueSorted(allNews.map(x => x.språk)), "Alla språk");
     fillSelect(transcriptStatusFilter, uniqueSorted(allNews.map(x => x.transkribering_status)), "Alla transkriberingar");
-    fillSelect(categoryFilter, uniqueSorted(allNews.flatMap(x => Array.isArray(x.kategorier) ? x.kategorier : [])), "Alla kategorier");
+    fillCategorySelect();
   }
 
   function normalize(text) {
