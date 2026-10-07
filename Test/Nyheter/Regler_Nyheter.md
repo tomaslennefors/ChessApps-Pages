@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 13:40
+Senast uppdaterad: 2026-10-07 13:59
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -138,7 +138,9 @@ Appen och GPT får aldrig ändra texten i själva textrutan.
 
 När appen eller GPT behöver bearbeta, kontrollera, trimma, dela upp, omformatera eller på annat sätt förändra texten ska en **kopia** av texten användas. Originaltexten i textrutan ska alltid lämnas orörd.
 
-När appen öppnas får tidigare sparad originaltext återställas exakt som Tomas senast sparade den.
+Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras med **F5** eller **Uppdatera filtrering** ska exakt samma text visas igen, även om Tomas ännu inte har tryckt **Spara önskemål**.
+
+**Spara önskemål** betyder att texten skickas till den privata Data-filen. Det är inte samma sak som att appen får ändra innehållet i textrutan.
 ## 4. Upphovsrätt och omskrivning
 
 För vanliga webbartiklar ska den publika texten skrivas med egna ord.
