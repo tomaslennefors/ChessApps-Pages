@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:23
+Senast uppdaterad: 2026-10-07 16:31
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -91,6 +91,14 @@ Alla poster ska ha en av följande typer:
 - **IT-YouTube** – innehåll som bygger på en YouTube-video.
 
 Samma tre typnamn ska användas både som **Innehållstyp** i varje innehållspost och som alternativ i appens filter **Innehållstyp**.
+
+Filtret **Innehållstyp** ska visa antal poster inom parentes för samtliga val:
+- **Alla (antal)**
+- **IT-Fakta (antal)**
+- **IT-Nyheter (antal)**
+- **IT-YouTube (antal)**
+
+Antalen ska räknas från den aktuella nyhetsfilen när appen läser in innehållet och räknas därför om automatiskt vid **Uppdatera filtrering** eller F5.
 
 För **IT-Fakta** gäller dessutom:
 - både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
