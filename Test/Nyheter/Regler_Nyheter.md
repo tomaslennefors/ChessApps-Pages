@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 15:52
+Senast uppdaterad: 2026-10-07 16:18
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -94,7 +94,15 @@ Samma tre typnamn ska användas både som **Innehållstyp** i varje innehållspo
 
 För **IT-Fakta** gäller dessutom:
 - både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
-- tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
+- tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum,
+- fältet `datum` ska ange när just den aktuella versionen av IT-Fakta-posten skapades eller publicerades,
+- varje IT-Fakta-post ska ha ett versionsnummer i formen **V1, V2, V3 ...**,
+- första versionen är **V1**,
+- när innehållet ändras ska den befintliga posten inte skrivas över; en ny innehållspost med nytt ID, dagens datum och nästa versionsnummer ska skapas,
+- tidigare versioner ska ligga kvar oförändrade tills Tomas själv väljer att arkivera dem,
+- versionen ska visas i innehållspostens metadata och i rubriklistan så att olika versioner kan skiljas åt och jämföras.
+
+De 13 befintliga IT-Fakta-posterna, ID 46–58, är **V1** med datum **2026-10-06**.
 
 Exempel på IT-Fakta:
 - **!IT-året ...**
@@ -227,7 +235,9 @@ Alla aktiva filtervillkor ska markeras tydligt med **röd bakgrundsfärg** i app
 
 När ett filtervillkor inte längre är aktivt ska den röda markeringen försvinna.
 
-När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla röda filtermarkeringar försvinna.
+När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla röda filtermarkeringar försvinna. För filtret **Arkiv** betyder rensat läge **Alla**.
+
+När appen startas utan ett tidigare sparat val ska filtret **Arkiv** som standard vara **Ej arkiverade**. När **Uppdatera filtrering** eller F5 används ska det aktuella valet i Arkiv-filtret bevaras, även om valet är **Alla** efter att Rensa filter har använts.
 
 Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
@@ -271,4 +281,4 @@ Alla datumvärden som finns tillgängliga för den aktuella användaren ska bygg
 
 Det valda datumvillkoret och övriga filtervillkor ska sparas lokalt och ligga kvar synliga efter **Uppdatera filtrering** och den fullständiga siduppdateringen. Filtervillkor får inte återställas automatiskt bara för att de för tillfället ger 0 träffar.
 
-Alla aktiva filtervillkor ska markeras med **blå bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den blå markeringen.
+Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den röda markeringen.
