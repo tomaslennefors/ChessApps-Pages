@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 15:48
+Senast uppdaterad: 2026-10-07 15:52
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -71,7 +71,7 @@ Språket ska vara lätt att förstå. Viktig innebörd får inte tas bort bara f
 När användaren väljer en bestämd nyhet i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
 - rubrik,
 - metadata enligt användarens behörighet,
-- **Typ** så att det framgår om dokumentet är **IT-Fakta**, **IT-Nyheter** eller **IT-YouTube**,
+- **Innehållstyp** så att det framgår om innehållsposten är **IT-Fakta**, **IT-Nyheter** eller **IT-YouTube**,
 - kategorier,
 - ingress,
 - hela den längre omskrivna nyhetstexten.
@@ -83,14 +83,14 @@ Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Nyheten" ska
 När flera nyheter visas samtidigt ska varje vanlig artikel endast visa ingressen, inte den längre artikeltexten.
 
 
-## 2c. Typer
+## 2c. Innehållstyper
 
 Alla poster ska ha en av följande typer:
 - **IT-Fakta** – beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar.
 - **IT-Nyheter** – vanliga tidsbundna nyhetsartiklar.
 - **IT-YouTube** – innehåll som bygger på en YouTube-video.
 
-Samma tre typnamn ska användas både i fältet **Typ** i varje post och som alternativ i appens **Typ-filter**.
+Samma tre typnamn ska användas både som **Innehållstyp** i varje innehållspost och som alternativ i appens filter **Innehållstyp**.
 
 För **IT-Fakta** gäller dessutom:
 - både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
@@ -198,11 +198,11 @@ Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarand
 
 ## 6. IT-Fakta och appbeteende
 
-### 6a. Typen IT-Fakta
+### 6a. Innehållstypen IT-Fakta
 
-Beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar ska ha **Typ = IT-Fakta**. De ska inte använda **!AI-sammanställningar** som kategori.
+Beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar ska ha **Innehållstyp = IT-Fakta**. De ska inte använda **!AI-sammanställningar** som kategori.
 
-Följande befintliga sammanställningar ska ha **Typ = IT-Fakta**:
+Följande befintliga sammanställningar ska ha **Innehållstyp = IT-Fakta**:
 - **!IT-året ...**
 - **!AI-historik ...**
 - **!AI-begrepp ...**
