@@ -245,6 +245,6 @@ När bara år anges ska alla nyheter under året matcha. När år och månad ang
 
 Alla datumvärden som finns tillgängliga för den aktuella användaren ska byggas upp som valbara sökvillkor i datumfältet. År och år–månad ska också skapas från de fullständiga datumen.
 
-Det valda datumvillkoret och övriga filtervillkor ska sparas lokalt och ligga kvar synliga efter **Uppdatera filtrering** och den fullständiga siduppdateringen.
+Det valda datumvillkoret och övriga filtervillkor ska sparas lokalt och ligga kvar synliga efter **Uppdatera filtrering** och den fullständiga siduppdateringen. Filtervillkor får inte återställas automatiskt bara för att de för tillfället ger 0 träffar.
 
 Alla aktiva filtervillkor ska markeras med **blå bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den blå markeringen.
