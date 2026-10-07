@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 15:05</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 15:35</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -252,6 +252,7 @@
         Typ
         <select id="typeFilter">
           <option value="">Alla</option>
+          <option value="IT-Fakta">IT-Fakta</option>
           <option value="article">Artiklar</option>
           <option value="youtube">YouTube</option>
         </select>
@@ -851,8 +852,9 @@
       if (fav === "no" && favorite) return false;
       if (archive === "active" && archived) return false;
       if (archive === "archived" && !archived) return false;
+      if (type === "IT-Fakta" && String(item.typ || item.type || "") !== "IT-Fakta") return false;
       if (type === "youtube" && !youtube) return false;
-      if (type === "article" && youtube) return false;
+      if (type === "article" && (youtube || String(item.typ || item.type || "") === "IT-Fakta")) return false;
       return true;
     });
   }
