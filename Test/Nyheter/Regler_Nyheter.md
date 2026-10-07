@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 01:07
+Senast uppdaterad: 2026-10-07 01:25
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -166,6 +166,10 @@ Följande sammanställningar ska tillhöra kategorin **!AI-sammanställningar**:
 - **!AI-begrepp ...**
 - **!AI och schack ...**
 - **!AI-bolag och AI-modeller ...**
+- **!ChatGPT - Idag ...**
+- **!ChatGPT - Historiken**
+- **!ChatGPT - Begreppen**
+- **!ChatGPT - OpenAI**
 
 ### 6b. Utbrytningar från !AI-historik
 
