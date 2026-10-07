@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 15:39
+Senast uppdaterad: 2026-10-07 15:48
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -83,19 +83,23 @@ Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Nyheten" ska
 När flera nyheter visas samtidigt ska varje vanlig artikel endast visa ingressen, inte den längre artikeltexten.
 
 
-## 2c. IT-Fakta
+## 2c. Typer
 
-Beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar ska ha **Typ = IT-Fakta** och ska inte klassas som vanliga datumstyrda nyheter.
+Alla poster ska ha en av följande typer:
+- **IT-Fakta** – beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar.
+- **IT-Nyheter** – vanliga tidsbundna nyhetsartiklar.
+- **IT-YouTube** – innehåll som bygger på en YouTube-video.
 
-Exempel:
+Samma tre typnamn ska användas både i fältet **Typ** i varje post och som alternativ i appens **Typ-filter**.
+
+För **IT-Fakta** gäller dessutom:
+- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
+- tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
+
+Exempel på IT-Fakta:
 - **!IT-året ...**
 - **!AI-historik ...**
 - **!AI-begrepp ...**
-
-Regler:
-- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
-- dessa poster ska ha **Typ = IT-Fakta**,
-- tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
 
 ## 3. HämtaNyheter och dataflöde
 
