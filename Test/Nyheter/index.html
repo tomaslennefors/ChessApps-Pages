@@ -8,7 +8,8 @@
     *{box-sizing:border-box}
     :root{--bg:#f6f8fa;--card:#fff;--line:#d0d7de;--text:#1f2328;--muted:#59636e;--blue:#0969da;--star:#bf8700}
     body{font-family:system-ui,Arial,sans-serif;max-width:1120px;margin:28px auto;padding:0 16px 50px;line-height:1.55;background:var(--bg);color:var(--text)}
-    h1{font-size:1.9rem;margin:0 0 4px}
+    h1{font-size:1.9rem;margin:0 0 4px;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+    .app-version{font-size:.72rem;font-weight:500;color:var(--muted);white-space:nowrap}
     h2{margin-top:0}
     #meta{color:var(--muted);margin-bottom:16px}
     .private-view-control{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:.92rem}
@@ -111,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1 id="title">IT-Nyheter</h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">v2026-10-07 14:24</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
