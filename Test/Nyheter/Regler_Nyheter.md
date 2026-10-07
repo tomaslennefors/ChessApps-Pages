@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 01:25
+Senast uppdaterad: 2026-10-07 13:08
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -109,6 +109,26 @@ De publika, bearbetade nyheterna sparas i repositoryt **ChessApps-Pages**, i:
 Appen läser sedan in nyheterna från den publika JSON-filen.
 
 Privat metadata för vanliga artiklar sparas separat i repositoryt **Data** och ska bara läsas när Tomas är verifierad.
+
+### 3a. Status för aktuellt önskemål
+
+Det aktuella önskemålet i `Data/Test/Nyheter/HamtaNyheter.json` ska ha en behandlingsstatus.
+
+Två statusvärden används:
+- **Nytt önskemål** – önskemålet får behandlas av GPT.
+- **Färdigbehandlat** – önskemålet får inte behandlas igen.
+
+I appens privata del **HämtaNyheter** finns en kryssruta för status:
+- tom kryssruta betyder **Nytt önskemål**,
+- ikryssad ruta betyder **Färdigbehandlat**.
+
+När GPT får kommandot **HämtaNyheter** i chatten ska GPT alltid läsa statusen först. GPT får bara hämta eller bearbeta nyheter från det aktuella önskemålet om status är **Nytt önskemål**.
+
+När hela önskemålet har genomförts utan fel ska GPT uppdatera `HamtaNyheter.json` och sätta status till **Färdigbehandlat**. Appens kryssruta ska då visas ikryssad efter att den privata datan har lästs in på nytt.
+
+Om Tomas vill köra exakt samma önskemål igen ska han först ta bort krysset. Då sparas statusen **Nytt önskemål** i Data och önskemålet får behandlas igen.
+
+Om Tomas ändrar själva önskemålet och sparar den ändrade texten eller lägger till nya länkar ska det ändrade önskemålet få status **Nytt önskemål**. Att bara trycka på **Spara önskemål** utan att ändra det färdigbehandlade önskemålet ska inte återaktivera det.
 
 ## 4. Upphovsrätt och omskrivning
 
