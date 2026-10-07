@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:34
+Senast uppdaterad: 2026-10-07 16:30
 
 ## 1. Olika visning för Tomas och andra användare
 
