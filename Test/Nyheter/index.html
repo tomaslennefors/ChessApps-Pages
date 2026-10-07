@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 15:35</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 15:39</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -475,6 +475,13 @@
 
   function displayTitle(item) {
     return ownerMode ? String(item.fullständig_rubrik || item.titel || "Nyhet") : String(item.titel || "Nyhet");
+  }
+
+  function displayType(item) {
+    const type = String(item.typ || item.type || "");
+    if (type === "IT-Fakta") return "IT-Fakta";
+    if (isYoutube(item)) return "IT-YouTube";
+    return "IT-Nyheter";
   }
 
   function displayDate(item) {
@@ -1150,7 +1157,7 @@
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
-      if (youtube) parts.push("Typ: YouTube");
+      parts.push("Typ: " + displayType(item));
       if (youtube && item.transkribering_status) parts.push("Transkribering: " + item.transkribering_status);
       if (archived) parts.push("Arkiverad");
       details.textContent = parts.join(" · ");
