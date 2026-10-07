@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:18
+Senast uppdaterad: 2026-10-07 16:23
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -238,6 +238,13 @@ När ett filtervillkor inte längre är aktivt ska den röda markeringen försvi
 När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla röda filtermarkeringar försvinna. För filtret **Arkiv** betyder rensat läge **Alla**.
 
 När appen startas utan ett tidigare sparat val ska filtret **Arkiv** som standard vara **Ej arkiverade**. När **Uppdatera filtrering** eller F5 används ska det aktuella valet i Arkiv-filtret bevaras, även om valet är **Alla** efter att Rensa filter har använts.
+
+De tre alternativen i Arkiv-filtret ska alltid visa antal inom parentes:
+- **Alla (antal)**
+- **Ej arkiverade (antal)**
+- **Endast arkiverade (antal)**
+
+Antalen ska uppdateras direkt när en innehållspost arkiveras eller återställs från arkivet.
 
 Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
