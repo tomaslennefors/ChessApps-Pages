@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 14:04
+Senast uppdaterad: 2026-10-07 14:16
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -142,7 +142,7 @@ Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras m
 
 **Spara önskemål** betyder att texten skickas till den privata Data-filen. Det är inte samma sak som att appen får ändra innehållet i textrutan.
 
-Önskemål-rutans höjd ska kunna ändras genom att dra i den horisontella nederkanten. Kontrollerna under rutan ska ligga i normalt dokumentflöde och därför följa med när rutan görs högre eller lägre. Den valda höjden sparas lokalt i webbläsaren.
+Önskemål-rutan ska använda webbläsarens inbyggda storleksändring via draghandtaget nere till höger. Rutan ska kunna minskas till ungefär en textrad och förstoras efter behov. Kontrollerna under rutan ska ligga i normalt dokumentflöde och därför följa med när rutan görs högre eller lägre.
 ## 4. Upphovsrätt och omskrivning
 
 För vanliga webbartiklar ska den publika texten skrivas med egna ord.
