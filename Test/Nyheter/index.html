@@ -20,8 +20,8 @@
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
-    .filter-grid>label.filter-active,.full-title-box>label.filter-active{color:var(--blue);background:#ddf4ff;border-radius:7px;box-shadow:0 0 0 5px #ddf4ff}
-    label.filter-active>input:not(.sortno),label.filter-active>select{border-color:var(--blue);background:#b6e3ff;box-shadow:0 0 0 2px rgba(9,105,218,.14)}
+    .filter-grid>label.filter-active,.full-title-box>label.filter-active{color:#fff;background:#cf222e;border-radius:7px;box-shadow:0 0 0 5px #cf222e}
+    label.filter-active>input:not(.sortno),label.filter-active>select{border-color:#cf222e;background:#ffebe9;color:var(--text);box-shadow:0 0 0 2px rgba(207,34,46,.18)}
     .save-request-message{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
     .request-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#f6f8fa}
     .request-status label{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;cursor:pointer}
@@ -37,8 +37,8 @@
     #requestFreeText{min-height:2.6em;resize:vertical}
     #requestLinks{min-height:0;resize:vertical}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button,a.button{padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;cursor:pointer;color:var(--text);text-decoration:none}
-    button:hover,a.button:hover{background:#f3f4f6}
+    button,a.button{padding:9px 13px;border:1px solid var(--blue);border-radius:7px;background:var(--blue);cursor:pointer;color:#fff;text-decoration:none}
+    button:hover,a.button:hover{filter:brightness(.92)}
     button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
     button.primary:hover{filter:brightness(.95)}
     #reloadBtn{background:#cf222e;border-color:#cf222e;color:#fff;font-weight:750}
@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 14:32</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 15:05</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
