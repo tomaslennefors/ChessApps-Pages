@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:26
+Senast uppdaterad: 2026-10-07 16:34
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -253,6 +253,13 @@ De tre alternativen i Arkiv-filtret ska alltid visa antal inom parentes:
 - **Endast arkiverade (antal)**
 
 Antalen ska uppdateras direkt när en innehållspost arkiveras eller återställs från arkivet.
+
+Filtret **Favorit** ska på motsvarande sätt alltid visa:
+- **Alla (antal)**
+- **Endast favoriter (antal)**
+- **Ej favoriter (antal)**
+
+Favoritantalen ska uppdateras direkt när en innehållspost markeras som favorit eller tas bort från favoriter.
 
 Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
