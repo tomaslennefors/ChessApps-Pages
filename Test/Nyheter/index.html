@@ -280,17 +280,34 @@
   <div id="list"></div>
 
 <script>
-(() => {
+(async () => {
   const dataUrl = "./nyheter.json";
   const rulesUrl = "./Regler_Nyheter.md";
   const storageKey = "ITNyheter_Settings_V2";
   const tokenKey = "ChessApps_GitHubToken";
+  const userIdKey = "userId";
+  const userNameKey = "userName";
+  const userRoleKey = "userRole";
   const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
+  const usersDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Users.json";
+  const userLogDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/UserLog.json";
   const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
   const privateNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_privata.json";
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
   const filterSchemaVersion = 5;
+
+  // Begränsad delad Data-token för PUBLIC/VIP-loggning.
+  // Payloaden lämnas tom tills en separat, begränsad token har skapats.
+  const _t0 = "";
+  const _t1 = value => String(value || "").split("").reverse().join("");
+  const _t2 = value => {
+    try { return atob(value); } catch { return ""; }
+  };
+  function sharedDataToken() {
+    if (!_t0) return "";
+    return _t1(_t2(_t0));
+  }
 
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
@@ -366,6 +383,161 @@
       out.push(url);
     }
     return out;
+  }
+
+  function generateUserId() {
+    if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
+    const random = Math.random().toString(36).slice(2);
+    return "u-" + Date.now().toString(36) + "-" + random;
+  }
+
+  function normalizeLoginAnswer(answer) {
+    const text = String(answer ?? "").trim();
+    if (!text) return {userName:"OKÄND", userRole:"PUBLIC"};
+
+    if (/^vip/i.test(text)) {
+      let name = text.slice(3).trim().replace(/^[-\s]+/, "").trim();
+      return {
+        userName: name ? "VIP-" + name : "VIP",
+        userRole: "VIP"
+      };
+    }
+
+    return {userName:text, userRole:"PUBLIC"};
+  }
+
+  function readPublicIdentity() {
+    const userId = String(localStorage.getItem(userIdKey) || "").trim();
+    if (!userId) return null;
+    const userName = String(localStorage.getItem(userNameKey) || "").trim() || "OKÄND";
+    const userRole = String(localStorage.getItem(userRoleKey) || "PUBLIC").toUpperCase() === "VIP" ? "VIP" : "PUBLIC";
+    return {userId,userName,userRole};
+  }
+
+  function savePublicIdentity(identity) {
+    localStorage.setItem(userIdKey, identity.userId);
+    localStorage.setItem(userNameKey, identity.userName);
+    localStorage.setItem(userRoleKey, identity.userRole);
+  }
+
+  function localLogTimestamp() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2,"0");
+    return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate())
+      + "  " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+  }
+
+  async function mutateSharedDataFile(url, token, message, mutate) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const getResponse = await fetch(url + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+        headers: githubHeaders(token),
+        cache:"no-store"
+      });
+      if (!getResponse.ok) throw new Error("Kunde inte läsa loggfil. HTTP " + getResponse.status);
+
+      const file = await getResponse.json();
+      const data = JSON.parse(decodeBase64Utf8(file.content || ""));
+      mutate(data);
+
+      const putResponse = await fetch(url, {
+        method:"PUT",
+        headers:{...githubHeaders(token),"Content-Type":"application/json"},
+        body:JSON.stringify({
+          message,
+          content:encodeBase64Utf8(JSON.stringify(data,null,2) + "\n"),
+          sha:file.sha,
+          branch:requestBranch
+        })
+      });
+
+      if (putResponse.ok) return true;
+      if (putResponse.status !== 409) {
+        throw new Error("Kunde inte skriva loggfil. HTTP " + putResponse.status);
+      }
+    }
+    throw new Error("Kunde inte skriva loggfil efter samtidig uppdatering.");
+  }
+
+  async function syncPublicIdentityToData(identity, addAppStartLog) {
+    const token = sharedDataToken();
+    if (!token || !identity) return false;
+
+    try {
+      await mutateSharedDataFile(usersDataUrl, token, "Uppdatera IT-Nyheter-användare", data => {
+        if (!Array.isArray(data.users)) data.users = [];
+        const existing = data.users.find(x => String(x?.userId || "") === identity.userId);
+        const record = {
+          userId:identity.userId,
+          userName:identity.userName,
+          userRole:identity.userRole
+        };
+        if (existing) Object.assign(existing, record);
+        else data.users.push(record);
+      });
+
+      if (addAppStartLog) {
+        await mutateSharedDataFile(userLogDataUrl, token, "Logga start av IT-Nyheter", data => {
+          if (!Array.isArray(data.log)) data.log = [];
+          data.log.push({
+            userId:identity.userId,
+            userName:identity.userName,
+            userRole:identity.userRole,
+            datumtid:localLogTimestamp()
+          });
+        });
+      }
+      return true;
+    } catch (err) {
+      console.warn("Användarloggning till Data misslyckades:", err);
+      return false;
+    }
+  }
+
+  function showLogin(firstStart = false) {
+    let identity = readPublicIdentity();
+    if (!identity) {
+      identity = {userId:generateUserId(), userName:"", userRole:"PUBLIC"};
+    }
+
+    const currentName = identity.userName && identity.userName !== "OKÄND" ? identity.userName : "";
+    const answer = window.prompt("Login:\n(Stäng login med ESC eller ENTER)", currentName);
+    const normalized = normalizeLoginAnswer(answer);
+
+    identity = {
+      userId:identity.userId,
+      userName:normalized.userName,
+      userRole:normalized.userRole
+    };
+    savePublicIdentity(identity);
+
+    // Första login är samtidigt första appstarten. Vid manuell omlogin
+    // uppdateras användarregistret men ingen extra appstart skapas.
+    void syncPublicIdentityToData(identity, firstStart);
+    return identity;
+  }
+
+  function initPublicIdentity() {
+    let identity = readPublicIdentity();
+    const firstStart = !identity;
+
+    if (!identity) {
+      identity = {userId:generateUserId(), userName:"", userRole:"PUBLIC"};
+      savePublicIdentity(identity);
+      identity = showLogin(true);
+    } else {
+      if (!identity.userName) {
+        identity.userName = "OKÄND";
+        savePublicIdentity(identity);
+      }
+      void syncPublicIdentityToData(identity, true);
+    }
+
+    titleEl.addEventListener("contextmenu", event => {
+      event.preventDefault();
+      showLogin(false);
+    });
+
+    return identity;
   }
 
   function loadPrefs() {
@@ -1825,7 +1997,7 @@
     const token = localStorage.getItem(tokenKey);
     if (!token) {
       sourceFilter.value = "";
-      return;
+      return false;
     }
 
     try {
@@ -1858,12 +2030,14 @@
         } catch (err) {
           statusEl.textContent = "Ägardelen är öppnad, men HämtaNyheter kunde inte synkroniseras med Data: " + (err?.message || String(err));
         }
+        return true;
       } else {
         ownerAuthenticated = false;
         ownerMode = false;
         sourceFilter.value = "";
         setPrivacyUi();
         if (allNews.length) refreshViewAfterPrivacyChange();
+        return false;
       }
     } catch {
       ownerAuthenticated = false;
@@ -1874,6 +2048,7 @@
       rulesArea.hidden = true;
       sourceFilter.value = "";
       setPrivacyUi();
+      return false;
     }
   }
 
@@ -2106,8 +2281,9 @@
   renderRequestLists();
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   setPrivacyUi();
-  detectOwnerMode();
-  loadNews();
+  const isOwner = await detectOwnerMode();
+  if (!isOwner) initPublicIdentity();
+  await loadNews();
 })();
 </script>
 </body>
