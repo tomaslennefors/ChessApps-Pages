@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:34</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:43</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -249,11 +249,11 @@
       </label>
 
       <label>
-        Innehållstyp
+        Dokumenttyp
         <select id="typeFilter">
           <option value="">Alla</option>
           <option value="IT-Fakta">IT-Fakta</option>
-          <option value="IT-Nyheter">IT-Nyheter</option>
+          <option value="IT-Nyheter">IT-Dokument</option>
           <option value="IT-YouTube">IT-YouTube</option>
         </select>
       </label>
@@ -267,14 +267,14 @@
   </div>
   <button id="filterSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj filtrering</span></button>
 
-  <div id="status">Hämtar nyheter...</div>
+  <div id="status">Hämtar dokument...</div>
 
   <div id="fullTitlePanel" class="full-title-filter">
     <label>
       <span class="label-row"><span id="exactTitleCaption">Omskriven rubrik</span> <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
       <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
     </label>
-    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa artikel eller video · Mellanslag = starta vald YouTube-video. Artiklar visas i AI-läsvy.</div>
+    <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
   </div>
 
   <div id="list"></div>
@@ -484,7 +484,7 @@
   }
 
   function displayTitle(item) {
-    return ownerMode ? String(item.fullständig_rubrik || item.titel || "Nyhet") : String(item.titel || "Nyhet");
+    return ownerMode ? String(item.fullständig_rubrik || item.titel || "Dokument") : String(item.titel || "Dokument");
   }
 
   function displayType(item) {
@@ -492,6 +492,11 @@
     if (type === "IT-Fakta") return "IT-Fakta";
     if (isYoutube(item)) return "IT-YouTube";
     return "IT-Nyheter";
+  }
+
+  function displayTypeLabel(item) {
+    const type = displayType(item);
+    return type === "IT-Nyheter" ? "IT-Dokument" : type;
   }
 
   function displayDate(item) {
@@ -547,7 +552,7 @@
       headers: githubHeaders(ownerToken),
       cache:"no-store"
     });
-    if (!response.ok) throw new Error("Kunde inte läsa privat artikelmetadata. HTTP " + response.status);
+    if (!response.ok) throw new Error("Kunde inte läsa privat dokumentmetadata. HTTP " + response.status);
     const file = await response.json();
     const parsed = JSON.parse(decodeBase64Utf8(file.content || ""));
     const map = new Map();
@@ -819,7 +824,7 @@
     const labels = {
       "": "Alla (" + allNews.length + ")",
       "IT-Fakta": "IT-Fakta (" + counts["IT-Fakta"] + ")",
-      "IT-Nyheter": "IT-Nyheter (" + counts["IT-Nyheter"] + ")",
+      "IT-Nyheter": "IT-Dokument (" + counts["IT-Nyheter"] + ")",
       "IT-YouTube": "IT-YouTube (" + counts["IT-YouTube"] + ")"
     };
     for (const option of typeFilter.options) {
@@ -1153,7 +1158,7 @@
   function attachArticleResize(handle, article) {
     handle.setAttribute("role", "separator");
     handle.setAttribute("aria-orientation", "horizontal");
-    handle.setAttribute("aria-label", "Dra för att ändra höjden på nyhetsrutan");
+    handle.setAttribute("aria-label", "Dra för att ändra höjden på dokumentrutan");
 
     handle.addEventListener("pointerdown", event => {
       event.preventDefault();
@@ -1213,7 +1218,7 @@
     const body = card.querySelector(".article-body")?.textContent || "";
     box.textContent = [
       statsLabel("Ingress", ingress),
-      statsLabel("Artikel", body),
+      statsLabel("Dokument", body),
       statsLabel("Markering", selectedText)
     ].join(" · ");
     box.classList.add("visible");
@@ -1224,7 +1229,7 @@
     const sorted = sortNews(items);
 
     if (!sorted.length) {
-      statusEl.textContent = "Inga nyheter matchar de valda filtren.";
+      statusEl.textContent = "Inga dokument matchar de valda filtren.";
       return;
     }
 
@@ -1253,10 +1258,10 @@
 
       const copyNewsBtn = makeButton("⧉", "copy-news", async () => {
         const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent);
-        await copyText(text, "Hela nyheten är kopierad till Urklipp.");
+        await copyText(text, "Hela dokumentet är kopierat till Urklipp.");
       });
-      copyNewsBtn.title = "Kopiera hela nyheten";
-      copyNewsBtn.setAttribute("aria-label", "Kopiera hela nyheten");
+      copyNewsBtn.title = "Kopiera hela dokumentet";
+      copyNewsBtn.setAttribute("aria-label", "Kopiera hela dokumentet");
 
       const h2 = document.createElement("h2");
       h2.textContent = displayTitle(item);
@@ -1271,7 +1276,7 @@
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
-      parts.push("Innehållstyp: " + displayType(item));
+      parts.push("Dokumenttyp: " + displayTypeLabel(item));
       if (item.version) parts.push("Version: " + item.version);
       if (youtube && item.transkribering_status) parts.push("Transkribering: " + item.transkribering_status);
       if (archived) parts.push("Arkiverad");
@@ -1331,7 +1336,7 @@
       if (item.länk && (youtube || ownerMode)) {
         const link = document.createElement("a");
         link.className = "button";
-        link.textContent = youtube ? "Öppna YouTube" : "Läs originalnyheten";
+        link.textContent = youtube ? "Öppna YouTube" : "Läs originaldokumentet";
         link.href = item.länk;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
@@ -1396,7 +1401,7 @@
 
     const favCount = allNews.filter(x => !!prefs.favorites[itemKey(x)]).length;
     const archCount = allNews.filter(x => !!prefs.archived[itemKey(x)]).length;
-    statusEl.textContent = "Visar " + sorted.length + " av " + allNews.length + " nyheter. Favoriter: " + favCount + ". Arkiverade: " + archCount + ".";
+    statusEl.textContent = "Visar " + sorted.length + " av " + allNews.length + " dokument. Favoriter: " + favCount + ". Arkiverade: " + archCount + ".";
   }
 
   function updateExactTitleOptions() {
@@ -1831,7 +1836,7 @@
           applyPrivateNewsMetadata();
           refreshViewAfterPrivacyChange();
         } catch (err) {
-          statusEl.textContent = "Ägardelen är öppnad, men privat artikelmetadata kunde inte läsas: " + (err?.message || String(err));
+          statusEl.textContent = "Ägardelen är öppnad, men privat dokumentmetadata kunde inte läsas: " + (err?.message || String(err));
         }
 
         try {
@@ -1882,7 +1887,7 @@
 
   async function loadNews() {
     reloadBtn.disabled = true;
-    statusEl.textContent = "Hämtar nyheter...";
+    statusEl.textContent = "Hämtar dokument...";
     listEl.replaceChildren();
 
     try {
