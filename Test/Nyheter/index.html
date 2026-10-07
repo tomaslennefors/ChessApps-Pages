@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:43</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 17:37</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -253,7 +253,7 @@
         <select id="typeFilter">
           <option value="">Alla</option>
           <option value="IT-Fakta">IT-Fakta</option>
-          <option value="IT-Nyheter">IT-Dokument</option>
+          <option value="IT-Nyhet">IT-Nyhet</option>
           <option value="IT-YouTube">IT-YouTube</option>
         </select>
       </label>
@@ -483,20 +483,32 @@
     return type === "youtube" || type === "it-youtube" || url.includes("youtube.com/") || url.includes("youtu.be/");
   }
 
-  function displayTitle(item) {
-    return ownerMode ? String(item.fullständig_rubrik || item.titel || "Dokument") : String(item.titel || "Dokument");
-  }
-
   function displayType(item) {
     const type = String(item.typ || item.type || "");
     if (type === "IT-Fakta") return "IT-Fakta";
-    if (isYoutube(item)) return "IT-YouTube";
-    return "IT-Nyheter";
+    if (isYoutube(item) || type === "IT-YouTube") return "IT-YouTube";
+    return "IT-Nyhet";
+  }
+
+  function documentPrefix(item) {
+    const type = displayType(item);
+    if (type === "IT-Fakta") return "!";
+    if (type === "IT-YouTube") return "Y:";
+    return "N:";
+  }
+
+  function displayTitle(item) {
+    const raw = ownerMode
+      ? String(item.fullständig_rubrik || item.titel || "Dokument").trim()
+      : String(item.titel || "Dokument").trim();
+    const prefix = documentPrefix(item);
+    if (prefix === "!") return raw.startsWith("!") ? raw : "!" + raw;
+    if (prefix === "Y:") return /^Y:\s*/i.test(raw) ? raw : "Y: " + raw;
+    return /^N:\s*/i.test(raw) ? raw : "N: " + raw;
   }
 
   function displayTypeLabel(item) {
-    const type = displayType(item);
-    return type === "IT-Nyheter" ? "IT-Dokument" : type;
+    return displayType(item);
   }
 
   function displayDate(item) {
@@ -814,7 +826,7 @@
     const current = typeFilter.value;
     const counts = {
       "IT-Fakta": 0,
-      "IT-Nyheter": 0,
+      "IT-Nyhet": 0,
       "IT-YouTube": 0
     };
     for (const item of allNews) {
@@ -824,7 +836,7 @@
     const labels = {
       "": "Alla (" + allNews.length + ")",
       "IT-Fakta": "IT-Fakta (" + counts["IT-Fakta"] + ")",
-      "IT-Nyheter": "IT-Dokument (" + counts["IT-Nyheter"] + ")",
+      "IT-Nyhet": "IT-Nyhet (" + counts["IT-Nyhet"] + ")",
       "IT-YouTube": "IT-YouTube (" + counts["IT-YouTube"] + ")"
     };
     for (const option of typeFilter.options) {
@@ -892,7 +904,8 @@
     categoryFilter.value = f.category || "";
     favoriteFilter.value = f.favorite || "";
     archiveFilter.value = f.archive || "active";
-    typeFilter.value = f.type || "";
+    const savedType = f.type || "";
+    typeFilter.value = (savedType === "IT-Nyheter" || savedType === "IT-Dokument") ? "IT-Nyhet" : savedType;
     requestFreeText.value = prefs.currentFreeText || "";
     requestLinks.value = prefs.linkDraft || "";
     sortInputs.forEach(input => {
