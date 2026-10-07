@@ -772,7 +772,7 @@
       if (!address) return;
       item.webbadress = address;
 
-      const needsTitle = !item.titel || /^(?:Y:\\s*)?YouTube-klipp\\b/i.test(item.titel) || /^(?:Y:\\s*)?YouTube-video\\b/i.test(item.titel);
+      const needsTitle = !item.titel || /^(?:Y:\s*)?YouTube-klipp\b/i.test(item.titel) || /^(?:Y:\s*)?YouTube-video\b/i.test(item.titel);
       const needsChannel = !item.kanal || item.kanal === "Inte verifierad";
       const needsPublisher = !item.utgivare || item.utgivare === "Inte verifierad";
 
