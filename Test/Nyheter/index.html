@@ -33,10 +33,7 @@
     input,select,textarea,button{font:inherit}
     input,select,textarea{width:100%;padding:8px;margin-top:5px;border:1px solid #8c959f;border-radius:7px;background:#fff}
     textarea{min-height:110px;resize:vertical;line-height:1.45}
-    #requestFreeText{resize:none;margin-bottom:0}
-    .request-resize-handle{height:18px;margin-top:0;position:relative;cursor:ns-resize;touch-action:none;user-select:none}
-    .request-resize-handle::after{content:"";position:absolute;left:8%;right:8%;top:7px;border-top:3px solid #8c959f;border-radius:999px;opacity:.65}
-    .request-resize-handle:hover::after{opacity:1}
+    #requestFreeText{min-height:2.6em;resize:vertical}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     button,a.button{padding:9px 13px;border:1px solid #8c959f;border-radius:7px;background:#fff;cursor:pointer;color:var(--text);text-decoration:none}
     button:hover,a.button:hover{background:#f3f4f6}
@@ -131,7 +128,6 @@
     <label>
       Önskemål i fritext
       <textarea id="requestFreeText" placeholder="Skriv vad GPT ska leta efter nästa gång..."></textarea>
-      <div id="requestResizeHandle" class="request-resize-handle" aria-label="Dra för att ändra höjden på Önskemål-rutan"></div>
     </label>
 
     <label style="margin-top:12px">
@@ -314,7 +310,6 @@
   const requestCompletedCheckbox = document.getElementById("requestCompletedCheckbox");
   const requestStatusText = document.getElementById("requestStatusText");
   const requestFreeText = document.getElementById("requestFreeText");
-  const requestResizeHandle = document.getElementById("requestResizeHandle");
   const requestLinks = document.getElementById("requestLinks");
   const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
   const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
@@ -417,11 +412,10 @@
         ownerCollapsed: !!p.ownerCollapsed,
         filterCollapsed: !!p.filterCollapsed,
         privateView: p.privateView !== false,
-        articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0,
-        requestFreeTextHeight: Number.isFinite(Number(p.requestFreeTextHeight)) ? Number(p.requestFreeTextHeight) : 0
+        articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0, requestFreeTextHeight:0};
+      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
     }
   }
 
@@ -1063,36 +1057,6 @@
     });
   }
 
-
-  function attachRequestResize(handle, textarea) {
-    handle.setAttribute("role", "separator");
-    handle.setAttribute("aria-orientation", "horizontal");
-
-    handle.addEventListener("pointerdown", event => {
-      event.preventDefault();
-      const startY = event.clientY;
-      const startHeight = textarea.getBoundingClientRect().height;
-      handle.setPointerCapture?.(event.pointerId);
-
-      const move = moveEvent => {
-        const nextHeight = Math.max(110, Math.min(1200, startHeight + (moveEvent.clientY - startY)));
-        textarea.style.height = Math.round(nextHeight) + "px";
-      };
-
-      const stop = stopEvent => {
-        handle.removeEventListener("pointermove", move);
-        handle.removeEventListener("pointerup", stop);
-        handle.removeEventListener("pointercancel", stop);
-        try { handle.releasePointerCapture?.(stopEvent.pointerId); } catch {}
-        prefs.requestFreeTextHeight = Math.round(textarea.getBoundingClientRect().height);
-        savePrefs();
-      };
-
-      handle.addEventListener("pointermove", move);
-      handle.addEventListener("pointerup", stop);
-      handle.addEventListener("pointercancel", stop);
-    });
-  }
 
   function updateSelectionStats() {
     const card = document.querySelector(".news.article-detailed");
@@ -1990,8 +1954,6 @@
   });
 
   requestFreeText.value = prefs.currentFreeText || "";
-  if (prefs.requestFreeTextHeight > 0) requestFreeText.style.height = prefs.requestFreeTextHeight + "px";
-  attachRequestResize(requestResizeHandle, requestFreeText);
   requestLinks.value = prefs.linkDraft || "";
   setRequestStatusUi(false, "");
   renderRequestLists();
