@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:26</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:34</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -794,6 +794,27 @@
     typeFilter.value = current;
   }
 
+  function updateFavoriteFilterCounts() {
+    const current = favoriteFilter.value;
+    let favoriteCount = 0;
+    for (const item of allNews) {
+      if (prefs.favorites[itemKey(item)]) favoriteCount++;
+    }
+    const totalCount = allNews.length;
+    const nonFavoriteCount = totalCount - favoriteCount;
+    const labels = {
+      "": "Alla (" + totalCount + ")",
+      yes: "Endast favoriter (" + favoriteCount + ")",
+      no: "Ej favoriter (" + nonFavoriteCount + ")"
+    };
+    for (const option of favoriteFilter.options) {
+      if (Object.prototype.hasOwnProperty.call(labels, option.value)) {
+        option.textContent = labels[option.value];
+      }
+    }
+    favoriteFilter.value = current;
+  }
+
   function updateArchiveFilterCounts() {
     const current = archiveFilter.value || "active";
     let archivedCount = 0;
@@ -836,6 +857,7 @@
     sortInputs.forEach(input => {
       input.value = prefs.sort[input.dataset.sort] || "";
     });
+    updateFavoriteFilterCounts();
     updateArchiveFilterCounts();
     updateContentTypeFilterCounts();
     updateActiveFilterStyles();
@@ -1414,6 +1436,7 @@
   }
 
   function applyFilters(updateTitles = true) {
+    updateFavoriteFilterCounts();
     updateArchiveFilterCounts();
     if (updateTitles) updateExactTitleOptions();
     updateActiveFilterStyles();
