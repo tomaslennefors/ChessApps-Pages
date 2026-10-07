@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:14</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-07 16:18</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -402,10 +402,18 @@
       const latestFree = freeHistory.length ? freeHistory[freeHistory.length - 1] : null;
       const draftSplit = splitLegacyRequest(legacyDraft);
 
+      const filters = p.filterSchemaVersion === filterSchemaVersion && p.filters && typeof p.filters === "object"
+        ? {...p.filters}
+        : {};
+      if (Number(p.archiveDefaultVersion || 0) < 1 && (!filters.archive || filters.archive === "all")) {
+        filters.archive = "active";
+      }
+
       return {
         favorites: p.favorites && typeof p.favorites === "object" ? p.favorites : {},
         archived: p.archived && typeof p.archived === "object" ? p.archived : {},
-        filters: p.filterSchemaVersion === filterSchemaVersion && p.filters && typeof p.filters === "object" ? p.filters : {},
+        filters,
+        archiveDefaultVersion: 1,
         sort: p.sort && typeof p.sort === "object" ? p.sort : {},
         freeTextHistory: freeHistory,
         savedRequestLinks: savedLinks,
@@ -418,12 +426,13 @@
         articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{}, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
+      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
     }
   }
 
   function savePrefs() {
     prefs.filterSchemaVersion = filterSchemaVersion;
+    prefs.archiveDefaultVersion = 1;
     prefs.requestUiVersion = 2;
     localStorage.setItem(storageKey, JSON.stringify(prefs));
   }
@@ -444,6 +453,7 @@
   }
 
   function itemKey(item) {
+    if (item.version && item.id != null) return "id:" + String(item.id);
     const rawUrl = String(item.länk || item.youtube_länk || item.youtube_url || "").trim();
     if (rawUrl) {
       try {
