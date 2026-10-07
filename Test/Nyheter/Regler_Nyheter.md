@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 15:05
+Senast uppdaterad: 2026-10-07 15:20
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -82,16 +82,18 @@ Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Nyheten" ska
 När flera nyheter visas samtidigt ska varje vanlig artikel endast visa ingressen, inte den längre artikeltexten.
 
 
-## 2c. Beständiga AI-sammanställningar
+## 2c. IT-Fakta
 
-Följande typer av innehåll är beständiga sammanställningar och inte vanliga datumstyrda nyheter:
+Beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar ska ha **Typ = IT-Fakta** och ska inte klassas som vanliga datumstyrda nyheter.
+
+Exempel:
 - **!IT-året ...**
 - **!AI-historik ...**
 - **!AI-begrepp ...**
 
 Regler:
-- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!**,
-- dessa poster ska alltid tillhöra kategorin **!AI-sammanställningar**,
+- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
+- dessa poster ska ha **Typ = IT-Fakta**,
 - tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum.
 
 ## 3. HämtaNyheter och dataflöde
@@ -189,13 +191,13 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 
 Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarande text längst ner under nyheterna i appen**.
 
-## 6. AI-sammanställningar och appbeteende
+## 6. IT-Fakta och appbeteende
 
-### 6a. Kategorin för beständiga AI-sammanställningar
+### 6a. Typen IT-Fakta
 
-Kategorin ska heta **!AI-sammanställningar**. Utropstecknet markerar att innehållet är en beständig sammanställning och inte en vanlig tidsbunden nyhetsartikel.
+Beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar ska ha **Typ = IT-Fakta**. De ska inte använda **!AI-sammanställningar** som kategori.
 
-Följande sammanställningar ska tillhöra kategorin **!AI-sammanställningar**:
+Följande befintliga sammanställningar ska ha **Typ = IT-Fakta**:
 - **!IT-året ...**
 - **!AI-historik ...**
 - **!AI-begrepp ...**
