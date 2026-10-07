@@ -905,7 +905,7 @@
     favoriteFilter.value = f.favorite || "";
     archiveFilter.value = f.archive || "active";
     const savedType = f.type || "";
-    typeFilter.value = (savedType === "IT-Nyheter" || savedType === "IT-Dokument") ? "IT-Nyhet" : savedType;
+    typeFilter.value = savedType === "IT-Nyheter" ? "IT-Nyhet" : savedType;
     requestFreeText.value = prefs.currentFreeText || "";
     requestLinks.value = prefs.linkDraft || "";
     sortInputs.forEach(input => {
