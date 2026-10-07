@@ -1775,30 +1775,7 @@
       restoreControls();
       updateExactTitleOptions();
 
-      let initialItems = getFilteredNews();
-      if (!initialItems.length && allNews.length) {
-        dateFilter.value = "";
-        sourceFilter.value = "";
-        publisherFilter.value = "";
-        channelFilter.value = "";
-        webAddressFilter.value = "";
-        titleFilter.value = "";
-        exactTitleFilter.value = "";
-        summaryFilter.value = "";
-        languageFilter.value = "";
-        transcriptStatusFilter.value = "";
-        transcriptFilter.value = "";
-        categoryFilter.value = "";
-        favoriteFilter.value = "";
-        archiveFilter.value = "all";
-        typeFilter.value = "";
-        sortInputs.forEach(x => x.value = "");
-        updateExactTitleOptions();
-        captureControls();
-        initialItems = getFilteredNews();
-        statusEl.textContent = "Sparade filter gav 0 träffar och återställdes automatiskt.";
-      }
-
+      const initialItems = getFilteredNews();
       renderNews(initialItems);
     } catch (err) {
       allNews = [];
