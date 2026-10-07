@@ -22,6 +22,11 @@
     label.filter-active{color:var(--blue)}
     label.filter-active>input:not(.sortno),label.filter-active>select{border-color:var(--blue);background:#ddf4ff;box-shadow:0 0 0 2px rgba(9,105,218,.14)}
     .save-request-message{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
+    .request-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#f6f8fa}
+    .request-status label{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;cursor:pointer}
+    .request-status input{width:auto;margin:0}
+    .request-status[data-completed="true"]{background:#dafbe1;border-color:#4ac26b}
+    .request-status[data-completed="false"]{background:#fff8c5;border-color:#d4a72c}
     .sortno{width:48px!important;margin:0!important;padding:4px 6px!important;text-align:center}
     .sorthint{font-size:.78rem;color:var(--muted);font-weight:400}
     label{font-weight:600;font-size:.92rem;display:block}
@@ -134,9 +139,17 @@
     </div>
     <div id="saveRequestMessage" class="save-request-message" hidden aria-live="polite">Önskemålen är hämtade.</div>
 
+    <div id="requestStatusBox" class="request-status" data-completed="false">
+      <strong>Status:</strong>
+      <label>
+        <input id="requestCompletedCheckbox" type="checkbox">
+        <span id="requestStatusText">Nytt önskemål</span>
+      </label>
+    </div>
+
     <div class="save-explanation small">
       <strong>När du trycker på Spara önskemål:</strong>
-      fritexten sparas som aktuellt önskemål och läggs i fritext-historiken; nya länkar delas automatiskt upp i YouTube-länkar och övriga länkar, dubbletter tas bort och tidigare länkar behålls; allt sparas lokalt i denna webbläsare och i den privata filen <code>Data/Test/Nyheter/HamtaNyheter.json</code>; slutligen kopieras det aktuella önskemålet (fritext + alla sparade länkar) till Urklipp. Rutan Nya länkförslag töms efter en lyckad sparning.
+      fritexten sparas som aktuellt önskemål och läggs i fritext-historiken; nya länkar delas automatiskt upp i YouTube-länkar och övriga länkar, dubbletter tas bort och tidigare länkar behålls; allt sparas lokalt i denna webbläsare och i den privata filen <code>Data/Test/Nyheter/HamtaNyheter.json</code>; slutligen kopieras det aktuella önskemålet (fritext + alla sparade länkar) till Urklipp. Rutan Nya länkförslag töms efter en lyckad sparning. Ett ändrat önskemål får status <strong>Nytt önskemål</strong>. Ett redan färdigbehandlat oförändrat önskemål körs inte på nytt förrän krysset Färdigbehandlat tas bort.
     </div>
 
     <div class="saved-listboxes">
@@ -291,6 +304,9 @@
   const filterSplitter = document.getElementById("filterSplitter");
   const savePromptBtn = document.getElementById("savePromptBtn");
   const saveRequestMessage = document.getElementById("saveRequestMessage");
+  const requestStatusBox = document.getElementById("requestStatusBox");
+  const requestCompletedCheckbox = document.getElementById("requestCompletedCheckbox");
+  const requestStatusText = document.getElementById("requestStatusText");
   const requestFreeText = document.getElementById("requestFreeText");
   const requestLinks = document.getElementById("requestLinks");
   const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
@@ -322,6 +338,8 @@
   let ownerAuthenticated = false;
   let ownerMode = false;
   let privateNewsById = new Map();
+  let requestCompleted = false;
+  let requestStatusChangedAt = "";
   let prefs = loadPrefs();
 
   function splitLegacyRequest(value) {
@@ -1416,14 +1434,27 @@
     return [String(freeText || "").trim(), ...uniqueLinks(links)].filter(Boolean).join("\n");
   }
 
+  function setRequestStatusUi(completed, changedAt = "") {
+    requestCompleted = !!completed;
+    requestStatusChangedAt = String(changedAt || "");
+    requestCompletedCheckbox.checked = requestCompleted;
+    requestStatusText.textContent = requestCompleted ? "Färdigbehandlat" : "Nytt önskemål";
+    requestStatusBox.dataset.completed = requestCompleted ? "true" : "false";
+    requestStatusBox.title = requestStatusChangedAt
+      ? "Status ändrad: " + requestStatusChangedAt
+      : "";
+  }
+
   async function readRequestsFromData() {
-    if (!ownerToken) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:""};
+    if (!ownerToken) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:"", completed:false, statusChangedAt:""};
     const response = await fetch(requestDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {headers: githubHeaders(ownerToken), cache:"no-store"});
-    if (response.status === 404) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:""};
+    if (response.status === 404) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:"", completed:false, statusChangedAt:""};
     if (!response.ok) throw new Error("Kunde inte läsa HämtaNyheter från Data. HTTP " + response.status);
 
     const file = await response.json();
     const parsed = JSON.parse(decodeBase64Utf8(file.content || ""));
+    const completed = parsed.aktuell?.fardigbehandlat === true || parsed.aktuell?.status === "fardigbehandlat";
+    const statusChangedAt = String(parsed.aktuell?.status_andrad || "");
     let currentFreeText = "", currentLinks = [], currentSavedAt = parsed.aktuell?.sparad || "";
     let freeHistoryRecords = [], linkHistoryRecords = [];
 
@@ -1454,10 +1485,10 @@
     }
     if (currentFreeText) freeHistoryRecords.push({text:currentFreeText, savedAt:currentSavedAt});
     for (const url of currentLinks) linkHistoryRecords.push({url, savedAt:currentSavedAt});
-    return {sha:file.sha||null, freeHistory:uniqueFreeTextHistory(freeHistoryRecords), linkHistory:uniqueLinkHistory(linkHistoryRecords), currentFreeText, currentLinks, currentSavedAt};
+    return {sha:file.sha||null, freeHistory:uniqueFreeTextHistory(freeHistoryRecords), linkHistory:uniqueLinkHistory(linkHistoryRecords), currentFreeText, currentLinks, currentSavedAt, completed, statusChangedAt};
   }
 
-  async function writeRequestsToData(currentFreeText, currentSavedAt, freeHistoryRecords, linkHistoryRecords, knownSha = null) {
+  async function writeRequestsToData(currentFreeText, currentSavedAt, freeHistoryRecords, linkHistoryRecords, knownSha = null, completed = false, statusChangedAt = "") {
     if (!ownerToken) throw new Error("Ägarens GitHub-token saknas.");
     const cleanFreeHistory = uniqueFreeTextHistory(freeHistoryRecords);
     const cleanLinkHistory = uniqueLinkHistory(linkHistoryRecords);
@@ -1473,7 +1504,10 @@
         ovriga_lankar:otherLinks,
         lankar:[...youtubeLinks, ...otherLinks],
         text:combinedRequestText(currentFreeText,[...youtubeLinks, ...otherLinks]),
-        sparad:currentSavedAt
+        sparad:currentSavedAt,
+        status:completed ? "fardigbehandlat" : "nytt_onskemal",
+        fardigbehandlat:!!completed,
+        status_andrad:String(statusChangedAt || new Date().toISOString())
       },
       historik_fritext:cleanFreeHistory.map(x => ({text:x.text,sparad:x.savedAt})),
       youtube_lankar:youtubeRecords.map(x => ({url:x.url,sparad:x.savedAt})),
@@ -1506,10 +1540,11 @@
     prefs.currentFreeTextSavedAt=currentSavedAt;
     requestFreeText.value=currentFreeText;
     requestLinks.value=prefs.linkDraft || "";
+    setRequestStatusUi(remote.completed, remote.statusChangedAt);
     savePrefs(); renderRequestLists();
     const remoteLinks=uniqueLinks(remote.linkHistory.map(x=>x.url));
     if((remote.currentFreeText!==currentFreeText || remote.freeHistory.length!==mergedFree.length || remoteLinks.length!==prefs.savedRequestLinks.length) && (currentFreeText || prefs.savedRequestLinks.length)){
-      await writeRequestsToData(currentFreeText,currentSavedAt||new Date().toISOString(),mergedFree,mergedLinks,remote.sha);
+      await writeRequestsToData(currentFreeText,currentSavedAt||new Date().toISOString(),mergedFree,mergedLinks,remote.sha,remote.completed,remote.statusChangedAt);
     }
   }
 
@@ -1582,11 +1617,16 @@
       const remote=await readRequestsFromData();
       const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...prefs.freeTextHistory]);
       const mergedLinkHistory=uniqueLinkHistory([...remote.linkHistory,...linkRecords]);
+      const requestChanged = freeText !== remote.currentFreeText
+        || enteredLinks.some(url => !remote.currentLinks.includes(url));
+      const nextCompleted = requestChanged ? false : remote.completed;
+      const nextStatusChangedAt = requestChanged ? now : remote.statusChangedAt;
       prefs.savedRequestLinks=uniqueLinks(mergedLinkHistory.map(x=>x.url));
       prefs.linkDraft="";
       requestLinks.value="";
       savePrefs();renderRequestLists();
-      await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha);
+      await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha,nextCompleted,nextStatusChangedAt);
+      setRequestStatusUi(nextCompleted,nextStatusChangedAt);
       await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"");
       saveRequestMessage.textContent = "Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.";
       saveRequestMessage.hidden = false;
@@ -1840,6 +1880,38 @@
     savePrefs();
   });
   savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
+
+  requestCompletedCheckbox.addEventListener("change", async () => {
+    if (!ownerAuthenticated) return;
+    const desiredCompleted = requestCompletedCheckbox.checked;
+    const previousCompleted = requestCompleted;
+    const previousChangedAt = requestStatusChangedAt;
+    requestCompletedCheckbox.disabled = true;
+
+    try {
+      const remote = await readRequestsFromData();
+      const now = new Date().toISOString();
+      await writeRequestsToData(
+        remote.currentFreeText,
+        remote.currentSavedAt,
+        remote.freeHistory,
+        remote.linkHistory,
+        remote.sha,
+        desiredCompleted,
+        now
+      );
+      setRequestStatusUi(desiredCompleted, now);
+      statusEl.textContent = desiredCompleted
+        ? "Önskemålet är markerat som Färdigbehandlat."
+        : "Status är Nytt önskemål. Önskemålet kan nu behandlas igen när du skriver HämtaNyheter i chatten.";
+    } catch (err) {
+      setRequestStatusUi(previousCompleted, previousChangedAt);
+      statusEl.textContent = "Kunde inte ändra önskemålets status: " + (err?.message || String(err));
+    } finally {
+      requestCompletedCheckbox.disabled = false;
+    }
+  });
+
   document.addEventListener("pointerdown", event => {
     if (!saveRequestMessage.hidden && event.target !== savePromptBtn && !savePromptBtn.contains(event.target)) {
       saveRequestMessage.hidden = true;
@@ -1872,6 +1944,7 @@
 
   requestFreeText.value = prefs.currentFreeText || "";
   requestLinks.value = prefs.linkDraft || "";
+  setRequestStatusUi(false, "");
   renderRequestLists();
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   setPrivacyUi();
