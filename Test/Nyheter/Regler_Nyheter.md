@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 16:34
+Senast uppdaterad: 2026-10-07 16:43
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -15,11 +15,11 @@ Tomas ska ha alla funktioner. När appen har verifierat Tomas privata GitHub-tok
 I privat visning ska Tomas kunna se och använda:
 - HämtaNyheter.
 - Filter för källa.
-- Fullständig/original rubrik för vanliga artiklar.
+- Fullständig/original rubrik för vanliga dokument.
 - Exakt datum i formatet YYYY-MM-DD.
-- Källa i nyhetsinformationen.
-- Knappen **Läs originalnyheten** för vanliga artiklar.
-- Privat artikelmetadata som hämtas från det privata repositoryt Data.
+- Källa i dokumentinformationen.
+- Knappen **Läs originaldokumentet** för vanliga dokument.
+- Privat dokumentmetadata som hämtas från det privata repositoryt Data.
 - Kryssrutan **Privat visning** för att växla mellan Tomas vy och den publika vyn.
 - Knappen **Regler** och innehållet i `Regler_Nyheter.md`. Denna knapp ska endast visas för Tomas när den privata GitHub-token har verifierats **och Privat visning är aktiverad**.
 
@@ -27,22 +27,22 @@ När Tomas avmarkerar **Privat visning** ska han kunna kontrollera hur appen ser
 
 ### 1b. Andra användare
 
-Andra användare ska ha en mer begränsad visning av vanliga webbartiklar av upphovsrättsskäl.
+Andra användare ska ha en mer begränsad visning av vanliga webbdokument av upphovsrättsskäl.
 
-För vanliga artiklar ska andra användare:
+För vanliga dokument ska andra användare:
 - inte se källa,
 - se en omskriven rubrik i stället för originalrubriken,
 - endast se år och månad, YYYY-MM,
-- inte få någon knapp eller originallänk till originalnyheten,
-- se en egen omskriven ingress och artikeltext.
+- inte få någon knapp eller originallänk till originaldokumentet,
+- se en egen omskriven ingress och dokumenttext.
 
-Den publika filen `nyheter.json` ska därför inte innehålla privat artikelmetadata som källa, exakt datum eller originallänk för vanliga artiklar.
+Den publika filen `nyheter.json` ska därför inte innehålla privat dokumentmetadata som källa, exakt datum eller originallänk för vanliga dokument.
 
-Privat artikelmetadata ligger i `Data/Test/Nyheter/nyheter_privata.json`.
+Privat dokumentmetadata ligger i `Data/Test/Nyheter/nyheter_privata.json`.
 
 ### YouTube är ett undantag
 
-YouTube-klipp behandlas inte som vanliga webbartiklar i denna upphovsrättsregel.
+YouTube-klipp behandlas inte som vanliga webbdokument i denna upphovsrättsregel.
 
 För YouTube får följande vara synligt även för andra användare:
 - originalrubrik,
@@ -52,7 +52,9 @@ För YouTube får följande vara synligt även för andra användare:
 - original-/YouTube-länk,
 - inbäddad YouTube-spelare.
 
-## 2. Rubrik, ingress och full nyhet
+## 2. Rubrik, ingress och fullt dokument
+
+**Terminologi i appen:** Det gemensamma användarordet är **Dokument**. Det omfattar bland annat vanliga webbdokument, faktadokument och YouTube-klipp. Filtret heter **Dokumenttyp**. Den synliga typen **IT-Dokument** motsvarar av kompatibilitetsskäl fortfarande det interna datavärdet `IT-Nyheter`. Appens huvudrubrik **IT-Nyheter** samt tekniska filnamn och kommandot `HämtaNyheter` behålls.
 
 Ingressen ska vara cirka **100 ord** och ge en korrekt sammanfattning av det viktigaste i nyheten.
 
@@ -66,49 +68,49 @@ Ingressen ska prioritera:
 
 Språket ska vara lätt att förstå. Viktig innebörd får inte tas bort bara för att texten förenklas.
 
-### 2a. En nyhet vald via rubriklistan
+### 2a. Ett dokument valt via rubriklistan
 
-När användaren väljer en bestämd nyhet i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
+När användaren väljer en bestämt dokument i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
 - rubrik,
 - metadata enligt användarens behörighet,
-- **Innehållstyp** så att det framgår om innehållsposten är **IT-Fakta**, **IT-Nyheter** eller **IT-YouTube**,
+- **Dokumenttyp** så att det framgår om dokumentet är **IT-Fakta**, **IT-Dokument** eller **IT-YouTube**,
 - kategorier,
 - ingress,
-- hela den längre omskrivna nyhetstexten.
+- hela den längre omskrivna dokumenttexten.
 
-Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Nyheten" ska inte användas som extra mellanrubriker.
+Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Dokumentet" ska inte användas som extra mellanrubriker.
 
-### 2b. Flera nyheter samtidigt
+### 2b. Flera dokument samtidigt
 
-När flera nyheter visas samtidigt ska varje vanlig artikel endast visa ingressen, inte den längre artikeltexten.
+När flera dokument visas samtidigt ska varje vanlig dokument endast visa ingressen, inte den längre dokumenttexten.
 
 
-## 2c. Innehållstyper
+## 2c. Dokumenttyper
 
 Alla poster ska ha en av följande typer:
-- **IT-Fakta** – beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar.
-- **IT-Nyheter** – vanliga tidsbundna nyhetsartiklar.
-- **IT-YouTube** – innehåll som bygger på en YouTube-video.
+- **IT-Fakta** – beständiga faktabaserade referens- och sammanställningsdokument som GPT skapar.
+- **IT-Dokument** – vanliga tidsbundna dokument.
+- **IT-YouTube** – dokument som bygger på en YouTube-video.
 
-Samma tre typnamn ska användas både som **Innehållstyp** i varje innehållspost och som alternativ i appens filter **Innehållstyp**.
+Samma tre typnamn ska användas både som **Dokumenttyp** i varje dokument och som alternativ i appens filter **Dokumenttyp**.
 
-Filtret **Innehållstyp** ska visa antal poster inom parentes för samtliga val:
+Filtret **Dokumenttyp** ska visa antal poster inom parentes för samtliga val:
 - **Alla (antal)**
 - **IT-Fakta (antal)**
-- **IT-Nyheter (antal)**
+- **IT-Dokument (antal)**
 - **IT-YouTube (antal)**
 
-Antalen ska räknas från den aktuella nyhetsfilen när appen läser in innehållet och räknas därför om automatiskt vid **Uppdatera filtrering** eller F5.
+Antalen ska räknas från den aktuella dokumentfilen när appen läser in dokumenten och räknas därför om automatiskt vid **Uppdatera filtrering** eller F5.
 
 För **IT-Fakta** gäller dessutom:
-- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när innehållet är en beständig referens,
+- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när dokumentet är en beständig referens,
 - tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum,
 - fältet `datum` ska ange när just den aktuella versionen av IT-Fakta-posten skapades eller publicerades,
 - varje IT-Fakta-post ska ha ett versionsnummer i formen **V1, V2, V3 ...**,
 - första versionen är **V1**,
-- när innehållet ändras ska den befintliga posten inte skrivas över; en ny innehållspost med nytt ID, dagens datum och nästa versionsnummer ska skapas,
+- när innehållet ändras ska den befintliga posten inte skrivas över; en ny dokument med nytt ID, dagens datum och nästa versionsnummer ska skapas,
 - tidigare versioner ska ligga kvar oförändrade tills Tomas själv väljer att arkivera dem,
-- versionen ska visas i innehållspostens metadata och i rubriklistan så att olika versioner kan skiljas åt och jämföras.
+- versionen ska visas i dokumentets metadata och i rubriklistan så att olika versioner kan skiljas åt och jämföras.
 
 De 13 befintliga IT-Fakta-posterna, ID 46–58, är **V1** med datum **2026-10-06**.
 
@@ -124,14 +126,14 @@ Tomas skriver sina önskemål i klartext i appens privata del **HämtaNyheter**.
 Önskemålen sparas i repositoryt **Data**, i:
 `Data/Test/Nyheter/HamtaNyheter.json`
 
-GPT läser önskemålen därifrån och hämtar eller bearbetar relevanta nyheter.
+GPT läser önskemålen därifrån och hämtar eller bearbetar relevanta dokument.
 
-De publika, bearbetade nyheterna sparas i repositoryt **ChessApps-Pages**, i:
+De publika, bearbetade dokumenten sparas i repositoryt **ChessApps-Pages**, i:
 `Test/Nyheter/nyheter.json`
 
-Appen läser sedan in nyheterna från den publika JSON-filen.
+Appen läser sedan in dokumenten från den publika JSON-filen.
 
-Privat metadata för vanliga artiklar sparas separat i repositoryt **Data** och ska bara läsas när Tomas är verifierad.
+Privat metadata för vanliga dokument sparas separat i repositoryt **Data** och ska bara läsas när Tomas är verifierad.
 
 ### 3a. Status för aktuellt önskemål
 
@@ -145,7 +147,7 @@ I appens privata del **HämtaNyheter** finns en kryssruta för status:
 - tom kryssruta betyder **Nytt önskemål**,
 - ikryssad ruta betyder **Färdigbehandlat**.
 
-När GPT får kommandot **HämtaNyheter** i chatten ska GPT alltid läsa statusen först. GPT får bara hämta eller bearbeta nyheter från det aktuella önskemålet om status är **Nytt önskemål**.
+När GPT får kommandot **HämtaNyheter** i chatten ska GPT alltid läsa statusen först. GPT får bara hämta eller bearbeta dokument från det aktuella önskemålet om status är **Nytt önskemål**.
 
 När hela önskemålet har genomförts utan fel ska GPT uppdatera `HamtaNyheter.json` och sätta status till **Färdigbehandlat**. Appens kryssruta ska då visas ikryssad efter att den privata datan har lästs in på nytt.
 
@@ -168,16 +170,16 @@ Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras m
 Önskemål-rutan ska använda webbläsarens inbyggda storleksändring via draghandtaget nere till höger. Rutan ska kunna minskas till ungefär en textrad och förstoras efter behov. Kontrollerna under rutan ska ligga i normalt dokumentflöde och därför följa med när rutan görs högre eller lägre.
 ## 4. Upphovsrätt och omskrivning
 
-För vanliga webbartiklar ska den publika texten skrivas med egna ord.
+För vanliga webbdokument ska den publika texten skrivas med egna ord.
 
 GPT ska:
 - skriva om rubriken så att den tydligt skiljer sig från originalrubriken,
 - skriva en ingress på cirka 100 ord,
 - skriva en längre lättläst text som behåller den viktiga innebörden,
 - behålla centrala fakta, siffror, namn, riskbedömningar, tidsperioder och slutsatser,
-- undvika att kopiera längre formuleringar ordagrant från originalartikeln.
+- undvika att kopiera längre formuleringar ordagrant från originaldokumentet.
 
-Målet är att ge en sakligt korrekt och lättläst återgivning utan att återpublicera originalartikeln.
+Målet är att ge en sakligt korrekt och lättläst återgivning utan att återpublicera originaldokumentet.
 
 ## 5. Appens visning, storleksändring och lokal lagring
 
@@ -185,16 +187,16 @@ En diskret **appversion** ska visas intill rubriken **IT-Nyheter**. Versionsvär
 
 ### 5a. Statistik för markerad text
 
-När användaren markerar text i en detaljerad nyhetsartikel ska appen visa statistik för:
+När användaren markerar text i en detaljerad nyhetsdokument ska appen visa statistik för:
 - ingressens antal ord och bokstäver,
-- artikelns antal ord och bokstäver,
+- dokumentets antal ord och bokstäver,
 - den markerade textens antal ord och bokstäver.
 
-Statistiken visas i en flytande textruta **ovanför artikelns rubrik**. Rutan ska följa med vid rullning i den detaljerade nyhetsrutan så att statistiken förblir synlig.
+Statistiken visas i en flytande textruta **ovanför dokumentets rubrik**. Rutan ska följa med vid rullning i den detaljerade dokumentrutan så att statistiken förblir synlig.
 
-### 5b. Storleken på den detaljerade nyhetsrutan
+### 5b. Storleken på den detaljerade dokumentrutan
 
-Den stora nyhetsrutan som visar både ingress och den fullständiga detaljerade nyhetstexten ska kunna ändras i höjd genom att användaren drar i rutans nederkant.
+Den stora dokumentrutan som visar både ingress och den fullständiga detaljerade dokumenttexten ska kunna ändras i höjd genom att användaren drar i rutans nederkant.
 
 Detta ska fungera:
 - med mus på dator,
@@ -206,19 +208,19 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 
 ### 5c. Publik nyhetsfil, lokala inställningar och privat ägardel
 
-- Nyhetsfilen ligger publikt tillsammans med appen på GitHub Pages.
+- Dokumentfilen ligger publikt tillsammans med appen på GitHub Pages.
 - Filter, sorteringsordning, favoriter och arkivering sparas bara lokalt i respektive webbläsare.
 - Ägardelen **HämtaNyheter** visas endast för en webbläsare vars GitHub-token har åtkomst till det privata Data-repot.
 
-Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarande text längst ner under nyheterna i appen**.
+Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarande text längst ner under dokumenten i appen**.
 
 ## 6. IT-Fakta och appbeteende
 
-### 6a. Innehållstypen IT-Fakta
+### 6a. Dokumenttypen IT-Fakta
 
-Beständiga faktabaserade referens- och sammanställningsartiklar som GPT skapar ska ha **Innehållstyp = IT-Fakta**. De ska inte använda **!AI-sammanställningar** som kategori.
+Beständiga faktabaserade referens- och sammanställningsdokument som GPT skapar ska ha **Dokumenttyp = IT-Fakta**. De ska inte använda **!AI-sammanställningar** som kategori.
 
-Följande befintliga sammanställningar ska ha **Innehållstyp = IT-Fakta**:
+Följande befintliga sammanställningar ska ha **Dokumenttyp = IT-Fakta**:
 - **!IT-året ...**
 - **!AI-historik ...**
 - **!AI-begrepp ...**
@@ -231,9 +233,9 @@ Följande befintliga sammanställningar ska ha **Innehållstyp = IT-Fakta**:
 
 ### 6b. Utbrytningar från !AI-historik
 
-Detaljerad information om AI och schack ska ligga i den separata artikeln **!AI och schack**.
+Detaljerad information om AI och schack ska ligga i den separata dokumentet **!AI och schack**.
 
-Detaljerad information om AI-bolag, deras modellfamiljer och verktyg ska ligga i den separata artikeln **!AI-bolag och AI-modeller**.
+Detaljerad information om AI-bolag, deras modellfamiljer och verktyg ska ligga i den separata dokumentet **!AI-bolag och AI-modeller**.
 
 I **!AI-historik** ska däremot korta årtalsnotiser finnas kvar så att den historiska tidslinjen fortfarande visar när viktiga händelser inom AI-schack och AI-bolag/modeller inträffade.
 
@@ -252,18 +254,18 @@ De tre alternativen i Arkiv-filtret ska alltid visa antal inom parentes:
 - **Ej arkiverade (antal)**
 - **Endast arkiverade (antal)**
 
-Antalen ska uppdateras direkt när en innehållspost arkiveras eller återställs från arkivet.
+Antalen ska uppdateras direkt när en dokument arkiveras eller återställs från arkivet.
 
 Filtret **Favorit** ska på motsvarande sätt alltid visa:
 - **Alla (antal)**
 - **Endast favoriter (antal)**
 - **Ej favoriter (antal)**
 
-Favoritantalen ska uppdateras direkt när en innehållspost markeras som favorit eller tas bort från favoriter.
+Favoritantalen ska uppdateras direkt när en dokument markeras som favorit eller tas bort från favoriter.
 
-Filtret **Kategori** ska visa antal innehållsposter inom parentes för varje kategori. Första valet ska visa **Alla kategorier (totalt antal innehållsposter)**. Varje övrigt val ska visa kategoriens namn följt av hur många innehållsposter som innehåller just den kategorin, till exempel **ChatGPT (7)**.
+Filtret **Kategori** ska visa antal dokumenter inom parentes för varje kategori. Första valet ska visa **Alla kategorier (totalt antal dokumenter)**. Varje övrigt val ska visa kategoriens namn följt av hur många dokumenter som innehåller just den kategorin, till exempel **ChatGPT (7)**.
 
-Om en innehållspost har flera kategorier ska den räknas en gång i varje kategori som den tillhör. Summan av kategoriernas antal kan därför vara större än det totala antalet innehållsposter.
+Om en dokument har flera kategorier ska den räknas en gång i varje kategori som den tillhör. Summan av kategoriernas antal kan därför vara större än det totala antalet dokumenter.
 
 Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
@@ -275,18 +277,18 @@ När användaren trycker på **Spara önskemål** och sparningen har lyckats ska
 
 Meddelandet ska försvinna automatiskt så fort användaren klickar eller trycker någon annanstans i appen.
 
-### 6f. Tangentbordsscrollning i detaljerad artikel
+### 6f. Tangentbordsscrollning i detaljerad dokument
 
-När en detaljerad artikel är öppen gäller:
-- **Pil upp / Pil ned** byter fortfarande mellan artiklar.
-- **Shift + Pil upp / Shift + Pil ned** scrollar inne i den öppna artikeln.
-- Varje tryck på Shift + pil ska flytta texten ungefär **två textrader** uppåt eller nedåt, beräknat från artikeltextens faktiska radavstånd.
+När en detaljerad dokument är öppen gäller:
+- **Pil upp / Pil ned** byter fortfarande mellan dokument.
+- **Shift + Pil upp / Shift + Pil ned** scrollar inne i den öppna dokumentet.
+- Varje tryck på Shift + pil ska flytta texten ungefär **två textrader** uppåt eller nedåt, beräknat från dokumenttextens faktiska radavstånd.
 
 ### 6e. Uppdatera filtrering laddar om appen
 
 Knappen **Uppdatera filtrering** ska vara tydligt **röd** så att Tomas lättare kommer ihåg att använda den.
 
-När användaren trycker på **Uppdatera filtrering** ska appen göra en fullständig siduppdatering motsvarande **F5**. Därmed läses den senaste versionen av appens HTML/JavaScript och den senaste nyhetsfilen in.
+När användaren trycker på **Uppdatera filtrering** ska appen göra en fullständig siduppdatering motsvarande **F5**. Därmed läses den senaste versionen av appens HTML/JavaScript och den senaste dokumentfilen in.
 
 Efter en lyckad **Spara önskemål** ska meddelandet även påminna:
 
@@ -301,7 +303,7 @@ Datumfiltret ska kunna användas på tre nivåer:
 - **År–månad**, till exempel `2026-10`.
 - **År–månad–dag**, till exempel `2026-10-07`.
 
-När bara år anges ska alla nyheter under året matcha. När år och månad anges ska alla nyheter under månaden matcha. När fullständigt datum anges ska nyheter från just det datumet matcha, när exakt datum finns tillgängligt i användarens visningsläge.
+När bara år anges ska alla dokument under året matcha. När år och månad anges ska alla dokument under månaden matcha. När fullständigt datum anges ska dokument från just det datumet matcha, när exakt datum finns tillgängligt i användarens visningsläge.
 
 Alla datumvärden som finns tillgängliga för den aktuella användaren ska byggas upp som valbara sökvillkor i datumfältet. År och år–månad ska också skapas från de fullständiga datumen.
 
