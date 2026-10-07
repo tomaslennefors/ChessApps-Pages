@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-07 15:20
+Senast uppdaterad: 2026-10-07 15:39
 
 ## 1. Olika visning för Tomas och andra användare
 
@@ -71,6 +71,7 @@ Språket ska vara lätt att förstå. Viktig innebörd får inte tas bort bara f
 När användaren väljer en bestämd nyhet i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
 - rubrik,
 - metadata enligt användarens behörighet,
+- **Typ** så att det framgår om dokumentet är **IT-Fakta**, **IT-Nyheter** eller **IT-YouTube**,
 - kategorier,
 - ingress,
 - hela den längre omskrivna nyhetstexten.
