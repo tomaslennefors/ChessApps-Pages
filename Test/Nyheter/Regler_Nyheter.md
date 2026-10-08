@@ -371,3 +371,11 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 - **PUBLIC** ska inte se denna knapp för IT-Nyheter.
 - För VIP får den nödvändiga originaladressen finnas som separat tekniskt fält i den publikt läsbara datafilen, men appen får inte visa adressen eller knappen för PUBLIC.
 - Privat metadata som källa och fullständig originalrubrik ska även fortsättningsvis följa sina separata behörighetsregler.
+
+### 6k. Visa eller dölj metadata i dokument
+
+- Användaren ska kunna dölja metadataområdet mellan dokumentets rubrik och dokumenttexten.
+- På mobil/pekskärm växlar ett snabbt tryck på dokumentrubriken mellan **dold** och **visad** metadata.
+- På dator används högerklick på dokumentrubriken och valet **Dölj metadata** eller **Visa metadata**.
+- Valet sparas lokalt på enheten och gäller för alla dokument och framtida besök tills användaren själv ändrar valet igen.
+- När metadata döljs ska rubriken och själva dokumenttexten fortfarande visas.
