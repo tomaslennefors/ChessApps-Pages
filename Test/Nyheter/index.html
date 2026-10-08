@@ -16,7 +16,20 @@
     .private-view-control label{display:flex;align-items:center;gap:8px;font-weight:650;cursor:pointer}
     .private-view-control input{width:auto;margin:0}
     .rules-area{margin:8px 0 14px}
-    .rules-area textarea{min-height:260px;max-height:520px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.45;background:#fff}
+    .markdown-doc{margin-top:10px;min-height:260px;max-height:520px;overflow:auto;padding:18px 20px;border:1px solid #8c959f;border-radius:7px;background:#fff;line-height:1.6}
+    .markdown-doc h1,.markdown-doc h2,.markdown-doc h3,.markdown-doc h4{line-height:1.3;margin:1.25em 0 .55em}
+    .markdown-doc h1{font-size:1.55rem;border-bottom:1px solid var(--line);padding-bottom:.3em}
+    .markdown-doc h2{font-size:1.3rem;border-bottom:1px solid var(--line);padding-bottom:.25em}
+    .markdown-doc h3{font-size:1.12rem}
+    .markdown-doc p{margin:.65em 0}
+    .markdown-doc ul,.markdown-doc ol{padding-left:28px;margin:.55em 0 .9em}
+    .markdown-doc li{margin:.25em 0}
+    .markdown-doc code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f6f8fa;border-radius:4px;padding:.1em .3em}
+    .markdown-doc pre{overflow:auto;background:#f6f8fa;border:1px solid var(--line);border-radius:7px;padding:12px}
+    .markdown-doc pre code{padding:0;background:transparent}
+    .markdown-doc blockquote{margin:.8em 0;padding:.2em 1em;border-left:4px solid var(--line);color:var(--muted)}
+    .markdown-doc hr{border:0;border-top:1px solid var(--line);margin:1.2em 0}
+    .markdown-doc a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
@@ -112,7 +125,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 04:45</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 04:48</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -122,8 +135,8 @@
   <div id="rulesArea" class="rules-area" hidden>
     <button id="rulesBtn" type="button">Regler</button>
     <button id="contextBtn" type="button">Sammanhang</button>
-    <textarea id="rulesText" readonly hidden aria-label="Regler för IT-Nyheter"></textarea>
-    <textarea id="contextText" readonly hidden aria-label="Sammanhang för IT-Nyheter"></textarea>
+    <div id="rulesText" class="markdown-doc" hidden aria-label="Regler för IT-Nyheter"></div>
+    <div id="contextText" class="markdown-doc" hidden aria-label="Sammanhang för IT-Nyheter"></div>
   </div>
 
   <section id="ownerPanel" class="panel" hidden>
@@ -2129,6 +2142,115 @@
     }
   }
 
+  function markdownInline(text) {
+    let s = String(text ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    const code = [];
+    s = s.replace(/`([^`]+)`/g, (_, value) => {
+      const token = "@@CODE" + code.length + "@@";
+      code.push("<code>" + value + "</code>");
+      return token;
+    });
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+    s = s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, "<em>$1</em>");
+    s = s.replace(/(?<!_)_([^_\n]+)_(?!_)/g, "<em>$1</em>");
+    code.forEach((value, index) => { s = s.replace("@@CODE" + index + "@@", value); });
+    return s;
+  }
+
+  function markdownToHtml(markdown) {
+    const lines = String(markdown ?? "").replace(/\r\n?/g, "\n").split("\n");
+    const out = [];
+    let inCode = false;
+    let codeLines = [];
+    let listType = "";
+    let paragraph = [];
+
+    const closeParagraph = () => {
+      if (!paragraph.length) return;
+      out.push("<p>" + markdownInline(paragraph.join(" ")) + "</p>");
+      paragraph = [];
+    };
+    const closeList = () => {
+      if (!listType) return;
+      out.push("</" + listType + ">");
+      listType = "";
+    };
+    const closeCode = () => {
+      if (!inCode) return;
+      const escaped = codeLines.join("\n")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      out.push("<pre><code>" + escaped + "</code></pre>");
+      codeLines = [];
+      inCode = false;
+    };
+
+    for (const line of lines) {
+      if (/^\s*```/.test(line)) {
+        closeParagraph(); closeList();
+        if (inCode) closeCode(); else inCode = true;
+        continue;
+      }
+      if (inCode) {
+        codeLines.push(line);
+        continue;
+      }
+
+      if (!line.trim()) {
+        closeParagraph(); closeList();
+        continue;
+      }
+
+      const heading = line.match(/^(#{1,6})\s+(.+)$/);
+      if (heading) {
+        closeParagraph(); closeList();
+        const level = Math.min(6, heading[1].length);
+        out.push("<h" + level + ">" + markdownInline(heading[2]) + "</h" + level + ">");
+        continue;
+      }
+
+      if (/^\s*(---+|___+|\*\*\*+)\s*$/.test(line)) {
+        closeParagraph(); closeList();
+        out.push("<hr>");
+        continue;
+      }
+
+      const unordered = line.match(/^\s*[-*+]\s+(.+)$/);
+      const ordered = line.match(/^\s*\d+[.)]\s+(.+)$/);
+      if (unordered || ordered) {
+        closeParagraph();
+        const wanted = unordered ? "ul" : "ol";
+        if (listType !== wanted) {
+          closeList();
+          listType = wanted;
+          out.push("<" + listType + ">");
+        }
+        out.push("<li>" + markdownInline((unordered || ordered)[1]) + "</li>");
+        continue;
+      }
+
+      const quote = line.match(/^\s*>\s?(.*)$/);
+      if (quote) {
+        closeParagraph(); closeList();
+        out.push("<blockquote>" + markdownInline(quote[1]) + "</blockquote>");
+        continue;
+      }
+
+      paragraph.push(line.trim());
+    }
+
+    closeParagraph();
+    closeList();
+    closeCode();
+    return out.join("\n");
+  }
+
   async function toggleRules() {
     if (!ownerAuthenticated || !ownerMode) return;
     if (!rulesText.hidden) {
@@ -2141,7 +2263,7 @@
     try {
       const response = await fetch(rulesUrl + "?t=" + Date.now(), {cache:"no-store"});
       if (!response.ok) throw new Error("Kunde inte läsa Regler_Nyheter.md. HTTP " + response.status);
-      rulesText.value = await response.text();
+      rulesText.innerHTML = markdownToHtml(await response.text());
       rulesText.hidden = false;
       rulesBtn.textContent = "Dölj regler";
     } catch (err) {
@@ -2167,7 +2289,7 @@
       });
       if (!response.ok) throw new Error("Kunde inte läsa ITNyheter_PUBLIC_VIP_Sammanhang.md. HTTP " + response.status);
       const file = await response.json();
-      contextText.value = decodeBase64Utf8(file.content || "");
+      contextText.innerHTML = markdownToHtml(decodeBase64Utf8(file.content || ""));
       contextText.hidden = false;
       contextBtn.textContent = "Dölj sammanhang";
     } catch (err) {
