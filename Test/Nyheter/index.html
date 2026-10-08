@@ -602,6 +602,7 @@
         privateNewsById = new Map();
         console.warn("Kunde inte läsa VIP-metadata:", err);
       }
+      setPrivacyUi();
       await loadNews();
     });
 
