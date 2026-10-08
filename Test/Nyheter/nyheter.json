@@ -55,7 +55,7 @@
         "Artificiell intelligens",
         "AI-agenter"
       ],
-      "sammanfattning": "Axios beskriver hur AI-agenter i allt högre grad kan sköta uppgifter över flera tjänster, exempelvis e-post, kalender och betalningar, i stället för att användaren själv arbetar i varje app. Utvecklingen kan göra agentplattformarna mycket centrala, men också skapa inlåsning när stora mängder personlig och företagsrelaterad information knyts till en viss agent.",
+      "sammanfattning": "AI-agenter kan redan i allt högre grad kan sköta uppgifter över flera tjänster, exempelvis e-post, kalender och betalningar, i stället för att användaren själv arbetar i varje app. Utvecklingen kan göra agentplattformarna mycket centrala, men också skapa inlåsning när stora mängder personlig och företagsrelaterad information knyts till en viss agent.",
       "typ": "IT-Nyhet",
       "hämtdatum": null
     },
@@ -98,7 +98,7 @@
         "Dataintrång",
         "Oracle"
       ],
-      "sammanfattning": "En Accenture-konsult har tagits bort från sitt uppdrag hos FBI efter ett intrång där känsliga personuppgifter om tusentals FBI-anställda exponerades. Enligt Reuters hade en kritisk säkerhetsuppdatering i Oracle PeopleSoft inte installerats, vilket gav angripare möjlighet att komma åt uppgifter i personalsystemet.",
+      "sammanfattning": "En Accenture-konsult har tagits bort från sitt uppdrag hos FBI efter ett intrång där känsliga personuppgifter om tusentals FBI-anställda exponerades. En kritisk säkerhetsuppdatering i Oracle PeopleSoft inte installerats, vilket gav angripare möjlighet att komma åt uppgifter i personalsystemet.",
       "typ": "IT-Nyhet",
       "hämtdatum": null
     },
@@ -1568,13 +1568,13 @@
     {
       "id": 79,
       "datum": "2026-10",
-      "titel": "N: DN kartlägger de växande varningarna om avancerad AI",
+      "titel": "N: Fler experter varnar för riskerna med avancerad AI",
       "språk": "Svenska",
       "kategorier": [
         "Artificiell intelligens",
         "AI-säkerhet"
       ],
-      "sammanfattning": "Dagens Nyheter sammanfattar hur flera personer med erfarenhet från teknikbranschen den senaste tiden uttryckt oro över snabb utveckling av avancerad artificiell intelligens. Diskussionen handlar om hur systemen ska kunna utvärderas och kontrolleras när deras förmågor ökar. Artikeln placerar varningarna i ett större sammanhang och belyser att debatten förs parallellt med den fortsatta kommersiella AI-utvecklingen. Varningarna ska förstås som bedömningar av möjliga risker, inte som fastslagna framtida händelser.",
+      "sammanfattning": "Flera personer med erfarenhet från teknikbranschen den senaste tiden uttryckt oro över snabb utveckling av avancerad artificiell intelligens. Diskussionen handlar om hur systemen ska kunna utvärderas och kontrolleras när deras förmågor ökar. Artikeln placerar varningarna i ett större sammanhang och belyser att debatten förs parallellt med den fortsatta kommersiella AI-utvecklingen. Varningarna ska förstås som bedömningar av möjliga risker, inte som fastslagna framtida händelser.",
       "typ": "IT-Nyhet",
       "hämtdatum": "2026-10-08"
     },
@@ -1588,7 +1588,7 @@
         "OpenAI",
         "AI-säkerhet"
       ],
-      "sammanfattning": "Svenska Dagbladet rapporterar att OpenAI:s säkerhetschef David Robinson lämnar sin tjänst och riktar kritik mot utvecklingen av avancerad AI. Han anser enligt rapporteringen att utvecklingen går alltför snabbt och att säkerhetsfrågorna behöver tas på större allvar. Avhoppet bidrar till en bredare debatt om hur teknikföretag ska balansera konkurrens och nya modellförmågor mot testning, insyn och riskhantering. Uttalandena är chefens bedömningar och inte ett bevis för att en viss framtida skada kommer att inträffa.",
+      "sammanfattning": "OpenAI:s säkerhetschef David Robinson lämnar sin tjänst och riktar kritik mot utvecklingen av avancerad AI. Han anser enligt rapporteringen att utvecklingen går alltför snabbt och att säkerhetsfrågorna behöver tas på större allvar. Avhoppet bidrar till en bredare debatt om hur teknikföretag ska balansera konkurrens och nya modellförmågor mot testning, insyn och riskhantering. Uttalandena är chefens bedömningar och inte ett bevis för att en viss framtida skada kommer att inträffa.",
       "typ": "IT-Nyhet",
       "hämtdatum": "2026-10-08"
     },
@@ -1602,7 +1602,7 @@
         "Försvarsteknik",
         "Drönare"
       ],
-      "sammanfattning": "Ukraina använder enligt Aftonbladets rapportering luftvärnssystem med AI-stöd för att bekämpa ryska drönare nära viktiga delar av infrastrukturen. Exempel som nämns är skydd av broar och andra centrala anläggningar. Tekniken är ett exempel på hur automatiserad analys och målföljning får allt större betydelse i modern krigföring. Det framgår inte av den korta rapporteringen att hela beslutskedjan är självständig, så systemets grad av autonomi bör inte överdrivas.",
+      "sammanfattning": "Ukraina använder luftvärnssystem med AI-stöd för att bekämpa ryska drönare nära viktiga delar av infrastrukturen. Exempel som nämns är skydd av broar och andra centrala anläggningar. Tekniken är ett exempel på hur automatiserad analys och målföljning får allt större betydelse i modern krigföring. Det framgår inte av den korta rapporteringen att hela beslutskedjan är självständig, så systemets grad av autonomi bör inte överdrivas.",
       "typ": "IT-Nyhet",
       "hämtdatum": "2026-10-08"
     }
