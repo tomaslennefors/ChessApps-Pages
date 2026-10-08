@@ -1597,7 +1597,7 @@
 
       const h2 = document.createElement("h2");
       h2.textContent = displayTitle(item);
-      h2.title = "Mobil: tryck på rubriken för att visa/dölja metadata. Dator: högerklicka på rubriken.";
+      h2.title = "Klicka eller tryck på rubriken för att visa/dölja metadata.";
       h2.style.cursor = "pointer";
 
       const details = document.createElement("div");
@@ -1629,14 +1629,8 @@
         applyFilters();
       };
 
-      h2.addEventListener("click", event => {
-        if (event.pointerType === "mouse") return;
+      h2.addEventListener("click", () => {
         setMetadataVisibility(!metadataHidden());
-      });
-      h2.addEventListener("contextmenu", event => {
-        event.preventDefault();
-        const hide = !metadataHidden();
-        if (confirm(hide ? "Dölj metadata?" : "Visa metadata?")) setMetadataVisibility(hide);
       });
 
       const tags = document.createElement("div");
