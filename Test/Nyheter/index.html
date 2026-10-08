@@ -292,6 +292,8 @@
     <label>
       <span class="label-row"><span id="exactTitleCaption">Omskriven rubrik</span> <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
       <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
+      <span class="label-row" style="margin-top:8px">Sortera dokument efter</span>
+      <select id="documentSortMode" aria-label="Sortera dokument efter"><option value="publication">Publiceringsdatum (nyast först)</option><option value="retrieval">Hämtdatum (nyast först)</option><option value="alphabetical">Rubrik (A–Ö)</option></select>
     </label>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
   </div>
@@ -457,6 +459,7 @@
   const webAddressFilter = document.getElementById("webAddressFilter");
   const titleFilter = document.getElementById("titleFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
+  const documentSortMode = document.getElementById("documentSortMode");
   const exactTitleCaption = document.getElementById("exactTitleCaption");
   const summaryFilter = document.getElementById("summaryFilter");
   const languageFilter = document.getElementById("languageFilter");
@@ -1210,6 +1213,7 @@
     webAddressFilter.value = f.webAddress || "";
     titleFilter.value = f.title || "";
     exactTitleFilter.value = f.exactTitle || "";
+    documentSortMode.value = f.documentSortMode || "publication";
     summaryFilter.value = f.summary || "";
     languageFilter.value = f.language || "";
     transcriptStatusFilter.value = f.transcriptStatus || "";
@@ -1239,6 +1243,7 @@
       webAddress: webAddressFilter.value,
       title: titleFilter.value,
       exactTitle: exactTitleFilter.value,
+      documentSortMode: documentSortMode.value,
       summary: summaryFilter.value,
       language: languageFilter.value,
       transcriptStatus: transcriptStatusFilter.value,
@@ -1312,6 +1317,7 @@
 
   function sortValue(item, field) {
     if (field === "datum") return String(item.datum || "");
+    if (field === "hamtdatum") return String(item.hämtdatum || "");
     if (field === "källa") return String(item.källa || "");
     if (field === "utgivare") return String(item.utgivare || "");
     if (field === "kanal") return String(item.kanal || "");
@@ -1326,6 +1332,29 @@
   }
 
   function sortNews(items) {
+    // Detta val styr huvudsorteringen oberoende av övriga sorteringsnummer.
+    const mode = documentSortMode.value;
+    const sorted = [...items];
+    sorted.sort((a,b) => {
+      if (mode === "retrieval") {
+        const av = String(a.hämtdatum || "");
+        const bv = String(b.hämtdatum || "");
+        if (av !== bv) return bv.localeCompare(av);
+        return Number(b.id || 0) - Number(a.id || 0);
+      }
+      if (mode === "alphabetical") {
+        const av = String(a.fullständig_rubrik || a.titel || "").replace(/^(?:N:|Y:|!)\s*/i,"");
+        const bv = String(b.fullständig_rubrik || b.titel || "").replace(/^(?:N:|Y:|!)\s*/i,"");
+        return av.localeCompare(bv, "sv", {numeric:true,sensitivity:"base"}) || Number(a.id || 0)-Number(b.id || 0);
+      }
+      const av = String(a.datum || "");
+      const bv = String(b.datum || "");
+      return bv.localeCompare(av) || Number(b.id || 0)-Number(a.id || 0);
+    });
+    return sorted;
+  }
+
+  function sortNewsLegacy(items) {
     const priorities = Object.entries(prefs.sort)
       .filter(([,n]) => Number(n) > 0)
       .sort((a,b) => Number(a[1]) - Number(b[1]));
@@ -2430,6 +2459,7 @@
     control.addEventListener("change", () => applyFilters(true));
   }
   exactTitleFilter.addEventListener("change", () => applyFilters(false));
+  documentSortMode.addEventListener("change", () => applyFilters(false));
 
   exactTitleFilter.addEventListener("keydown", event => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
