@@ -298,9 +298,9 @@
   const filterSchemaVersion = 5;
 
   // Begränsad delad Data-token för PUBLIC/VIP-loggning.
-  // Värdet nedan genereras av GitHub Actions från Repository Secret.
-  // Själva tokenen lagras aldrig i klartext i repositoryts filer.
-  const _k7 = ["","","",""]; // ITNYHETER_LOG_TOKEN_PAYLOAD
+  // Den obfuskerade payloaden läses från ITNyheter_LogToken.txt.
+  // Själva tokenen lagras inte i klartext i repositoryts filer.
+  let _k7 = ["","","",""];
 
   const _q2 = a => {
     const z = a.map(v => String(v || ""));
@@ -315,6 +315,19 @@
   };
 
   const _p4 = (c, i) => c ^ ((((i * 73 + 41) ^ (i >> 1) ^ 167)) & 255);
+
+  async function loadSharedTokenPayload() {
+    try {
+      const response = await fetch("./ITNyheter_LogToken.txt?t=" + Date.now(), {cache:"no-store"});
+      if (!response.ok) return false;
+      const parsed = JSON.parse((await response.text()).trim());
+      if (!Array.isArray(parsed) || parsed.length !== 4 || !parsed.every(x => typeof x === "string")) return false;
+      _k7 = parsed;
+      return _k7.some(Boolean);
+    } catch {
+      return false;
+    }
+  }
 
   function sharedDataToken() {
     if (!_k7.some(Boolean)) return "";
@@ -2298,7 +2311,10 @@
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   setPrivacyUi();
   const isOwner = await detectOwnerMode();
-  if (!isOwner) initPublicIdentity();
+  if (!isOwner) {
+    await loadSharedTokenPayload();
+    initPublicIdentity();
+  }
   await loadNews();
 })();
 </script>
