@@ -107,6 +107,7 @@
     .saved-listboxes{display:grid;gap:9px;margin-top:16px}
     .saved-listboxes label{margin:0}
     .saved-listboxes select{margin-top:4px}
+    #legacyTitleFilter{display:none!important}
     .full-title-filter{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:10px 0 12px}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
     [hidden]{display:none!important}
@@ -289,12 +290,12 @@
   <div id="status">Hämtar dokument...</div>
 
   <div id="fullTitlePanel" class="full-title-filter">
-    <label>
-      <span id="exactTitleCaption" hidden>Rubrik</span>
-      <select id="exactTitleFilter" hidden aria-hidden="true" tabindex="-1"><option value="">Alla rubriker</option></select>
-      <span class="label-row">Sortera dokument efter</span>
-      <select id="documentSortMode" aria-label="Sortera dokument efter"><option value="publication">Publiceringsdatum (nyast först)</option><option value="retrieval">Hämtdatum (nyast först)</option><option value="alphabetical">Rubrik (A–Ö)</option></select>
-    </label>
+    <div id="legacyTitleFilter" style="display:none!important" aria-hidden="true" inert>
+      <span id="exactTitleCaption"></span>
+      <select id="exactTitleFilter" tabindex="-1"><option value="">Alla rubriker</option></select>
+    </div>
+    <label for="documentSortMode">Sortera dokument efter</label>
+    <select id="documentSortMode" aria-label="Sortera dokument efter"><option value="publication">Publiceringsdatum (nyast först)</option><option value="retrieval">Hämtdatum (nyast först)</option><option value="alphabetical">Rubrik (A–Ö)</option></select>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
   </div>
 
