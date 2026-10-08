@@ -290,9 +290,9 @@
 
   <div id="fullTitlePanel" class="full-title-filter">
     <label>
-      <span class="label-row"><span id="exactTitleCaption">Omskriven rubrik</span> <input class="sortno" data-sort="fullTitel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
-      <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
-      <span class="label-row" style="margin-top:8px">Sortera dokument efter</span>
+      <span id="exactTitleCaption" hidden>Rubrik</span>
+      <select id="exactTitleFilter" hidden aria-hidden="true" tabindex="-1"><option value="">Alla rubriker</option></select>
+      <span class="label-row">Sortera dokument efter</span>
       <select id="documentSortMode" aria-label="Sortera dokument efter"><option value="publication">Publiceringsdatum (nyast först)</option><option value="retrieval">Hämtdatum (nyast först)</option><option value="alphabetical">Rubrik (A–Ö)</option></select>
     </label>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
@@ -1212,7 +1212,7 @@
     channelFilter.value = f.channel || "";
     webAddressFilter.value = f.webAddress || "";
     titleFilter.value = f.title || "";
-    exactTitleFilter.value = f.exactTitle || "";
+    exactTitleFilter.value = "";
     documentSortMode.value = f.documentSortMode || "publication";
     summaryFilter.value = f.summary || "";
     languageFilter.value = f.language || "";
@@ -1242,7 +1242,7 @@
       channel: channelFilter.value,
       webAddress: webAddressFilter.value,
       title: titleFilter.value,
-      exactTitle: exactTitleFilter.value,
+      exactTitle: "",
       documentSortMode: documentSortMode.value,
       summary: summaryFilter.value,
       language: languageFilter.value,
