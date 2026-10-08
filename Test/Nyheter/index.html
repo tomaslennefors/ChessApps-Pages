@@ -971,10 +971,9 @@
 
   function fillExactTitleSelect(items, firstText) {
     const current = exactTitleFilter.value;
-    const entries = items
+    const entries = sortNews(items)
       .map(item => ({value:String(item.id), label:displayTitle(item) + (item.version ? " · " + item.version : "")}))
-      .filter(x => x.value && x.label)
-      .sort((a,b) => a.label.localeCompare(b.label, "sv", {sensitivity:"base"}));
+      .filter(x => x.value && x.label);
 
     exactTitleFilter.replaceChildren();
     const first = document.createElement("option");
@@ -2435,7 +2434,7 @@
     control.addEventListener("change", () => applyFilters(true));
   }
   exactTitleFilter.addEventListener("change", () => applyFilters(false));
-  documentSortMode.addEventListener("change", () => applyFilters(false));
+  documentSortMode.addEventListener("change", () => applyFilters(true));
 
   exactTitleFilter.addEventListener("keydown", event => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
