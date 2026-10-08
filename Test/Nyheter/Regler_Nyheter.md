@@ -358,3 +358,9 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 - Behåll namn på företag, organisationer och personer när de faktiskt är en del av nyhetens sakuppgifter, exempelvis när en artikel handlar om OpenAI, Google eller Wikimedia. Förvanska aldrig vem som uttalat sig eller vem som utfört en åtgärd.
 - Källans namn, originalrubrik, länk och exakt publiceringsdatum ska fortsatt bevaras separat i privat metadata enligt gällande behörighetsregler.
 - Vid framtida HämtaNyheter ska denna kontroll göras innan nya IT-Nyheter sparas.
+
+### 6i. Hämtdatum – behörighetsstyrd visning
+
+- Dokumentets **Hämtdatum** ska inte visas för användare med rollen **PUBLIC**.
+- Hämtdatum får visas för **VIP** och i **privat ägarvisning**.
+- Fältet `hämtdatum` behålls i nyhetsdata för sortering och administrativ användning. Denna regel gäller visningen i dokumentet, inte lagring eller sorteringsfunktion.
