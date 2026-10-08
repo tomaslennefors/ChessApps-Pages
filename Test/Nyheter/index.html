@@ -2360,9 +2360,11 @@
       statusEl.textContent = "Hämtar YouTube-rubriker...";
       await hydrateYoutubeBasics(allNews);
 
-      const youtubeTotal = allNews.filter(isYoutube).length;
-      const articleTotal = allNews.length - youtubeTotal;
-      metaEl.textContent = "Totalt antal artiklar: " + articleTotal + " · YouTube-klipp: " + youtubeTotal
+      const faktaTotal = allNews.filter(item => displayType(item) === "IT-Fakta").length;
+      const newsTotal = allNews.filter(item => displayType(item) === "IT-Nyhet").length;
+      const youtubeTotal = allNews.filter(item => displayType(item) === "IT-YouTube").length;
+      metaEl.textContent = "Totalt antal dokument: " + allNews.length
+        + " -- IT-Fakta: " + faktaTotal + " -- IT-Nyheter: " + newsTotal + " -- IT-YouTube: " + youtubeTotal
         + (duplicateCount ? " · " + duplicateCount + " dubblett" + (duplicateCount === 1 ? "" : "er") + " doldes automatiskt" : "");
 
       buildFilterOptions();
