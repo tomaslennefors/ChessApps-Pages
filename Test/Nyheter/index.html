@@ -1354,29 +1354,6 @@
     return sorted;
   }
 
-  function sortNewsLegacy(items) {
-    const priorities = Object.entries(prefs.sort)
-      .filter(([,n]) => Number(n) > 0)
-      .sort((a,b) => Number(a[1]) - Number(b[1]));
-
-    return [...items].sort((a,b) => {
-      if (priorities.length) {
-        for (const [field] of priorities) {
-          const av = sortValue(a, field);
-          const bv = sortValue(b, field);
-          const cmp = field === "datum"
-            ? bv.localeCompare(av)
-            : av.localeCompare(bv, "sv", {numeric:true, sensitivity:"base"});
-          if (cmp !== 0) return cmp;
-        }
-      } else {
-        const dateCmp = String(b.datum || "").localeCompare(String(a.datum || ""));
-        if (dateCmp !== 0) return dateCmp;
-      }
-      return Number(a.id || 0) - Number(b.id || 0);
-    });
-  }
-
   function makeButton(text, className, onClick) {
     const btn = document.createElement("button");
     btn.type = "button";
