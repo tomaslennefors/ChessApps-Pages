@@ -361,6 +361,7 @@
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
   const filterSchemaVersion = 5;
+  const metadataHiddenKey = "ITNyheter_MetadataHidden";
 
   // Begränsad delad Data-token för PUBLIC/VIP-loggning.
   // Den obfuskerade payloaden läses från ITNyheter_LogToken.txt.
@@ -1596,6 +1597,8 @@
 
       const h2 = document.createElement("h2");
       h2.textContent = displayTitle(item);
+      h2.title = "Mobil: tryck på rubriken för att visa/dölja metadata. Dator: högerklicka på rubriken.";
+      h2.style.cursor = "pointer";
 
       const details = document.createElement("div");
       details.className = "details";
@@ -1615,6 +1618,27 @@
       if (archived) parts.push("Arkiverad");
       details.textContent = parts.join(" · ");
 
+      const metadataHidden = () => localStorage.getItem(metadataHiddenKey) === "1";
+      const applyMetadataVisibility = () => {
+        const hidden = metadataHidden();
+        details.hidden = hidden;
+        tags.hidden = hidden;
+      };
+      const setMetadataVisibility = hidden => {
+        localStorage.setItem(metadataHiddenKey, hidden ? "1" : "0");
+        applyFilters();
+      };
+
+      h2.addEventListener("click", event => {
+        if (event.pointerType === "mouse") return;
+        setMetadataVisibility(!metadataHidden());
+      });
+      h2.addEventListener("contextmenu", event => {
+        event.preventDefault();
+        const hide = !metadataHidden();
+        if (confirm(hide ? "Dölj metadata?" : "Visa metadata?")) setMetadataVisibility(hide);
+      });
+
       const tags = document.createElement("div");
       tags.className = "tags";
       for (const category of (Array.isArray(item.kategorier) ? item.kategorier : [])) {
@@ -1627,6 +1651,7 @@
       const summary = document.createElement("div");
       summary.className = detailedArticle ? "article-ingress" : "summary";
       summary.textContent = item.sammanfattning || "";
+      applyMetadataVisibility();
 
       const body = document.createElement("div");
       body.className = "article-body";
