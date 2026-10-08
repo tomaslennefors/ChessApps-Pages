@@ -406,6 +406,7 @@
   let ownerToken = "";
   let ownerAuthenticated = false;
   let ownerMode = false;
+  let publicIdentity = null;
   let privateNewsById = new Map();
   let requestCompleted = false;
   let requestStatusChangedAt = "";
@@ -464,6 +465,14 @@
     localStorage.setItem(userIdKey, identity.userId);
     localStorage.setItem(userNameKey, identity.userName);
     localStorage.setItem(userRoleKey, identity.userRole);
+  }
+
+  function isVipUser() {
+    return !ownerAuthenticated && publicIdentity?.userRole === "VIP";
+  }
+
+  function hasEnhancedNewsAccess() {
+    return ownerMode || isVipUser();
   }
 
   function localLogTimestamp() {
@@ -555,6 +564,7 @@
       userRole:normalized.userRole
     };
     savePublicIdentity(identity);
+    publicIdentity = identity;
 
     // Första login är samtidigt första appstarten. Vid manuell omlogin
     // uppdateras användarregistret men ingen extra appstart skapas.
@@ -575,12 +585,24 @@
         identity.userName = "OKÄND";
         savePublicIdentity(identity);
       }
+      publicIdentity = identity;
       void syncPublicIdentityToData(identity, true);
     }
 
-    titleEl.addEventListener("contextmenu", event => {
+    titleEl.addEventListener("contextmenu", async event => {
       event.preventDefault();
-      showLogin(false);
+      const nextIdentity = showLogin(false);
+      try {
+        if (nextIdentity?.userRole === "VIP") {
+          privateNewsById = await readPrivateNewsMetadata(sharedDataToken());
+        } else {
+          privateNewsById = new Map();
+        }
+      } catch (err) {
+        privateNewsById = new Map();
+        console.warn("Kunde inte läsa VIP-metadata:", err);
+      }
+      await loadNews();
     });
 
     return identity;
@@ -716,7 +738,7 @@
   }
 
   function displayTitle(item) {
-    const raw = ownerMode
+    const raw = hasEnhancedNewsAccess()
       ? String(item.fullständig_rubrik || item.titel || "Dokument").trim()
       : String(item.titel || "Dokument").trim();
     const prefix = documentPrefix(item);
@@ -731,15 +753,16 @@
 
   function displayDate(item) {
     const value = String(item.datum || "");
-    return (ownerMode || isYoutube(item) || displayType(item) === "IT-Fakta") ? value : value.slice(0, 7);
+    return (hasEnhancedNewsAccess() || isYoutube(item) || displayType(item) === "IT-Fakta") ? value : value.slice(0, 7);
   }
 
   function setPrivacyUi() {
-    sourceFilterWrap.hidden = !ownerMode;
+    const enhancedAccess = hasEnhancedNewsAccess();
+    sourceFilterWrap.hidden = !enhancedAccess;
     dateFilter.type = "search";
     dateFilterCaption.textContent = "Datum";
     dateFilter.placeholder = "ÅÅÅÅ, ÅÅÅÅ-MM eller ÅÅÅÅ-MM-DD";
-    exactTitleCaption.textContent = ownerMode ? "Fullständig rubrik" : "Omskriven rubrik";
+    exactTitleCaption.textContent = enhancedAccess ? "Fullständig rubrik" : "Omskriven rubrik";
 
     if (!ownerAuthenticated) {
       privateViewControl.hidden = true;
@@ -776,10 +799,10 @@
     renderNews(getFilteredNews());
   }
 
-  async function readPrivateNewsMetadata() {
-    if (!ownerToken) return new Map();
+  async function readPrivateNewsMetadata(token = ownerToken) {
+    if (!token) return new Map();
     const response = await fetch(privateNewsDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
-      headers: githubHeaders(ownerToken),
+      headers: githubHeaders(token),
       cache:"no-store"
     });
     if (!response.ok) throw new Error("Kunde inte läsa privat dokumentmetadata. HTTP " + response.status);
@@ -793,7 +816,7 @@
   }
 
   function applyPrivateNewsMetadata() {
-    if (!ownerAuthenticated || !privateNewsById.size) return;
+    if (!hasEnhancedNewsAccess() || !privateNewsById.size) return;
     for (const item of allNews) {
       const extra = privateNewsById.get(String(item.id));
       if (extra) Object.assign(item, extra);
@@ -1502,9 +1525,9 @@
       const parts = [];
       if (item.id != null) parts.push("ID: " + item.id);
       const shownDate = displayDate(item);
-      const exactDate = ownerMode || youtube || displayType(item) === "IT-Fakta";
+      const exactDate = hasEnhancedNewsAccess() || youtube || displayType(item) === "IT-Fakta";
       if (shownDate) parts.push((exactDate ? "Datum: " : "Månad: ") + shownDate);
-      if ((ownerMode || youtube) && item.källa) parts.push("Källa: " + item.källa);
+      if ((hasEnhancedNewsAccess() || youtube) && item.källa) parts.push("Källa: " + item.källa);
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
       if (item.språk) parts.push("Språk: " + item.språk);
@@ -1565,7 +1588,7 @@
       const actions = document.createElement("div");
       actions.className = "card-actions";
 
-      if (item.länk && (youtube || ownerMode)) {
+      if (item.länk && (youtube || hasEnhancedNewsAccess())) {
         const link = document.createElement("a");
         link.className = "button";
         link.textContent = youtube ? "Öppna YouTube" : "Läs originaldokumentet";
@@ -2330,7 +2353,16 @@
   const isOwner = await detectOwnerMode();
   if (!isOwner) {
     await loadSharedTokenPayload();
-    initPublicIdentity();
+    const identity = initPublicIdentity();
+    if (identity?.userRole === "VIP") {
+      try {
+        privateNewsById = await readPrivateNewsMetadata(sharedDataToken());
+      } catch (err) {
+        privateNewsById = new Map();
+        console.warn("Kunde inte läsa VIP-metadata:", err);
+      }
+    }
+    setPrivacyUi();
   }
   await loadNews();
 })();
