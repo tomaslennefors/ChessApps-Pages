@@ -318,7 +318,7 @@
 
   async function loadSharedTokenPayload() {
     try {
-      const response = await fetch("./ITNyheter_LogToken .txt?t=" + Date.now(), {cache:"no-store"});
+      const response = await fetch("./ITNyheter_LogToken.txt?t=" + Date.now(), {cache:"no-store"});
       if (!response.ok) return false;
       const parsed = JSON.parse((await response.text()).trim());
       if (!Array.isArray(parsed) || parsed.length !== 4 || !parsed.every(x => typeof x === "string")) return false;
