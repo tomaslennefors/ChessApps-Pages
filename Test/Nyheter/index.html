@@ -320,7 +320,24 @@
     try {
       const response = await fetch("./ITNyheter_LogToken.txt?t=" + Date.now(), {cache:"no-store"});
       if (!response.ok) return false;
-      const parsed = JSON.parse((await response.text()).trim());
+      const raw = (await response.text()).trim();
+
+      let parsed = null;
+      try {
+        const json = JSON.parse(raw);
+        if (Array.isArray(json)) parsed = json;
+      } catch {}
+
+      if (!parsed) {
+        const parts = raw.split(",").map((part, index, all) => {
+          let value = part.trim();
+          if (index === 0 && !value.startsWith('"')) value = '"' + value;
+          if (index === all.length - 1 && !value.endsWith('"')) value = value + '"';
+          try { return JSON.parse(value); } catch { return ""; }
+        });
+        if (parts.length === 4 && parts.every(x => typeof x === "string" && x.length)) parsed = parts;
+      }
+
       if (!Array.isArray(parsed) || parsed.length !== 4 || !parsed.every(x => typeof x === "string")) return false;
       _k7 = parsed;
       return _k7.some(Boolean);
