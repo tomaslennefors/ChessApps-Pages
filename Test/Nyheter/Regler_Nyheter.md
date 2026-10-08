@@ -350,3 +350,11 @@ Alla datumvärden som finns tillgängliga för den aktuella användaren ska bygg
 Det valda datumvillkoret och övriga filtervillkor ska sparas lokalt och ligga kvar synliga efter **Uppdatera filtrering** och den fullständiga siduppdateringen. Filtervillkor får inte återställas automatiskt bara för att de för tillfället ger 0 träffar.
 
 Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den röda markeringen.
+
+### 6h. Omskrivna IT-nyheter utan medienamn i dokumenttexten
+
+- Alla dokument av typen **IT-Nyhet** ska skrivas med egna ord, tydligt och lättförståeligt. Skriv så att innehållet står på egna ben utan formuleringar som ”enligt Aftonbladet”, ”DN skriver” eller ”Reuters rapporterar”.
+- Ta bort nyhetsmediets namn ur den publika rubriken, ingressen och brödtexten **när namnet bara anger var nyheten hämtats**. Detta gäller även kortformer som DN och SvD.
+- Behåll namn på företag, organisationer och personer när de faktiskt är en del av nyhetens sakuppgifter, exempelvis när en artikel handlar om OpenAI, Google eller Wikimedia. Förvanska aldrig vem som uttalat sig eller vem som utfört en åtgärd.
+- Källans namn, originalrubrik, länk och exakt publiceringsdatum ska fortsatt bevaras separat i privat metadata enligt gällande behörighetsregler.
+- Vid framtida HämtaNyheter ska denna kontroll göras innan nya IT-Nyheter sparas.
