@@ -2321,7 +2321,13 @@
       if (!response.ok) throw new Error("Kunde inte läsa UserLog.json. HTTP " + response.status);
       const file = await response.json();
       const raw = decodeBase64Utf8(file.content || "");
-      userLogText.textContent = JSON.stringify(JSON.parse(raw), null, 2);
+      const logData = JSON.parse(raw);
+      if (Array.isArray(logData.log)) {
+        logData.log = [...logData.log].sort((a, b) =>
+          String(b.datumtid || "").trim().localeCompare(String(a.datumtid || "").trim())
+        );
+      }
+      userLogText.textContent = JSON.stringify(logData, null, 2);
       userLogText.hidden = false;
       userLogBtn.textContent = "Dölj användarlogg";
     } catch (err) {
