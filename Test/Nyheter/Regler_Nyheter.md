@@ -376,6 +376,6 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 
 - Användaren ska kunna dölja metadataområdet mellan dokumentets rubrik och dokumenttexten.
 - På mobil/pekskärm växlar ett snabbt tryck på dokumentrubriken mellan **dold** och **visad** metadata.
-- På dator används högerklick på dokumentrubriken och valet **Dölj metadata** eller **Visa metadata**.
+- På dator gör ett vanligt vänsterklick på dokumentrubriken samma sak. Vänsterklick och snabbt tryck är alltså likvärdiga för denna funktion.
 - Valet sparas lokalt på enheten och gäller för alla dokument och framtida besök tills användaren själv ändrar valet igen.
 - När metadata döljs ska rubriken och själva dokumenttexten fortfarande visas.
