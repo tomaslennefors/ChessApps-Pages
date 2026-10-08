@@ -1604,7 +1604,7 @@
       const shownDate = displayDate(item);
       const exactDate = hasEnhancedNewsAccess() || youtube || displayType(item) === "IT-Fakta";
       if (shownDate) parts.push((exactDate ? "Publiceringsdatum: " : "Publiceringsmånad: ") + shownDate);
-      parts.push("Hämtdatum: " + (item.hämtdatum || "Okänt"));
+      if (hasEnhancedNewsAccess()) parts.push("Hämtdatum: " + (item.hämtdatum || "Okänt"));
       if ((hasEnhancedNewsAccess() || youtube) && item.källa) parts.push("Källa: " + item.källa);
       if (item.utgivare) parts.push("Utgivare: " + item.utgivare);
       if (item.kanal) parts.push("Kanal: " + item.kanal);
