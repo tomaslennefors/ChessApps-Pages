@@ -125,8 +125,9 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span id="appVersion" class="app-version" title="Senaste ändring av appens HTML-kod">2026-10-08 05:39</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span id="appVersion" class="app-version" title="Senaste ändring av appens HTML-kod">OLD: 2026-10-08 05:39</span></h1>
   <div id="meta"></div>
+  <div id="documentsVersion" class="small">Dokument uppdaterade: hämtar tid...</div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
     <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
@@ -298,28 +299,48 @@
 
 <script>
 (async () => {
-  // Versionsdatum hämtas från den senaste GitHub-ändringen av appens HTML.
-  // Reservvärdet i HTML visas om GitHub API tillfälligt inte är tillgängligt.
+  // Versionsdatum hämtas från GitHub. OLD: markerar att endast ett äldre reservvärde finns.
+  async function getFileCommitTime(path) {
+    const endpoint = "https://api.github.com/repos/tomaslennefors/ChessApps-Pages/commits?path=" + encodeURIComponent(path) + "&per_page=1";
+    const response = await fetch(endpoint, {cache:"no-store"});
+    if (!response.ok) throw new Error("GitHub API HTTP " + response.status);
+    const commits = await response.json();
+    const iso = commits?.[0]?.commit?.committer?.date;
+    if (!iso || Number.isNaN(Date.parse(iso))) throw new Error("GitHub saknar giltig ändringstid.");
+    return iso;
+  }
+
+  function swedishCommitTime(iso) {
+    const parts = new Intl.DateTimeFormat("sv-SE", {
+      timeZone:"Europe/Stockholm", year:"numeric", month:"2-digit", day:"2-digit",
+      hour:"2-digit", minute:"2-digit", hourCycle:"h23"
+    }).formatToParts(new Date(iso));
+    const value = type => parts.find(part => part.type === type)?.value || "";
+    return value("year") + "-" + value("month") + "-" + value("day") + " " + value("hour") + ":" + value("minute");
+  }
+
   async function updateAppVersion() {
     try {
-      const endpoint = "https://api.github.com/repos/tomaslennefors/ChessApps-Pages/commits?path=Test%2FNyheter%2Findex.html&per_page=1";
-      const response = await fetch(endpoint, {cache:"no-store"});
-      if (!response.ok) return;
-      const commits = await response.json();
-      const iso = commits?.[0]?.commit?.committer?.date;
-      if (!iso) return;
-      const parts = new Intl.DateTimeFormat("sv-SE", {
-        timeZone:"Europe/Stockholm", year:"numeric", month:"2-digit", day:"2-digit",
-        hour:"2-digit", minute:"2-digit", hourCycle:"h23"
-      }).formatToParts(new Date(iso));
-      const value = type => parts.find(part => part.type === type)?.value || "";
       document.getElementById("appVersion").textContent =
-        value("year") + "-" + value("month") + "-" + value("day") + " " + value("hour") + ":" + value("minute");
+        swedishCommitTime(await getFileCommitTime("Test/Nyheter/index.html"));
     } catch (err) {
-      console.warn("Kunde inte hämta versionsdatum:", err);
+      console.warn("Versionsdatum är äldre (OLD), kunde inte kontrollera GitHub:", err);
     }
   }
+
+  async function updateDocumentsVersion() {
+    const element = document.getElementById("documentsVersion");
+    try {
+      element.textContent = "Dokument uppdaterade: " +
+        swedishCommitTime(await getFileCommitTime("Test/Nyheter/nyheter.json"));
+    } catch (err) {
+      element.textContent = "Dokument uppdaterade: OLD: okänd tid";
+      console.warn("Kunde inte hämta senaste dokumentuppdateringen:", err);
+    }
+  }
+
   updateAppVersion();
+  updateDocumentsVersion();
 
   const dataUrl = "./nyheter.json";
   const rulesUrl = "./Regler_Nyheter.md";
