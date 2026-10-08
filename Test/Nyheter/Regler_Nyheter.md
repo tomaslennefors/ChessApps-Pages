@@ -364,3 +364,10 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 - Dokumentets **Hämtdatum** ska inte visas för användare med rollen **PUBLIC**.
 - Hämtdatum får visas för **VIP** och i **privat ägarvisning**.
 - Fältet `hämtdatum` behålls i nyhetsdata för sortering och administrativ användning. Denna regel gäller visningen i dokumentet, inte lagring eller sorteringsfunktion.
+
+### 6j. Originalknapp för VIP
+
+- **VIP** ska, liksom privat ägarvisning, kunna öppna originalwebbsidan för ett IT-Nyhetsdokument via knappen **Läs originaldokumentet**.
+- **PUBLIC** ska inte se denna knapp för IT-Nyheter.
+- För VIP får den nödvändiga originaladressen finnas som separat tekniskt fält i den publikt läsbara datafilen, men appen får inte visa adressen eller knappen för PUBLIC.
+- Privat metadata som källa och fullständig originalrubrik ska även fortsättningsvis följa sina separata behörighetsregler.
