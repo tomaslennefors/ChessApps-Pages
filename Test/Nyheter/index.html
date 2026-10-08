@@ -125,7 +125,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 04:48</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 05:06</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -135,8 +135,10 @@
   <div id="rulesArea" class="rules-area" hidden>
     <button id="rulesBtn" type="button">Regler</button>
     <button id="contextBtn" type="button">Sammanhang</button>
+    <button id="userLogBtn" type="button">Användarlogg</button>
     <div id="rulesText" class="markdown-doc" hidden aria-label="Regler för IT-Nyheter"></div>
     <div id="contextText" class="markdown-doc" hidden aria-label="Sammanhang för IT-Nyheter"></div>
+    <pre id="userLogText" class="markdown-doc" hidden aria-label="Användarlogg" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
   </div>
 
   <section id="ownerPanel" class="panel" hidden>
@@ -378,6 +380,8 @@
   const rulesArea = document.getElementById("rulesArea");
   const rulesBtn = document.getElementById("rulesBtn");
   const contextBtn = document.getElementById("contextBtn");
+  const userLogBtn = document.getElementById("userLogBtn");
+  const userLogText = document.getElementById("userLogText");
   const rulesText = document.getElementById("rulesText");
   const contextText = document.getElementById("contextText");
   const statusEl = document.getElementById("status");
@@ -796,6 +800,8 @@
     if (!ownerMode) {
       rulesText.hidden = true;
       contextText.hidden = true;
+      userLogText.hidden = true;
+      userLogBtn.textContent = "Användarlogg";
       rulesBtn.textContent = "Regler";
       contextBtn.textContent = "Sammanhang";
     }
@@ -2299,6 +2305,32 @@
     }
   }
 
+  async function toggleUserLog() {
+    if (!ownerAuthenticated || !ownerMode || !ownerToken) return;
+    if (!userLogText.hidden) {
+      userLogText.hidden = true;
+      userLogBtn.textContent = "Användarlogg";
+      return;
+    }
+    userLogBtn.disabled = true;
+    try {
+      const response = await fetch(userLogDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+        headers: githubHeaders(ownerToken),
+        cache:"no-store"
+      });
+      if (!response.ok) throw new Error("Kunde inte läsa UserLog.json. HTTP " + response.status);
+      const file = await response.json();
+      const raw = decodeBase64Utf8(file.content || "");
+      userLogText.textContent = JSON.stringify(JSON.parse(raw), null, 2);
+      userLogText.hidden = false;
+      userLogBtn.textContent = "Dölj användarlogg";
+    } catch (err) {
+      statusEl.textContent = "FEL:\n" + (err?.message || String(err));
+    } finally {
+      userLogBtn.disabled = false;
+    }
+  }
+
   async function loadNews() {
     reloadBtn.disabled = true;
     statusEl.textContent = "Hämtar dokument...";
@@ -2476,6 +2508,7 @@
   }, true);
   rulesBtn.addEventListener("click", toggleRules);
   contextBtn.addEventListener("click", toggleContext);
+  userLogBtn.addEventListener("click", toggleUserLog);
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", () => {
     captureControls();
