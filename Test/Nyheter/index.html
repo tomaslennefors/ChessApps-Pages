@@ -1666,11 +1666,12 @@
       const actions = document.createElement("div");
       actions.className = "card-actions";
 
-      if (item.länk && (youtube || hasEnhancedNewsAccess())) {
+      const originalUrl = String(item.länk || (isVipUser() ? item.original_länk : "") || "").trim();
+      if (originalUrl && (youtube || hasEnhancedNewsAccess())) {
         const link = document.createElement("a");
         link.className = "button";
         link.textContent = youtube ? "Öppna YouTube" : "Läs originaldokumentet";
-        link.href = item.länk;
+        link.href = originalUrl;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         actions.append(link);
