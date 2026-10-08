@@ -112,7 +112,7 @@
   </style>
 </head>
 <body>
-  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 01:24</span></h1>
+  <h1><span id="title">IT-Nyheter</span><span class="app-version" title="Version av appens HTML-kod">2026-10-08 04:45</span></h1>
   <div id="meta"></div>
 
   <div id="privateViewControl" class="private-view-control" hidden>
@@ -121,7 +121,9 @@
 
   <div id="rulesArea" class="rules-area" hidden>
     <button id="rulesBtn" type="button">Regler</button>
+    <button id="contextBtn" type="button">Sammanhang</button>
     <textarea id="rulesText" readonly hidden aria-label="Regler för IT-Nyheter"></textarea>
+    <textarea id="contextText" readonly hidden aria-label="Sammanhang för IT-Nyheter"></textarea>
   </div>
 
   <section id="ownerPanel" class="panel" hidden>
@@ -283,6 +285,7 @@
 (async () => {
   const dataUrl = "./nyheter.json";
   const rulesUrl = "./Regler_Nyheter.md";
+  const contextDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/ITNyheter_PUBLIC_VIP_Sammanhang.md";
   const storageKey = "ITNyheter_Settings_V2";
   const tokenKey = "ChessApps_GitHubToken";
   const userIdKey = "ITNyheter_UserId";
@@ -361,7 +364,9 @@
   const privateViewCheckbox = document.getElementById("privateViewCheckbox");
   const rulesArea = document.getElementById("rulesArea");
   const rulesBtn = document.getElementById("rulesBtn");
+  const contextBtn = document.getElementById("contextBtn");
   const rulesText = document.getElementById("rulesText");
+  const contextText = document.getElementById("contextText");
   const statusEl = document.getElementById("status");
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
@@ -777,7 +782,9 @@
     rulesArea.hidden = !ownerMode;
     if (!ownerMode) {
       rulesText.hidden = true;
+      contextText.hidden = true;
       rulesBtn.textContent = "Regler";
+      contextBtn.textContent = "Sammanhang";
     }
     privateViewCheckbox.checked = ownerMode;
 
@@ -2144,6 +2151,32 @@
     }
   }
 
+  async function toggleContext() {
+    if (!ownerAuthenticated || !ownerMode) return;
+    if (!contextText.hidden) {
+      contextText.hidden = true;
+      contextBtn.textContent = "Sammanhang";
+      return;
+    }
+
+    contextBtn.disabled = true;
+    try {
+      const response = await fetch(contextDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+        headers: githubHeaders(ownerToken),
+        cache:"no-store"
+      });
+      if (!response.ok) throw new Error("Kunde inte läsa ITNyheter_PUBLIC_VIP_Sammanhang.md. HTTP " + response.status);
+      const file = await response.json();
+      contextText.value = decodeBase64Utf8(file.content || "");
+      contextText.hidden = false;
+      contextBtn.textContent = "Dölj sammanhang";
+    } catch (err) {
+      statusEl.textContent = "FEL:\n" + (err?.message || String(err));
+    } finally {
+      contextBtn.disabled = false;
+    }
+  }
+
   async function loadNews() {
     reloadBtn.disabled = true;
     statusEl.textContent = "Hämtar dokument...";
@@ -2320,6 +2353,7 @@
     }
   }, true);
   rulesBtn.addEventListener("click", toggleRules);
+  contextBtn.addEventListener("click", toggleContext);
   clearBtn.addEventListener("click", clearFilters);
   reloadBtn.addEventListener("click", () => {
     captureControls();
