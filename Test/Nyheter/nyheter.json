@@ -1421,7 +1421,110 @@
       "sammanfattning": "I oktober 2026 är Microsoft Copilot en multimodellbaserad AI-plattform för både privatpersoner och organisationer. Copilot finns på webben, Windows, Mac och mobil och är integrerat i Microsoft 365-appar. För företag finns en grundläggande Copilot Chat i berättigade Microsoft 365-planer, medan en full Copilot-licens ger djupare arbetsgrundning, Work IQ, fler appfunktioner och agenter. Copilot Cowork kan genomföra flerstegsarbete, och Microsoft erbjuder modellval från både OpenAI och Anthropic i olika upplevelser. För privatpersoner säljer Microsoft 365 Personal, Family, Premium och Pro med olika nivåer av Copilot-kapacitet.",
       "läsvy": "## Lägesbild: oktober 2026\n\nDet här dokumentet beskriver Microsoft Copilot **i oktober 2026**.\n\nCopilot förändras snabbt. Modellutbud, funktioner, licenser och gränssnitt kan därför ändras efter dokumentets datum.\n\n## Var finns Microsoft Copilot?\n\nEnligt Microsofts aktuella support finns Copilot på flera plattformar:\n\n**Windows och Mac:** Microsoft Copilot-appen.\n\n**Webb:** via Microsofts Copilot-webb.\n\n**Mobil:** Copilot för iOS och Android.\n\nPå nya Windows 11-datorer kan Copilot-appen redan vara installerad eller fäst i Start-menyn eller aktivitetsfältet.\n\n## Navigeringen i Copilot-appen\n\nDen aktuella [Copilot-appen](https://support.microsoft.com/sv-se/microsoft-365-copilot/what-is-microsoft-copilot-app) kan, beroende på konto och licens, visa:\n\n**Chat**\n\n**Bibliotek**\n\n**Agenter**\n\n**Sök**\n\n**Cowork**\n\nDessutom finns snabb åtkomst till andra Microsoft 365-appar.\n\n## Copilot med personligt konto\n\nEtt personligt Microsoft-konto ger en konsumentinriktad Copilot-upplevelse.\n\nEfter inloggning kan funktioner bland annat omfatta:\n\n**chatthistorik**\n\n**bildskapande**\n\n**längre samtal**\n\n**röst**\n\n**Vision och andra multimodala funktioner**\n\n**Copilot i Microsoft 365-appar**, om abonnemanget ger rätt till detta.\n\n## Copilot med arbets- eller skolkonto\n\nEtt arbets- eller skolkonto styrs genom Microsoft Entra och organisationens Microsoft 365-miljö.\n\nVilka Copilot-funktioner användaren får beror på:\n\n**Microsoft 365-plan**\n\n**Copilot-licens**\n\n**administratörsinställningar**\n\n**region**\n\n**behörighet till arbetsdata**\n\n## Tre vanliga licensetiketter för arbetskonton\n\nMicrosofts support beskriver i 2026 tre vanliga etiketter:\n\n**Copilot Chat (Basic)** – grundläggande Copilot Chat utan full Copilot-tilläggslicens.\n\n**M365 Copilot (Basic)** – standardåtkomst till Copilot i vissa Microsoft 365-appar utan full premiumlicens.\n\n**M365 Copilot (Premium)** – full Copilot-tilläggslicens med prioriterad åtkomst och mer avancerade funktioner.\n\nNamnen i gränssnitt och dokumentation kan förändras, men principen är att olika användare har olika Copilot-nivåer.\n\n## Copilot Chat utan extra Copilot-licens\n\n[Copilot Chat](https://learn.microsoft.com/copilot/microsoft-365/microsoft-365-copilot-licensing) kan ingå utan extra kostnad i berättigade Microsoft 365-abonnemang.\n\nDen grundläggande varianten är främst **webbgrundad**.\n\nOrganisationer kan också låta användare köra egna agenter med användningsbaserad debitering.\n\n## Full Microsoft Copilot-licens för arbete\n\nMed en full Copilot-licens får användaren en mer arbetsintegrerad upplevelse.\n\nDet kan bland annat innebära:\n\n**Work IQ**\n\n**Copilot i Teams och Microsoft 365-appar**\n\n**arbetsgrundad chatt**\n\n**färdiga agenter som Researcher, Analyst och Facilitator**\n\n**fler möjligheter att använda egna agenter**\n\n**mer avancerad analys av användning och införande**\n\n## Microsoft 365 E7\n\nMicrosoft 365 E7 blev allmänt tillgängligt den 1 maj 2026.\n\nMicrosoft beskriver E7 som en bred företagsnivå där bland annat:\n\n**Microsoft Copilot**\n\n**Microsoft Entra Suite**\n\n**Agent 365**\n\noch avancerade säkerhets- och styrningsfunktioner ingår.\n\nE7 är därför särskilt inriktat på organisationer som vill använda agentisk AI i stor skala.\n\n## Work IQ\n\n[Work IQ](https://www.microsoft.com/en-us/copilot/features/work-iq) är ett centralt intelligenslager i dagens Copilot.\n\nDet ger Copilot kontext från:\n\n**Microsoft 365-innehåll**\n\n**metadata**\n\n**relationer mellan människor**\n\n**projekt och processer**\n\n**anslutna affärssystem**\n\n**Copilot Memory**\n\nSyftet är att Copilot ska förstå arbetet runt användaren och inte bara den text som står i den senaste prompten.\n\n## Copilot Cowork\n\n[Copilot Cowork](https://www.microsoft.com/en-us/copilot/features/cowork) är Microsofts arbetsläge för delegerade flerstegsuppgifter.\n\nAnvändaren beskriver ett resultat i stället för varje enskilt klick.\n\nCowork kan sedan planera, använda arbetskontext och anslutna system och genomföra uppgiften.\n\nMicrosoft beskriver bland annat användning för:\n\n**inkorgsflöden**\n\n**research**\n\n**strukturerade dokument**\n\n**webbsidor**\n\n**återkommande uppgifter**\n\nVid viktiga åtgärder kan Cowork stanna för användarens godkännande.\n\n## Researcher\n\n[Researcher](https://learn.microsoft.com/en-us/microsoft-365-copilot/researcher-agent) är en djupare researchagent.\n\nDen kan kombinera:\n\n**webbkällor**\n\n**filer**\n\n**e-post**\n\n**möten**\n\n**chattar**\n\noch skapa en mer omfattande källbelagd rapport.\n\nResearcher är avsedd för uppgifter där vanlig chatt blir för ytlig eller snabb.\n\n## Analyst och andra agenter\n\nAnalyst är inriktad på avancerad analys och strukturerat resonemang.\n\nFacilitator och andra färdiga agenter används för mer specialiserade arbetsuppgifter.\n\nOrganisationer kan dessutom skapa egna agenter i Copilot Studio.\n\n## Copilot är multimodell\n\nI oktober 2026 är det särskilt viktigt att förstå att Copilot **inte är bundet till en enda modell**.\n\nMicrosoft beskriver [modellval och automatisk routing](https://learn.microsoft.com/en-us/microsoft-365-copilot/microsoft-365-copilot-overview).\n\nAnvändaren kan i vissa miljöer välja modell, medan Copilot i andra fall väljer automatiskt.\n\nMicrosoft erbjuder modeller från flera leverantörer.\n\n## OpenAI-modeller i Copilot\n\nI olika Microsoft Copilot-upplevelser används aktuella OpenAI-modeller.\n\nI Copilot Cowork dokumenterar Microsoft exempelvis modeller ur GPT-5.6- och GPT-6-familjerna.\n\nVilken modell som faktiskt visas beror på licens, produkt och utrullning.\n\n## Anthropic Claude i Copilot\n\nMicrosoft har under 2026 gjort [Anthropic Claude-modeller](https://learn.microsoft.com/sv-se/microsoft-365/copilot/copilot-anthropic-apps) tillgängliga i delar av Copilot.\n\nI EU, EFTA och Storbritannien finns särskilda administratörsinställningar för Anthropic som Microsoft-underprocessor.\n\nDetta är ett tydligt tecken på att Copilot blivit en modellneutralare plattform.\n\n## Senare modellval under 2026\n\nMicrosofts 2026-roadmap beskriver bland annat modellval med nya OpenAI- och Anthropic-modeller.\n\nI september 2026 annonserades exempelvis **GPT-6 Sol** och **Claude Opus 5.5** som nya modellval i Microsoft Copilot.\n\nExakt tillgänglighet kan variera mellan användare och tjänster.\n\n## Windows-funktioner\n\nDen aktuella [Copilot-appen för Windows](https://learn.microsoft.com/en-us/copilot/windows) kan ge funktioner som:\n\n**röst**\n\n**Copilot Vision**\n\n**filsökning**\n\n**ta skärmbild**\n\n**visa webbinnehåll**\n\n**hjälp med Windows-inställningar**\n\nMicrosoft testar och rullar ut funktioner stegvis, så alla användare ser inte alltid samma gränssnitt samtidigt.\n\n## Copilot i Word\n\nI Word kan Copilot hjälpa till att:\n\n**skriva utkast**\n\n**förbättra text**\n\n**sammanfatta**\n\n**omstrukturera**\n\n**använda dokument som underlag**\n\n## Copilot i Excel\n\nI Excel kan Copilot hjälpa till att:\n\n**analysera data**\n\n**förklara mönster**\n\n**skriva eller föreslå formler**\n\n**arbeta med tabeller**\n\n**stödja finansiella arbetsflöden**\n\n## Copilot i PowerPoint\n\nI PowerPoint kan Copilot bland annat:\n\n**skapa presentationer från underlag**\n\n**omstrukturera presentationer**\n\n**sammanfatta innehåll**\n\n**hjälpa till med text och upplägg**\n\n## Copilot i Outlook\n\nAlla Microsoft 365-prenumeranter har enligt Microsofts aktuella licensinformation någon form av Copilot-åtkomst i Outlook.\n\nFunktionerna kan bland annat användas för:\n\n**sammanfattning av e-post**\n\n**svarsförslag**\n\n**arbete med inkorg**\n\n**kalenderrelaterade frågor**\n\nMer avancerade funktioner kräver högre licensnivå.\n\n## Privatpersoner – Microsofts svenska abonnemang\n\nPå Microsofts svenska prislista i oktober 2026 visas bland annat:\n\n**Microsoft 365 Personal:** 119,99 kr/månad.\n\n**Microsoft 365 Family:** 155,99 kr/månad.\n\n**Microsoft 365 Premium:** 254,99 kr/månad.\n\n**Microsoft 365 Pro:** 1 274,99 kr/månad.\n\nPriser och kampanjer kan ändras och ska därför ses som en ögonblicksbild från dokumentets datum.\n\n## Copilot Pro – viktigt historiskt namn\n\n**Copilot Pro** lanserades 2024 som ett premiumabonnemang för privatpersoner.\n\nI dagens produktutbud används andra Microsoft 365-planer mer framträdande.\n\nDärför bör man skilja på det historiska produktnamnet Copilot Pro och de aktuella Microsoft 365 Premium/Pro-planerna.\n\n## Säkerhet och data\n\nI organisationsmiljöer är Copilot integrerat med Microsofts identitets-, behörighets- och efterlevnadssystem.\n\nCopilot ska arbeta inom användarens befintliga åtkomst.\n\nDet innebär att en användare inte ska få tillgång till ett dokument genom Copilot om användaren inte redan har rätt att öppna dokumentet.\n\n## Praktiskt exempel – enkel privat användning\n\n**Personligt Microsoft-konto → Microsoft Copilot-app → Chat**\n\nDetta passar vanliga frågor, skrivande, idéer, webbsökning och multimodala uppgifter.\n\n## Praktiskt exempel – Microsoft 365-arbete\n\n**Arbetskonto → Microsoft Copilot → Work IQ → Word/Excel/Outlook/Teams**\n\nDå kan Copilot använda arbetskontext och information som användaren redan har behörighet till.\n\n## Praktiskt exempel – delegerat arbete\n\n**Arbetskonto → Copilot Cowork → vald modell → Work IQ → flera system**\n\nDå kan Copilot planera och genomföra en större uppgift i flera steg.\n\n## Den viktigaste nulägesbilden\n\nMicrosoft Copilot har på några år gått från en AI-chatt och sökfunktion till ett bredare arbetslager över Microsofts ekosystem.\n\nI oktober 2026 består Copilot i praktiken av:\n\n**chatt**\n\n**flera AI-modeller**\n\n**Microsoft 365-integration**\n\n**arbetskontext genom Work IQ**\n\n**agenter**\n\n**Cowork**\n\n**Copilot Studio**\n\n**Windows-integration**\n\n**företagsstyrning och säkerhet**\n\nDet gör Copilot till betydligt mer än en enskild AI-assistent.",
       "version": "V1"
+    },
+    {
+      "id": 74,
+      "datum": "2026-10",
+      "titel": "N: Kostnadsökningar driver VMware-kunder mot alternativ",
+      "språk": "Svenska",
+      "kategorier": [
+        "Datacenter",
+        "Virtualisering",
+        "VMware"
+      ],
+      "sammanfattning": "En undersökning från Unisphere Research, beställd av Rimini Street, visar att många verksamheter ser över sina VMware-installationer. Nio av tio tillfrågade organisationer uppges undersöka alternativ sedan licenskostnaderna ökat efter Broadcoms förvärv. Bland lösningarna finns miljöer med flera hypervisorer och kombinationer av virtualisering och containrar. Resultaten kommer från ett urval på 300 organisationer, vilket gör det viktigt att skilja undersökningens svar från situationen för samtliga VMware-kunder.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 75,
+      "datum": "2026-10",
+      "titel": "N: LibreOffice prioriterar användarkontroll framför inbyggd AI",
+      "språk": "Svenska",
+      "kategorier": [
+        "Öppen källkod",
+        "Kontorsprogram",
+        "Artificiell intelligens"
+      ],
+      "sammanfattning": "The Document Foundation beskriver avsaknaden av inbyggda AI-verktyg i LibreOffice som ett medvetet val. Organisationen vill inte lägga till teknik som försämrar användarens integritet eller kontroll. Eventuella framtida AI-funktioner ska vara frivilliga, följa öppna dokumentstandarder och ge användaren inflytande över var modeller körs. Beskedet innebär alltså inte ett permanent förbud mot AI, utan en kravlista som måste vara uppfylld innan sådana funktioner kan införas.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 76,
+      "datum": "2026-10",
+      "titel": "N: AI-styrda botar granskas efter störning hos Wikimedia",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "AI-agenter",
+        "IT-säkerhet"
+      ],
+      "sammanfattning": "Wikimedia Foundation har uppmärksammat mycket omfattande automatiserad trafik och misstänker att AI-agenter kan ha bidragit till en tidigare driftstörning. Enligt organisationen omfattade aktiviteten både redigeringar och stora mängder förfrågningar. Wikimedia har inte rapporterat att system eller information komprometterats. OpenAI granskar uppgifterna men har inte bekräftat att dess egna agenter orsakade störningen. Händelsen visar de praktiska problem som uppstår när automatiska agenter belastar öppna digitala tjänster.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 77,
+      "datum": "2026-10",
+      "titel": "N: Google pausar belöningsprogram efter AI-rapporter av låg kvalitet",
+      "språk": "Svenska",
+      "kategorier": [
+        "IT-säkerhet",
+        "Öppen källkod",
+        "Artificiell intelligens"
+      ],
+      "sammanfattning": "Google har tillfälligt pausat sitt belöningsprogram för rapporterade sårbarheter i öppen källkod. Orsaken är en stor tillströmning av rapporter som skapats med AI och som tar betydande tid att granska. Många uppges ha bristande kvalitet och vissa beskriver problem som inte existerar. Pausen illustrerar att automatiserad felrapportering kan skapa merarbete i stället för att förbättra säkerheten när informationen inte kvalitetssäkras före inskick.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 78,
+      "datum": "2026-10",
+      "titel": "N: Microsoft ser att cyberangripare använder AI snabbare än försvararna",
+      "språk": "Svenska",
+      "kategorier": [
+        "IT-säkerhet",
+        "Microsoft",
+        "Artificiell intelligens"
+      ],
+      "sammanfattning": "Microsoft beskriver i sin Digital Defense Report 2026 hur kriminella aktörer har börjat dra nytta av AI för att utveckla skadlig kod, leta efter svagheter och automatisera delar av attacker. Företaget bedömer att angriparna för närvarande använder tekniken mer effektivt än försvararna. Det betyder däremot inte att helt självstyrande cyberattacker har blivit vardag. Rapporten pekar samtidigt på att AI-baserade skyddsåtgärder på sikt kan hjälpa säkerhetsteam att upptäcka och hantera hot snabbare.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 79,
+      "datum": "2026-10",
+      "titel": "N: DN kartlägger de växande varningarna om avancerad AI",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "AI-säkerhet"
+      ],
+      "sammanfattning": "Dagens Nyheter sammanfattar hur flera personer med erfarenhet från teknikbranschen den senaste tiden uttryckt oro över snabb utveckling av avancerad artificiell intelligens. Diskussionen handlar om hur systemen ska kunna utvärderas och kontrolleras när deras förmågor ökar. Artikeln placerar varningarna i ett större sammanhang och belyser att debatten förs parallellt med den fortsatta kommersiella AI-utvecklingen. Varningarna ska förstås som bedömningar av möjliga risker, inte som fastslagna framtida händelser.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 80,
+      "datum": "2026-10",
+      "titel": "N: Säkerhetschef lämnar OpenAI och kritiserar utvecklingstakten",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "OpenAI",
+        "AI-säkerhet"
+      ],
+      "sammanfattning": "Svenska Dagbladet rapporterar att OpenAI:s säkerhetschef David Robinson lämnar sin tjänst och riktar kritik mot utvecklingen av avancerad AI. Han anser enligt rapporteringen att utvecklingen går alltför snabbt och att säkerhetsfrågorna behöver tas på större allvar. Avhoppet bidrar till en bredare debatt om hur teknikföretag ska balansera konkurrens och nya modellförmågor mot testning, insyn och riskhantering. Uttalandena är chefens bedömningar och inte ett bevis för att en viss framtida skada kommer att inträffa.",
+      "typ": "IT-Nyhet"
+    },
+    {
+      "id": 81,
+      "datum": "2026-10",
+      "titel": "N: AI används för att skydda ukrainsk infrastruktur mot drönare",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "Försvarsteknik",
+        "Drönare"
+      ],
+      "sammanfattning": "Ukraina använder enligt Aftonbladets rapportering luftvärnssystem med AI-stöd för att bekämpa ryska drönare nära viktiga delar av infrastrukturen. Exempel som nämns är skydd av broar och andra centrala anläggningar. Tekniken är ett exempel på hur automatiserad analys och målföljning får allt större betydelse i modern krigföring. Det framgår inte av den korta rapporteringen att hela beslutskedjan är självständig, så systemets grad av autonomi bör inte överdrivas.",
+      "typ": "IT-Nyhet"
     }
   ],
-  "senast_uppdaterad": "2026-10-07"
+  "senast_uppdaterad": "2026-10-08"
 }
