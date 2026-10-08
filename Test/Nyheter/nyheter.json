@@ -15,7 +15,8 @@
       ],
       "sammanfattning": "OpenAI har börjat rulla ut en maskinläsbar, osynlig märkning av text från ChatGPT och Codex. Systemet kallas textGrain och införs först för användare i EU, bland annat för att möta krav på transparens kring AI-genererat innehåll. OpenAI säger att märkningen inte ska påverka modellernas prestanda, men den är inte ett säkert bevis på vem som har skrivit en text.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.theverge.com/ai-artificial-intelligence/1004880/openai-chatgpt-text-watermarks-eu-ai-act"
     },
     {
       "id": 2,
@@ -29,7 +30,8 @@
       ],
       "sammanfattning": "OpenAI uppger att man senare i oktober ska testa ett nytt visuellt annonsformat i ChatGPT i USA. Annonserna ska kunna innehålla bilder på sponsrade produkter och tjänster och hållas åtskilda från användarens genererade bilder. OpenAI säger också att annonserna inte ska påverka ChatGPT:s svar.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.theverge.com/ai-artificial-intelligence/1004655/openai-chatgpt-visual-ads"
     },
     {
       "id": 3,
@@ -44,7 +46,8 @@
       ],
       "sammanfattning": "Tidigare anställda från bland annat Anthropic, OpenAI och Google DeepMind vittnade inför New Yorks stadsfullmäktige om riskerna med snabb AI-utveckling utan tillräcklig kontroll. De efterlyste mer insyn, oberoende granskning och starkare skydd för visselblåsare. Samtidigt diskuterar staden nya lokala regler för användning och kontroll av AI.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24"
     },
     {
       "id": 4,
@@ -57,7 +60,8 @@
       ],
       "sammanfattning": "AI-agenter kan redan i allt högre grad kan sköta uppgifter över flera tjänster, exempelvis e-post, kalender och betalningar, i stället för att användaren själv arbetar i varje app. Utvecklingen kan göra agentplattformarna mycket centrala, men också skapa inlåsning när stora mängder personlig och företagsrelaterad information knyts till en viss agent.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.axios.com/2026/10/05/ai-agents-consumers-business"
     },
     {
       "id": 5,
@@ -72,7 +76,8 @@
       ],
       "sammanfattning": "Apple uppges skärpa reglerna kring fullständig skivåtkomst på Mac efter uppgifter om att Metas AI-agent Muse kunnat hänvisa till privata meddelanden. Framöver ska användaren behöva göra ett mer uttryckligt val innan en app får så omfattande åtkomst. Förändringen visar hur AI-agenter som arbetar självständigt kan skapa nya integritetsrisker.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://aapl.se/podd/pilot-2026-10-05"
     },
     {
       "id": 6,
@@ -86,7 +91,8 @@
       ],
       "sammanfattning": "Sydkoreas president Lee Jae Myung uppgav att AI-modeller ser ut att ha använts i nyligen genomförda hackerattacker mot banker. Uttalandet ökar trycket på landet att utveckla cybersäkerhet som bättre kan hantera mer automatiserade och avancerade AI-drivna angrepp.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.reuters.com/world/south-koreas-lee-says-ai-appears-have-been-used-bank-hacks-2026-10-06/"
     },
     {
       "id": 7,
@@ -100,7 +106,8 @@
       ],
       "sammanfattning": "En Accenture-konsult har tagits bort från sitt uppdrag hos FBI efter ett intrång där känsliga personuppgifter om tusentals FBI-anställda exponerades. En kritisk säkerhetsuppdatering i Oracle PeopleSoft inte installerats, vilket gav angripare möjlighet att komma åt uppgifter i personalsystemet.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.reuters.com/technology/accenture-contractor-removed-fbi-following-damaging-data-breach-sources-say-2026-10-06/"
     },
     {
       "id": 8,
@@ -114,7 +121,8 @@
       ],
       "sammanfattning": "Micron och Samsung bedömer att bristen på minneskretsar kommer att fortsätta i flera år. AI-servrar och datacenter prioriteras för HBM och DRAM, vilket begränsar tillgången till minne för vanliga datorer och andra konsumentprodukter och bidrar till högre priser.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://arstechnica.com/information-technology/2026/10/memory-supplies-are-only-getting-tighter-micron-ceo-says/"
     },
     {
       "id": 9,
@@ -128,7 +136,8 @@
       ],
       "sammanfattning": "Google presenterade sin nya flaggskeppsmodell Argon i Gemini 4-serien efter flera månaders förseningar. Modellen riktas först till utvalda cybersäkerhetspartner och Google framhåller bland annat hög kapacitet för avancerade arbetsuppgifter och säkerhetsrelaterade användningsfall.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.reuters.com/legal/litigation/google-announces-gemini-4-flagship-ai-model-after-months-delays-2026-09-30/"
     },
     {
       "id": 10,
@@ -142,7 +151,8 @@
       ],
       "sammanfattning": "Cloudflare planerar att börja utfärda TLS-certifikat som är konstruerade för att tåla framtida kvantdatorattacker. Lösningen bygger på Merkle Tree Certificates och ska kunna införas utan den mycket stora dataökning som traditionella post-kvant-signaturer annars skulle ge i TLS-handshaken.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://arstechnica.com/security/2026/09/cloudflare-plans-to-issue-quantum-safe-tls-certificates/"
     },
     {
       "id": 11,
@@ -156,7 +166,8 @@
       ],
       "sammanfattning": "Angripare har aktivt utnyttjat den kritiska Zimbra-sårbarheten CVE-2026-73570 för att köra kommandon på oskyddade servrar. Intrången har bland annat använts för att installera bakdörrar och samla in e-postdata och autentiseringsuppgifter.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://arstechnica.com/security/2026/09/attackers-have-been-exploiting-critical-zimbra-flaw-to-steal-emails/"
     },
     {
       "id": 12,
@@ -170,7 +181,8 @@
       ],
       "sammanfattning": "OpenAI har presenterat Dots, personliga AI-assistenter baserade på GPT-6 Astra. En användare kan skapa flera assistenter för olika uppgifter och låta dem arbeta var för sig eller tillsammans, bland annat via Codex, Slack och Microsoft Teams.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4228748/open-ai-lanserar-personliga-ai-assistenten-dots.html"
     },
     {
       "id": 13,
@@ -185,7 +197,8 @@
       ],
       "sammanfattning": "Microsoft har lagt till stöd för Linux-containrar direkt i Windows Subsystem for Linux. Uppdateringen innehåller bland annat kommandoradsverktyget wslc.exe och ett API som gör det möjligt för Windows-appar att arbeta med Linux-containrar.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4228759/microsoft-lagger-till-stod-for-linux-containrar-i-wsl.html"
     },
     {
       "id": 14,
@@ -199,7 +212,8 @@
       ],
       "sammanfattning": "Google har meddelat att de sista uppdateringarna för Chrome OS ska skickas ut i mitten av 2034. Plattformen ska på sikt ersättas av Googlebook OS, ett nytt operativsystem som enligt uppgifterna har mer gemensamt med Android.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4228750/bekraftat-chrome-os-gar-i-graven-2034.html"
     },
     {
       "id": 15,
@@ -214,7 +228,8 @@
       ],
       "sammanfattning": "Nvidia har lanserat Open Agent Safety Platform som ett extra säkerhetslager runt AI-agenter. Plattformen ska begränsa vilka system och resurser agenter får komma åt, och delar av tekniken släpps som öppen källkod.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4227581/nvidias-nya-sakerhetsplattform-ska-halla-ai-agenter-i-styr.html"
     },
     {
       "id": 16,
@@ -228,7 +243,8 @@
       ],
       "sammanfattning": "56 procent av förvärvsarbetande svenskar uppger nu att de använder AI i arbetet, enligt undersökningen Svenskarna och internet. Det är en fördubbling jämfört med 2025, även om många fortfarande uppger att reglerna för AI-användning på arbetsplatsen är otydliga.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4226624/ai-explosion-pa-svenska-arbetsplatser.html"
     },
     {
       "id": 17,
@@ -242,7 +258,8 @@
       ],
       "sammanfattning": "Google Threat Intelligence Group varnar för så kallad LLM-jacking, där angripare stjäl konton eller molnresurser för att få tillgång till dyr AI-kapacitet. Stulna inloggningsuppgifter till AI-tjänster säljs på svarta marknader och företag med egen AI-infrastruktur pekas ut som attraktiva mål.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4227591/hackare-kapar-ai-konton-ny-svart-marknad-vaxer-fram.html"
     },
     {
       "id": 18,
@@ -921,7 +938,8 @@
       "id": 42,
       "läsvy": "Flera personer med ledande erfarenhet från AI-branschen varnar för att framtida AI-system kan bli så kraftfulla att konsekvenserna blir mycket svåra att kontrollera.\n\nGeoffrey Irving, som tidigare har arbetat bland annat på OpenAI, har gjort en mycket allvarlig riskbedömning. Han uppskattar risken till omkring 50 procent att alla människor dör på grund av AI-system som blir smartare än människor. Han menar också att det vi gör under de kommande två till tio åren kan avgöra hur utvecklingen slutar.\n\nCybersäkerhetsexperten Marcus Murray säger att han själv inte kan avgöra om människor faktiskt kommer att dö på grund av AI. Däremot tycker han att problemet måste tas upp nu. Om riskerna inte diskuteras och undersöks går de inte heller att förebygga.\n\nEn viktig del av risken är att många samhällsviktiga system redan styrs av datorer. Det gäller till exempel sjukvård och vapensystem. AI har dessutom redan visat att den kan användas för att angripa och hacka datoriserade system.\n\nMurray beskriver AI-utvecklingen som exponentiell, alltså att utvecklingen kan gå allt snabbare. Enligt honom står AI för omkring 80 procent av utvecklingskapaciteten när företaget Anthropic tar fram ny programkod. Det betyder i praktiken att AI i stor omfattning används för att bygga nästa generation av AI.\n\nDet skapar en extra osäkerhet. Systemen kan snart kunna utveckla saker som människor i dag har svårt att föreställa sig. Murray pekar på att AI redan kan göra sådant som verkade otänkbart för bara ett år sedan.\n\nSamtidigt säger han att en katastrof inte är given. Många AI-forskare och företagsledare tror fortfarande på en positiv utveckling. Men de starka varningarna är enligt Murray ett tydligt tecken på att samhället behöver agera.\n\nHans viktigaste förslag är tydligare regler och bättre styrning av tekniken. Målet är inte att stoppa AI, utan att se till att utvecklingen sker på ett sätt som människor fortfarande kan kontrollera och som minskar risken för mycket allvarliga följder.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.svt.se/nyheter/inrikes/experten-om-ai-varningarna-kan-utplana-manskligheten"
     },
     {
       "datum": "2026-10",
@@ -937,7 +955,8 @@
       "id": 43,
       "läsvy": "Allt fler personer med hög position inom AI-branschen varnar för att utvecklingen av mycket avancerad AI går snabbare än arbetet med säkerhet.\n\nEn tidigare Anthropic-forskare, Jacob Coxon, hade redan lämnat företaget och varnat för att AI i värsta fall kan utplåna mänskligheten inom det kommande årtiondet. Därefter har fler välkända personer inom AI gått ut med liknande varningar.\n\nTvå av de senaste är David Robinson och Geoffrey Irving.\n\nDavid Robinson har varit chef för ett team som arbetar med säkerhetssystem på OpenAI. Han lämnar företaget och riktar stark kritik mot hur säkerhetsarbetet fungerar. Han beskriver företagskulturen som allvarligt bristfällig och menar att OpenAI går från den ena produktlanseringen till nästa utan att först nå den säkerhetsnivå som tekniken kräver.\n\nRobinson anser att AI-företag behöver arbeta mer som verksamheter där ett enda misstag kan få katastrofala följder. Han jämför med kärnkraftsanläggningar och flygplatser. Där används flera oberoende säkerhetsnivåer, reservsystem och lång planering för att minska risken för att mänskliga misstag leder till en allvarlig olycka.\n\nHan menar också att personer som har blivit framgångsrika genom stort självförtroende behöver visa mer ödmjukhet inför riskerna med AI. Hans poäng är att andra högriskbranscher redan har metoder för mycket strikt säkerhetsarbete, medan AI-branschen ännu inte har byggt upp motsvarande system.\n\nGeoffrey Irving har tidigare arbetat på OpenAI och DeepMind och varit chefsforskare vid Storbritanniens AI-säkerhetsinstitut. Han är nu forskningschef på AI-säkerhetsföretaget Resolution.\n\nIrving gör en mycket allvarlig riskbedömning. Han uppskattar risken till omkring 50 procent att alla människor dör på grund av AI-system som blir smartare än människor. Han anser dessutom att hur världen agerar under de kommande två till tio åren kan avgöra utfallet.\n\nTrots att det fortfarande finns stor osäkerhet tycker Irving därför att utvecklingen av de mest avancerade AI-systemen bör pausas. Han menar att världen inte bör vänta tills riskerna är helt bevisade, eftersom det då kan vara för sent att få kontroll över utvecklingen.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.svt.se/nyheter/utrikes/fler-ai-toppar-varnar-pausa-utvecklingen"
     },
     {
       "datum": "2026-10",
@@ -953,7 +972,8 @@
       "id": 44,
       "läsvy": "USA har skapat en särskild styrka för artificiell intelligens. Enligt president Donald Trump ska den samordna den federala regeringens resurser och bidra till att USA fortsätter vara världsledande inom AI.\n\nTrump använder ofta uttrycket superintelligens när han talar om AI. Han beskriver tekniken som något som enligt vissa kan få större betydelse än både den industriella revolutionen och internet. Han säger också att tekniken ska användas för att skydda och förbättra amerikanernas liv.\n\nDen nya organisationen kallas Super Intelligence Force, förkortat SIF.\n\nDet är ännu inte tydligt exakt vilka arbetsuppgifter styrkan ska få eller vilka konkreta beslut den ska kunna ta. Det som har meddelats är att den ska samla och leda delar av regeringens arbete med AI.\n\nStyrkan ska ledas av den nationelle underrättelsechefen Jay Clayton. Den ska rapportera direkt till presidenten och till presidentens stabschef, som för närvarande är Susie Wiles.\n\nTrump meddelade redan i mitten av september att han tänkte skapa en särskild AI-styrka.\n\nSamtidigt har han tidigare avfärdat varningar om AI-risker som överdrivna och kallat dem en bluff. I stället har han framför allt betonat konkurrensen med Kina. Han anser att USA inte får förlora den globala kapplöpningen om AI.\n\nDen nya styrkan visar därför att den amerikanska regeringen ser AI som en strategiskt viktig fråga. Det handlar både om teknikutveckling, nationell makt och konkurrensen om vem som ska leda nästa stora tekniska förändring.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.svt.se/nyheter/utrikes/trump-bildar-sin-ai-styrka"
     },
     {
       "datum": "2026-10",
@@ -969,7 +989,8 @@
       "id": 45,
       "läsvy": "Norges regering vill införa ett tillfälligt förbud mot AI-glasögon på flera typer av offentliga platser.\n\nFörbudet är tänkt att gälla på platser där många människor vistas, till exempel sjukhus, skolor, parker och köpcentrum.\n\nBakgrunden är oro för personlig integritet och övervakning. AI-glasögon kan innehålla små kameror och mikrofoner som är svåra för människor i omgivningen att upptäcka. Den som bär glasögonen kan därför fotografera, filma eller spela in ljud utan att andra personer märker det.\n\nDigitaliserings- och förvaltningsminister Torgeir Micaelsen säger att regeringen inte vill skapa ett samhälle där människor behöver gå omkring och vara rädda för att bli övervakade. Han är särskilt orolig för att den nya tekniken gör det lättare att samla in stora mängder information om människor utan deras vetskap.\n\nFörslaget innebär inte att AI-glasögon ska förbjudas helt.\n\nPrivat användning ska fortfarande kunna vara tillåten. De ska också kunna användas i situationer där andra människor inte riskerar att bli filmade eller inspelade utan att ha gett sitt samtycke.\n\nDet tillfälliga förbudet är tänkt som en första åtgärd medan Norge tar fram mer långsiktiga regler.\n\nRegeringen ska därför tillsätta en expertgrupp. Gruppen ska undersöka tekniken och ge råd om hur en permanent nationell reglering bör se ut.\n\nEfter det vill regeringen lägga fram ett lagförslag för Stortinget så snart som möjligt.\n\nMålet är att hitta regler som gör det möjligt att använda ny teknik, men samtidigt skyddar människor mot att bli övervakade eller inspelade utan att de vet om det.",
       "typ": "IT-Nyhet",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.svt.se/nyheter/utrikes/norge-vill-infora-forbud-mot-ai-glasogon"
     },
     {
       "id": 46,
@@ -1246,7 +1267,8 @@
       ],
       "sammanfattning": "DeepSeek presenterade i början av 2026 en metod som ska göra träning av stora språkmodeller mer stabil och kostnadseffektiv. Tekniken, kallad mHC, bygger vidare på tidigare Hyper-Connections och ResNet-idéer och har testats på modeller upp till 27 miljarder parametrar. Nyheten är viktig eftersom AI-konkurrensen inte bara handlar om större modeller utan också om hur effektivt de kan tränas. Om liknande tekniker skalar väl kan de sänka kostnaderna och minska beroendet av extremt stora beräkningsresurser, något som är särskilt betydelsefullt för aktörer som konkurrerar med de största amerikanska AI-bolagen.",
       "läsvy": "## Effektivare träning blir en konkurrensfaktor\n\nDeepSeek presenterade en träningsmetod kallad **Manifold-Constrained Hyper-Connections, mHC**. Syftet är att göra stora språkmodeller stabilare under träning utan att samtidigt öka beräkningskostnaden kraftigt.\n\nMetoden bygger vidare på Hyper-Connections, som i sin tur har kopplingar till den klassiska ResNet-idén. DeepSeek uppgav att tekniken testats på modeller upp till 27 miljarder parametrar.\n\n## Varför detta är viktigt\n\nAI-utveckling mäts ofta i modellstorlek och benchmarkresultat, men kostnaden för att träna modeller är minst lika viktig. En metod som kan ge bättre stabilitet och skalbarhet med samma eller mindre beräkningsbudget kan förändra ekonomin bakom modellutvecklingen.\n\nFör kinesiska aktörer som DeepSeek är effektivitet dessutom strategiskt viktig eftersom tillgången till de allra mest avancerade acceleratorchippen kan vara begränsad.\n\n## En större trend\n\nDeepSeek hade redan väckt stor uppmärksamhet med R1 under 2025. mHC visar att bolaget även försöker konkurrera på själva träningsarkitekturen – inte bara genom billigare färdiga modeller.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4112305/deepseeks-nya-metod-kan-trana-ai-mer-effektivt-och-billigare.html"
     },
     {
       "id": 60,
@@ -1263,7 +1285,8 @@
       ],
       "sammanfattning": "OpenAI började i februari 2026 rulla ut annonser i ChatGPT för användare på gratisnivån och Go-abonnemanget. Annonserna ska vara tydligt separerade från assistentens svar, och OpenAI uppgav att annonsörer inte får tillgång till användarnas chattar, minnen eller personuppgifter. Förändringen är viktig eftersom den markerar ett nytt sätt att finansiera den snabbt växande tjänsten. Plus- och Pro-användare berörs inte av annonserna. Beslutet visar också hur AI-tjänster utvecklas från rena abonnemangsprodukter till plattformar där flera intäktsmodeller används parallellt.",
       "läsvy": "## En ny intäktsmodell för ChatGPT\n\nOpenAI började under februari 2026 visa annonser för vissa användare av **ChatGPT Free** och **ChatGPT Go**.\n\nAnnonserna ska enligt OpenAI ligga tydligt avskilda från själva AI-svaret. Företaget uppgav också att annonsörer inte får tillgång till användarnas chattar, chatthistorik, minnen eller personuppgifter.\n\n## Vilka berörs?\n\nI den första utrullningen gällde annonserna gratisanvändare och Go, OpenAI:s billigare betalnivå.\n\n**Plus och Pro** är fortsatt annonsfria.\n\nOpenAI sade också att annonser inte ska visas för minderåriga eller i anslutning till vissa känsliga ämnen.\n\n## Varför förändringen spelar roll\n\nAtt lägga till annonser förändrar ChatGPT från en tjänst som främst finansierats genom abonnemang och API-intäkter till en produkt med flera parallella affärsmodeller.\n\nDet gör också skillnaden mellan Free/Go och de dyrare privatabonnemangen tydligare: priset påverkar inte bara användningsgränser och modellåtkomst utan även om annonser kan visas.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4129967/nu-blir-det-reklam-i-chat-gpt.html"
     },
     {
       "id": 61,
@@ -1280,7 +1303,8 @@
       ],
       "sammanfattning": "Franska Mistral AI och EcoDataCenter började 2026 bygga en mycket stor AI-superdator i Borlänge. Satsningen är en del av investeringar på totalt 12,8 miljarder kronor i digital infrastruktur i Sverige och har som uttalat mål att stärka Europas tekniska oberoende inom AI. Anläggningen beräknas tas i drift 2027 och kan ge hundratals arbetstillfällen. Nyheten är viktig eftersom AI-konkurrensen i allt högre grad handlar om fysisk infrastruktur: datacenter, el, kylning och tillgång till acceleratorchip. Sverige får därmed en mer central roll i Europas försök att bygga egen AI-kapacitet.",
       "läsvy": "## Europeisk AI-kapacitet byggs i Sverige\n\nMistral AI och EcoDataCenter inledde 2026 byggandet av en stor AI-superdator i Borlänge. Anläggningen beskrevs som större än en fotbollsplan och ska bli en del av en bredare europeisk satsning på egen AI-infrastruktur.\n\nMistral AI investerar totalt **12,8 miljarder kronor** i digital infrastruktur i Sverige, och en betydande del av satsningen hamnar i Borlänge.\n\n## Teknik blir geopolitik\n\nBakgrunden är Europas stora beroende av amerikanska molnplattformar och AI-system. Genom att bygga mer egen beräkningskapacitet vill europeiska aktörer minska sårbarheten och stärka den tekniska självständigheten.\n\nAI-utveckling kräver inte bara modeller och programmerare utan också enorma mängder el, kylning, nätverk och avancerade chip.\n\n## Effekter för Dalarna\n\nAnläggningen beräknas tas i drift 2027. EcoDataCenter räknar med hundratals arbetstillfällen i drift och ytterligare jobb under utbyggnaden.\n\nSatsningen gör Dalarna till en del av Europas snabbt växande AI-infrastruktur.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.svt.se/nyheter/lokalt/dalarna/europeisk-aisuperdator-byggs-i-borlange-start-for-flera-hundra-jobb"
     },
     {
       "id": 62,
@@ -1297,7 +1321,8 @@
       ],
       "sammanfattning": "Anthropic anklagade i februari 2026 DeepSeek, Moonshot AI och MiniMax för att ha använt Claude-systemet i stor skala för att förbättra egna AI-modeller. Enligt Anthropic användes tusentals falska konton och miljontals frågor. Tekniken som diskuteras kallas modell-destillering: en mindre modell tränas på svar från en starkare modell. Destillering är i sig en etablerad och legitim metod, men blir kontroversiell när en konkurrent använder en kommersiell modell på ett sätt som bryter mot tjänstens villkor. Händelsen visar hur modellutdata har blivit en strategisk tillgång i AI-konkurrensen.",
       "läsvy": "## Destillering blir en stridsfråga\n\nAnthropic uppgav att **DeepSeek, Moonshot AI och MiniMax** hade använt Claude genom omkring 24 000 falska konton och miljontals frågor för att förbättra egna modeller.\n\nPåståendet gäller så kallad **modell-destillering**.\n\n## Vad betyder destillering?\n\nVid destillering används en stark modell som lärare. Dess svar och lösningar blir träningsdata för en mindre eller billigare modell, som försöker lära sig liknande beteende.\n\nMetoden används legitimt av många AI-bolag, även på egna modeller eller där licensen tillåter det.\n\nKontroversen uppstår när ett företag systematiskt använder en konkurrents tjänst i strid med användarvillkoren för att överföra kapacitet till egna modeller.\n\n## En ny typ av industriell konkurrens\n\nAnthropic krävde efter händelsen starkare skydd och samarbete mellan AI-bolag och molnleverantörer.\n\nOpenAI hade tidigare riktat liknande anklagelser mot DeepSeek. Händelserna visar att konkurrensen inte bara gäller chip och träningsdata, utan även tillgången till andra modellernas utdata.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4136445/anthropic-anklagar-kinesiska-ai-foretag-for-fulspel.html"
     },
     {
       "id": 63,
@@ -1314,7 +1339,8 @@
       ],
       "sammanfattning": "EU-länderna och Europaparlamentet nådde under våren 2026 en preliminär överenskommelse om att senarelägga delar av AI-förordningen. Vissa regler för högrisk-AI, bland annat inom biometrisk övervakning, kritisk infrastruktur och brottsbekämpning, föreslogs flyttas från 2026 till slutet av 2027. Samtidigt skärps reglerna på andra områden, bland annat mot tjänster som skapar sexuella deepfakes utan samtycke och genom krav på märkning av AI-genererat innehåll. Förändringen visar hur EU försöker balansera säkerhet och rättigheter mot företagens krav på enklare regler och bättre internationell konkurrenskraft.",
       "läsvy": "## Delar av AI Act senareläggs\n\nEU-länderna och Europaparlamentet nådde en preliminär överenskommelse om att skjuta fram vissa delar av **EU:s AI-förordning, AI Act**.\n\nFlera regler för högrisk-AI föreslogs flyttas från augusti 2026 till december 2027. Det gäller bland annat system som används inom biometrisk övervakning, kritisk infrastruktur och brottsbekämpning.\n\n## Bakgrunden\n\nFöretag och branschorganisationer hade kritiserat regelverket för att vara komplicerat och riskera att försvaga Europas konkurrenskraft jämfört med USA och Asien.\n\nEU-kommissionen försökte därför minska delar av den administrativa belastningen.\n\n## Samtidigt skärps andra regler\n\nSamtidigt införs hårdare krav på vissa typer av AI-användning.\n\nBland annat riktas nya regler mot tjänster som skapar sexuellt manipulerade bilder utan samtycke. Krav på att kunna identifiera eller märka AI-genererat innehåll blir också en viktig del av regelverket.\n\nAI Act utvecklas därmed inte i en enda riktning: vissa krav skjuts upp medan andra skärps.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4168362/eu-overens-ai-regler-skjuts-upp.html"
     },
     {
       "id": 64,
@@ -1331,7 +1357,8 @@
       ],
       "sammanfattning": "Ett tekniskt fel i Schibsteds system gjorde att OpenAI under mer än ett år kunde få tillgång till interna journalistanteckningar som inte var avsedda att delas. Fälten kunde innehålla utkast, feedback, intervjuutskrifter och kontaktuppgifter till källor. Schibsted stoppade delningen när felet upptäcktes och uppgav att OpenAI försäkrat att materialet inte hade använts. Händelsen är viktig eftersom mediebolag och andra organisationer i allt större utsträckning kopplar sina system till AI-tjänster. Den visar att riskerna inte bara finns i själva modellen utan även i integrationer, behörigheter och datagränser.",
       "läsvy": "## Fel i integrationen exponerade intern information\n\nSchibsted upptäckte att ett tekniskt fel hade gjort interna journalistanteckningar tillgängliga för OpenAI under mer än ett år.\n\nMediekoncernen hade ett avtal där publicerad journalistik kunde delas med OpenAI, men integrationen gav även åtkomst till ett internt kommentarsfält.\n\n## Vad kunde finnas i fältet?\n\nJournalister använde fältet för bland annat:\n\n**utkast**\n\n**kollegial feedback**\n\n**intervjutranskriptioner**\n\n**kontaktuppgifter till källor**\n\nDet var alltså information som inte var avsedd att ingå i den vanliga datadelningen.\n\n## Åtgärder efter upptäckten\n\nSchibsted uppgav att delningen stoppades omedelbart och att integrationen och rutinerna skulle granskas.\n\nOpenAI ska enligt Schibsted ha uppgett att de interna anteckningarna inte användes.\n\nHändelsen illustrerar en central AI-risk: när företag kopplar interna system till externa AI-tjänster måste datagränser, behörigheter och integrationer vara minst lika väl kontrollerade som själva AI-modellen.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://www.svt.se/nyheter/inrikes/journalisters-anteckningar-lackte-till-open-ai"
     },
     {
       "id": 65,
@@ -1348,7 +1375,8 @@
       ],
       "sammanfattning": "OpenAI lanserade i juli 2026 GPT-5.6 tillsammans med ChatGPT Work, ett arbetsläge där AI:n kan hämta information från filer och anslutna appar och skapa färdiga dokument, kalkylblad och presentationer. GPT-5.6 kom i varianterna Sol, Terra och Luna för olika balans mellan kapacitet, hastighet och kostnad. Lanseringen markerade ett tydligt skifte från AI som främst svarar i en chatt till AI som kan utföra längre arbetsflöden. Work började rullas ut i Desktop-apparna och blev en viktig del av utvecklingen mot mer självständiga AI-agenter för vanligt kunskapsarbete.",
       "läsvy": "## Tre kapacitetsnivåer\n\nOpenAI lanserade **GPT-5.6** i tre huvudvarianter:\n\n**Sol** – högst kapacitet.\n\n**Terra** – balans mellan prestanda och effektivitet.\n\n**Luna** – optimerad för snabbhet och låg kostnad.\n\nSol fick dessutom stöd för mer resurskrävande resonemang vid komplexa uppgifter.\n\n## ChatGPT Work\n\nSamtidigt presenterades **ChatGPT Work**, ett arbetsläge där AI:n inte bara svarar på frågor utan kan genomföra en uppgift över flera steg.\n\nWork kan hämta information från anslutna appar och filer och använda den för att skapa exempelvis dokument, kalkylblad och presentationer.\n\n## Från chatbot till arbetsagent\n\nLanseringen blev viktig därför att den illustrerade ett större skifte i AI-branschen.\n\nTidiga ChatGPT-versioner var främst samtalsverktyg. Work är byggt för att ta ett mål och genomföra större delar av arbetet självständigt.\n\nDen första utrullningen skedde i ChatGPT:s Windows- och Mac-appar, vilket också ökade kopplingen mellan molnbaserad AI och användarens lokala arbetsmiljö.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4195359/open-ai-slapper-gpt-5-6-och-ai-verktyget-chat-gpt-arbete.html"
     },
     {
       "id": 66,
@@ -1365,7 +1393,8 @@
       ],
       "sammanfattning": "Anthropic meddelade i augusti 2026 att framtida Claude-genererat innehåll ska kunna märkas för att möta transparenskraven i EU:s AI-förordning. Text ska få en osynlig statistisk vattenstämpel, medan filer kan märkas med signerad metadata enligt C2PA-standarden. Tekniken införs globalt och gäller inte bara Claude-chatten utan även Claude Code, API och vissa tredjepartstjänster. Anthropic betonar samtidigt att märkningen inte är ofelbar: en identifierad signal är inte ett absolut bevis och avsaknad av signal betyder inte säkert att materialet är mänskligt skapat. Nyheten visar hur AI-regler börjar påverka själva modellernas utdata.",
       "läsvy": "## AI-innehåll ska kunna identifieras\n\nAnthropic meddelade att framtida innehåll från Claude ska förses med tekniska signaler som gör det lättare att identifiera som AI-genererat.\n\nFör text används en **osynlig statistisk vattenstämpel**. För filer används signerad metadata enligt standarden **C2PA**.\n\n## EU:s AI-regler driver förändringen\n\nBakgrunden är transparenskraven i EU:s AI-förordning.\n\nAI-företag behöver i större utsträckning kunna hjälpa plattformar och användare att avgöra när innehåll har skapats av generativ AI.\n\nAnthropic valde att införa märkningen globalt i stället för endast inom EU.\n\n## Tekniken har begränsningar\n\nVattenmärkning är inte ett perfekt detektionssystem.\n\nLånga texter ger mer statistiskt material att analysera, medan korta texter och kod kan vara svårare att märka på ett robust sätt.\n\nAnthropic framhöll därför att en upptäckt vattenstämpel inte bör ses som ett absolut bevis och att frånvaro av märkning inte heller bevisar att en människa skrivit materialet.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4207779/anthropic-ska-borja-marka-ai-genererat-innehall-med-vattenstamplar.html"
     },
     {
       "id": 67,
@@ -1382,7 +1411,8 @@
       ],
       "sammanfattning": "OpenAI presenterade i september 2026 GPT-6 Astra som ett stort generationssteg inom programmering, vetenskap, datoranvändning och cybersäkerhet. Modellen blev samtidigt den första OpenAI-modellen som enligt företagets egna kriterier nådde en kritisk kapacitetsnivå inom cybersäkerhet. Det gjorde säkerhetsfrågorna till en central del av lanseringen. OpenAI betonade därför utökad övervakning och snabbare rutiner för att hantera problem. Nyheten visar hur den tekniska utvecklingen skapar ett dubbelt tryck: modellerna blir mer användbara för legitim säkerhetsanalys, men samma förmågor kan också göra dem farligare om de används för att hitta och utnyttja sårbarheter.",
       "läsvy": "## Ny GPT-generation\n\nOpenAI lanserade **GPT-6 Astra** som ett tydligt generationsskifte.\n\nFöretaget lyfte särskilt fram förbättringar inom:\n\n**programmering**\n\n**vetenskap**\n\n**datoranvändning**\n\n**cybersäkerhet**\n\nAstra beskrevs som OpenAI:s mest kapabla modell vid lanseringen.\n\n## Cybersäkerhet blir en huvudfråga\n\nSamtidigt var detta första gången en OpenAI-modell enligt företagets egen säkerhetsklassning nådde en **kritisk kapacitetströskel inom cybersäkerhet**.\n\nDet betyder att modellen inte bara kan hjälpa till att analysera kod och hitta fel, utan även har förmågor som kan bli riskabla om de används för offensiva intrång.\n\n## Mer kapacitet kräver mer kontroll\n\nOpenAI kopplade därför lanseringen till utökad övervakning och snabbare säkerhetsrutiner.\n\nGPT-6 Astra blev ett tydligt exempel på dilemmat i frontier-AI: samma modellförmågor som kan hjälpa försvarare att hitta sårbarheter kan också ge angripare kraftfullare verktyg.\n\nAI-säkerhet blir därför en del av själva produktutvecklingen, inte något som kan läggas till i efterhand.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4218625/open-ai-lanserar-gpt-6-astra-kan-vara-borjan-pa-agi-eran.html"
     },
     {
       "id": 68,
@@ -1399,7 +1429,8 @@
       ],
       "sammanfattning": "OpenAI stoppade i slutet av september 2026 den planerade lanseringen av GPT-6.1 Astra eftersom modellen enligt företaget inte klarade de interna säkerhetskraven. Beslutet kom bara veckor efter lanseringen av GPT-6 Astra och i en period med starkare fokus på incidenter och risker hos avancerade modeller. Händelsen är betydelsefull eftersom den visar att de mest kapabla AI-modellerna inte längre bedöms enbart utifrån prestanda. Säkerhetstester kan direkt påverka om en modell får släppas. Det innebär också att modellnamn och planerade versioner inte alltid motsvarar modeller som faktiskt blir tillgängliga för användarna.",
       "läsvy": "## Lanseringen stoppades\n\nOpenAI stoppade den planerade utrullningen av **GPT-6.1 Astra** efter att modellen inte bedömts nå företagets interna säkerhetsstandard.\n\nModellen var tänkt att bli en av OpenAI:s mest kraftfulla varianter.\n\n## Säkerhet före lansering\n\nOpenAI framhöll att kraven är särskilt höga när en avancerad modell ska göras tillgänglig för externa användare.\n\nBeslutet kom i ett läge där både OpenAI och andra AI-bolag hade rapporterat fler incidenter och problematiska beteenden hos mycket kapabla modeller.\n\n## Varför stoppet är viktigt\n\nTidigare handlade modellsläpp främst om att en ny version skulle vara bättre, snabbare eller billigare.\n\nMed frontier-modeller har **säkerhetsutvärderingen blivit en faktisk lanseringsgrind**.\n\nDet betyder att en planerad modell kan vara tekniskt färdig och mycket kapabel men ändå stoppas om riskerna bedöms vara för stora eller skyddsmekanismerna otillräckliga.\n\nHändelsen understryker också att en annonserad modellversion inte alltid når marknaden.",
-      "hämtdatum": null
+      "hämtdatum": null,
+      "original_länk": "https://computersweden.se/article/4228082/open-ai-stoppar-lanseringen-av-gpt-6-1-astra.html"
     },
     {
       "id": 69,
@@ -1507,7 +1538,8 @@
       ],
       "sammanfattning": "En undersökning från Unisphere Research, beställd av Rimini Street, visar att många verksamheter ser över sina VMware-installationer. Nio av tio tillfrågade organisationer uppges undersöka alternativ sedan licenskostnaderna ökat efter Broadcoms förvärv. Bland lösningarna finns miljöer med flera hypervisorer och kombinationer av virtualisering och containrar. Resultaten kommer från ett urval på 300 organisationer, vilket gör det viktigt att skilja undersökningens svar från situationen för samtliga VMware-kunder.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://computersweden.se/article/4231777/vmware-kunder-letar-alternativ-efter-kraftigt-okade-licenskostnader.html"
     },
     {
       "id": 75,
@@ -1521,7 +1553,8 @@
       ],
       "sammanfattning": "The Document Foundation beskriver avsaknaden av inbyggda AI-verktyg i LibreOffice som ett medvetet val. Organisationen vill inte lägga till teknik som försämrar användarens integritet eller kontroll. Eventuella framtida AI-funktioner ska vara frivilliga, följa öppna dokumentstandarder och ge användaren inflytande över var modeller körs. Beskedet innebär alltså inte ett permanent förbud mot AI, utan en kravlista som måste vara uppfylld innan sådana funktioner kan införas.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://computersweden.se/article/4231798/libreoffice-ingen-ai-ar-ocksa-en-funktion.html"
     },
     {
       "id": 76,
@@ -1535,7 +1568,8 @@
       ],
       "sammanfattning": "Wikimedia Foundation har uppmärksammat mycket omfattande automatiserad trafik och misstänker att AI-agenter kan ha bidragit till en tidigare driftstörning. Enligt organisationen omfattade aktiviteten både redigeringar och stora mängder förfrågningar. Wikimedia har inte rapporterat att system eller information komprometterats. OpenAI granskar uppgifterna men har inte bekräftat att dess egna agenter orsakade störningen. Händelsen visar de praktiska problem som uppstår när automatiska agenter belastar öppna digitala tjänster.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://computersweden.se/article/4231178/open-ais-ai-agenter-pekas-ut-efter-wikipedia-storning.html"
     },
     {
       "id": 77,
@@ -1549,7 +1583,8 @@
       ],
       "sammanfattning": "Google har tillfälligt pausat sitt belöningsprogram för rapporterade sårbarheter i öppen källkod. Orsaken är en stor tillströmning av rapporter som skapats med AI och som tar betydande tid att granska. Många uppges ha bristande kvalitet och vissa beskriver problem som inte existerar. Pausen illustrerar att automatiserad felrapportering kan skapa merarbete i stället för att förbättra säkerheten när informationen inte kvalitetssäkras före inskick.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://computersweden.se/article/4230595/google-pausar-buggjagarprogram-efter-vag-av-ai-rapporter.html"
     },
     {
       "id": 78,
@@ -1563,7 +1598,8 @@
       ],
       "sammanfattning": "Microsoft beskriver i sin Digital Defense Report 2026 hur kriminella aktörer har börjat dra nytta av AI för att utveckla skadlig kod, leta efter svagheter och automatisera delar av attacker. Företaget bedömer att angriparna för närvarande använder tekniken mer effektivt än försvararna. Det betyder däremot inte att helt självstyrande cyberattacker har blivit vardag. Rapporten pekar samtidigt på att AI-baserade skyddsåtgärder på sikt kan hjälpa säkerhetsteam att upptäcka och hantera hot snabbare.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://computersweden.se/article/4230083/microsoft-cyberkriminella-ligger-fore-forsvarare-pa-ai.html"
     },
     {
       "id": 79,
@@ -1576,7 +1612,8 @@
       ],
       "sammanfattning": "Flera personer med erfarenhet från teknikbranschen den senaste tiden uttryckt oro över snabb utveckling av avancerad artificiell intelligens. Diskussionen handlar om hur systemen ska kunna utvärderas och kontrolleras när deras förmågor ökar. Artikeln placerar varningarna i ett större sammanhang och belyser att debatten förs parallellt med den fortsatta kommersiella AI-utvecklingen. Varningarna ska förstås som bedömningar av möjliga risker, inte som fastslagna framtida händelser.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://www.dn.se/ekonomi/varningarna-om-ai-och-manniskans-undergang-detta-har-hant/"
     },
     {
       "id": 80,
@@ -1590,7 +1627,8 @@
       ],
       "sammanfattning": "OpenAI:s säkerhetschef David Robinson lämnar sin tjänst och riktar kritik mot utvecklingen av avancerad AI. Han anser enligt rapporteringen att utvecklingen går alltför snabbt och att säkerhetsfrågorna behöver tas på större allvar. Avhoppet bidrar till en bredare debatt om hur teknikföretag ska balansera konkurrens och nya modellförmågor mot testning, insyn och riskhantering. Uttalandena är chefens bedömningar och inte ett bevis för att en viss framtida skada kommer att inträffa.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://www.svd.se/a/b85Q85/open-ai-chef-sager-upp-sig"
     },
     {
       "id": 81,
@@ -1604,7 +1642,8 @@
       ],
       "sammanfattning": "Ukraina använder luftvärnssystem med AI-stöd för att bekämpa ryska drönare nära viktiga delar av infrastrukturen. Exempel som nämns är skydd av broar och andra centrala anläggningar. Tekniken är ett exempel på hur automatiserad analys och målföljning får allt större betydelse i modern krigföring. Det framgår inte av den korta rapporteringen att hela beslutskedjan är självständig, så systemets grad av autonomi bör inte överdrivas.",
       "typ": "IT-Nyhet",
-      "hämtdatum": "2026-10-08"
+      "hämtdatum": "2026-10-08",
+      "original_länk": "https://www.aftonbladet.se/nyheter/a/31JOkv/ukraina-skjuter-ned-ryska-dronare-med-ai"
     }
   ],
   "senast_uppdaterad": "2026-10-08"
