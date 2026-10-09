@@ -2925,6 +2925,18 @@
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   setPrivacyUi();
   const isOwner = await detectOwnerMode();
+  // Ägaren får alltid öppna områden vid start/omladdning.
+  // VIP och övriga användare behåller sina sparade inställningar.
+  if (isOwner) {
+    prefs.rubrikCollapsed = false;
+    prefs.ownerCollapsed = false;
+    prefs.filterCollapsed = false;
+    prefs.documentOverviewCollapsed = false;
+    setSectionCollapsed(rubrikOmrade, rubrikSplitter, false, "RubrikOmråde");
+    setSectionCollapsed(ownerPanel, ownerSplitter, false, "HämtaNyheter");
+    setSectionCollapsed(filterPanel, filterSplitter, false, "filtrering");
+    setSectionCollapsed(fullTitlePanel, documentOverviewSplitter, false, "Dokumentöversikt");
+  }
   if (isOwner) {
     const identity = readPublicIdentity() || {userId:"OWNER",userName:"Ägare-TomasL",userRole:"OWNER"};
     void appendAppStartLog(identity, ownerToken || sharedDataToken()).catch(err =>
