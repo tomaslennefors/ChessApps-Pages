@@ -1646,6 +1646,24 @@
     if (last < value.length) container.append(document.createTextNode(value.slice(last)));
   }
 
+  // Huvudrubriken i Markdown är överordnad registerrubriken och visas bara en gång.
+  function resolveOriginalHeading(source) {
+    const raw = String(source?.originaltext || "").replace(/\r\n?/g, "\n");
+    const lines = raw.split("\n");
+    const index = lines.findIndex(line => line.trim() !== "");
+    const match = index >= 0 ? lines[index].trim().match(/^#\s+(.+?)\s*#*\s*$/) : null;
+    const oldTitle = String(source?.originalrubrik || "").trim();
+    const markdownTitle = match ? match[1].trim() : "";
+    const normalize = title => title.replace(/^N:\s*/i, "").trim();
+    const title = markdownTitle && normalize(markdownTitle) !== normalize(oldTitle)
+      ? markdownTitle : (oldTitle || markdownTitle || "Originalrubrik saknas");
+    if (match) lines.splice(index, 1);
+    return {
+      title: /^N:\s*/i.test(title) ? title : "N: " + title,
+      body: match ? lines.join("\n").trimStart() : raw
+    };
+  }
+
   function renderOriginalMarkdown(container, markdown) {
     container.replaceChildren();
     const lines = String(markdown || "").replace(/\r\n?/g, "\n").split("\n");
@@ -2026,7 +2044,7 @@
             if (mode === "1") {
               const source = originalNewsById.get(String(item.id));
               const originalTitle = document.createElement("h2");
-              originalTitle.textContent = source?.originalrubrik || "Originalrubrik saknas";
+              originalTitle.textContent = resolveOriginalHeading(source).title;
               const metadata = document.createElement("div");
               metadata.className = "details";
               metadata.textContent = [
@@ -2079,12 +2097,12 @@
               originalStar.setAttribute("aria-label", originalStar.title);
               const originalCopy = makeButton("⧉", "copy-news", async () => {
                 const originalText = [
-                  source?.originalrubrik || "",
+                  resolveOriginalHeading(source).title,
                   metadata.textContent,
                   (Array.isArray(source?.kategorier) ? source.kategorier : item.kategorier || []).join(", "),
                   "Webbadress: " + (source?.url || ""),
                   item.sammanfattning || "",
-                  source?.originaltext || ""
+                  resolveOriginalHeading(source).body
                 ].filter(Boolean).join("\n\n");
                 await copyText(originalText, "Hela dokumentet är kopierat till Urklipp.");
               });
@@ -2104,7 +2122,7 @@
             textBox.className = "article-body";
             const source = originalNewsById.get(String(item.id));
             const value = mode === "1"
-              ? source?.originaltext || ""
+              ? resolveOriginalHeading(source).body
               : item.ai_barn || item.ai_10aring || item.barntext || "";
             if (String(value).trim()) { if (mode === "1") renderOriginalMarkdown(textBox, value); else renderStructuredArticleBody(textBox, value); }
             else if (mode === "1") {
