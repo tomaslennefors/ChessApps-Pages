@@ -37,7 +37,7 @@
     .owner-mode-btn{min-width:35px;padding:8px 10px;border:1px solid #8c959f;background:#fff;color:#24292f;border-radius:6px;cursor:pointer}
     .owner-mode-btn[aria-pressed="true"]{background:#0969da;color:#fff;border-color:#0969da}
     .owner-content-compare{display:grid;grid-template-columns:repeat(var(--compare-count),minmax(0,1fr));gap:12px;margin-top:14px;align-items:stretch}
-    .owner-content-column{min-width:0;border:1px solid #d0d7de;border-radius:8px;padding:12px;overflow-wrap:anywhere;background:#fff;max-height:72vh;overflow:auto}
+    .owner-content-column{position:relative;min-width:0;border:1px solid #d0d7de;border-radius:8px;padding:12px;overflow-wrap:anywhere;background:#fff;max-height:72vh;overflow:auto}
     .owner-content-column h3{margin:0 0 12px;font-size:1rem}
     .owner-content-column .article-body{height:auto;max-height:none;overflow:visible}
     @media(max-width:850px){.owner-content-compare{grid-template-columns:1fr}}
@@ -2014,7 +2014,15 @@
               });
               originalCopy.title = "Kopiera hela dokumentet";
               originalCopy.setAttribute("aria-label", originalCopy.title);
-              column.append(originalStar, originalCopy, heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
+              const originalArchiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
+                if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
+                savePrefs();
+                applyFilters();
+              });
+              originalArchiveIcon.title = archived ? "Visa dokument igen" : "Dölj dokument";
+              originalArchiveIcon.setAttribute("aria-label", originalArchiveIcon.title);
+              originalArchiveIcon.setAttribute("aria-pressed", String(archived));
+              column.append(originalStar, originalCopy, originalArchiveIcon, heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
             }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
@@ -2036,15 +2044,7 @@
             } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
             if (mode === "1") {
               column.append(textBox);
-              const originalArchiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
-                if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
-                savePrefs();
-                applyFilters();
-              });
-              originalArchiveIcon.title = archived ? "Visa dokument igen" : "Dölj dokument";
-              originalArchiveIcon.setAttribute("aria-label", originalArchiveIcon.title);
-              originalArchiveIcon.setAttribute("aria-pressed", String(archived));
-              column.append(originalArchiveIcon);
+
             } else column.append(heading, textBox);
           }
           compare.append(column);
