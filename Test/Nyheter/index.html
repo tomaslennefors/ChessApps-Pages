@@ -207,11 +207,49 @@
     <h2>Filter</h2>
     <div class="filter-grid">
       <label>
+        Dokumenttyp
+        <select id="typeFilter">
+          <option value="">Alla</option>
+          <option value="IT-Fakta">IT-Fakta</option>
+          <option value="IT-Nyhet">IT-Nyhet</option>
+          <option value="IT-YouTube">IT-YouTube</option>
+        </select>
+      </label>
+
+      <label>
         <span class="label-row">Datumintervall</span>
         <span class="date-range-fields">
           <span><span class="small">Start</span><input id="dateStartFilter" type="date" aria-label="Startdatum"></span>
           <span><span class="small">Slut</span><input id="dateEndFilter" type="date" aria-label="Slutdatum"></span>
         </span>
+      </label>
+
+      <label>
+        Favoriter
+        <select id="favoriteFilter">
+          <option value="">Alla</option>
+          <option value="yes">Endast favoriter</option>
+          <option value="no">Ej favoriter</option>
+        </select>
+      </label>
+
+      <label>
+        Dolda
+        <select id="archiveFilter">
+          <option value="all">Alla</option>
+          <option value="active" selected>Ej arkiverade</option>
+          <option value="archived">Endast arkiverade</option>
+        </select>
+      </label>
+
+      <label>
+        <span class="label-row">Kategori</span>
+        <select id="categoryFilter"><option value="">Alla kategorier</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">Innehåll</span>
+        <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
       </label>
 
       <label id="sourceFilterWrap" hidden>
@@ -220,23 +258,18 @@
       </label>
 
       <label>
-        <span class="label-row">Utgivare</span>
-        <select id="publisherFilter"><option value="">Alla utgivare</option></select>
-      </label>
-
-      <label>
         <span class="label-row">Kanal</span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
       </label>
 
       <label>
-        <span class="label-row">Webbadress</span>
-        <input id="webAddressFilter" type="search" placeholder="Sök i webbadress">
+        <span class="label-row">Utgivare</span>
+        <select id="publisherFilter"><option value="">Alla utgivare</option></select>
       </label>
 
       <label>
-        <span class="label-row">Innehåll</span>
-        <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
+        <span class="label-row">Webbadress</span>
+        <input id="webAddressFilter" type="search" placeholder="Sök i webbadress">
       </label>
 
       <label>
@@ -252,39 +285,6 @@
       <label>
         <span class="label-row">Transkript/ämnen</span>
         <input id="transcriptFilter" type="search" placeholder="Sök i transkriptinformation">
-      </label>
-
-      <label>
-        <span class="label-row">Kategori</span>
-        <select id="categoryFilter"><option value="">Alla kategorier</option></select>
-      </label>
-
-      <label>
-        Favorit
-        <select id="favoriteFilter">
-          <option value="">Alla</option>
-          <option value="yes">Endast favoriter</option>
-          <option value="no">Ej favoriter</option>
-        </select>
-      </label>
-
-      <label>
-        Arkiv
-        <select id="archiveFilter">
-          <option value="all">Alla</option>
-          <option value="active" selected>Ej arkiverade</option>
-          <option value="archived">Endast arkiverade</option>
-        </select>
-      </label>
-
-      <label>
-        Dokumenttyp
-        <select id="typeFilter">
-          <option value="">Alla</option>
-          <option value="IT-Fakta">IT-Fakta</option>
-          <option value="IT-Nyhet">IT-Nyhet</option>
-          <option value="IT-YouTube">IT-YouTube</option>
-        </select>
       </label>
     </div>
 
