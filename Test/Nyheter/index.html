@@ -108,6 +108,9 @@
     .saved-listboxes label{margin:0}
     .saved-listboxes select{margin-top:4px}
     .full-title-filter{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:10px 0 12px}
+    .full-title-filter{position:relative}
+    .full-title-filter::after{content:"Dokumentöversikt";position:absolute;top:6px;right:12px;padding:5px 9px;background:#24292f;color:#fff;border-radius:5px;font-size:.8rem;font-weight:400;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;opacity:0;visibility:hidden;transition:opacity .12s;z-index:10}
+    .full-title-filter.tooltip-hover::after{opacity:1;visibility:visible}
     .date-range-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
     .date-range-fields input{min-width:0}
     @media(max-width:450px){.date-range-fields{grid-template-columns:1fr}}
@@ -446,6 +449,11 @@
   const userLogText = document.getElementById("userLogText");
   const rulesText = document.getElementById("rulesText");
   const contextText = document.getElementById("contextText");
+  const fullTitlePanel = document.getElementById("fullTitlePanel");
+  fullTitlePanel.addEventListener("pointermove", event => {
+    fullTitlePanel.classList.toggle("tooltip-hover", event.target === fullTitlePanel);
+  });
+  fullTitlePanel.addEventListener("pointerleave", () => fullTitlePanel.classList.remove("tooltip-hover"));
   const statusEl = document.getElementById("status");
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
