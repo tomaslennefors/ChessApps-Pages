@@ -310,6 +310,7 @@
     </div>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
   </div>
+  <button id="documentOverviewSplitter" class="section-splitter" type="button" aria-controls="fullTitlePanel" aria-expanded="true"><span>▲ Dölj Dokumentöversikt</span></button>
 
   <div id="list"></div>
 
@@ -450,6 +451,7 @@
   const rulesText = document.getElementById("rulesText");
   const contextText = document.getElementById("contextText");
   const fullTitlePanel = document.getElementById("fullTitlePanel");
+  const documentOverviewSplitter = document.getElementById("documentOverviewSplitter");
   fullTitlePanel.addEventListener("pointermove", event => {
     fullTitlePanel.classList.toggle("tooltip-hover", event.target === fullTitlePanel);
   });
@@ -805,13 +807,14 @@
         currentFreeTextSavedAt: typeof p.currentFreeTextSavedAt === "string" ? p.currentFreeTextSavedAt : (latestFree?.savedAt || ""),
         linkDraft: p.requestUiVersion === 2 && typeof p.linkDraft === "string" ? p.linkDraft : "",
         rubrikCollapsed: !!p.rubrikCollapsed,
+        documentOverviewCollapsed: !!p.documentOverviewCollapsed,
         ownerCollapsed: !!p.ownerCollapsed,
         filterCollapsed: !!p.filterCollapsed,
         privateView: p.privateView !== false,
         articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", rubrikCollapsed:false, ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
+      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", rubrikCollapsed:false, documentOverviewCollapsed:false, ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
     }
   }
 
@@ -2698,6 +2701,11 @@
     refreshViewAfterPrivacyChange();
   });
 
+  documentOverviewSplitter.addEventListener("click", () => {
+    prefs.documentOverviewCollapsed = !prefs.documentOverviewCollapsed;
+    savePrefs();
+    setSectionCollapsed(fullTitlePanel, documentOverviewSplitter, prefs.documentOverviewCollapsed, "Dokumentöversikt");
+  });
   rubrikSplitter.addEventListener("click", () => {
     prefs.rubrikCollapsed = !prefs.rubrikCollapsed;
     savePrefs();
@@ -2715,6 +2723,7 @@
   });
 
   setSectionCollapsed(rubrikOmrade, rubrikSplitter, prefs.rubrikCollapsed, "RubrikOmråde");
+  setSectionCollapsed(fullTitlePanel, documentOverviewSplitter, prefs.documentOverviewCollapsed, "Dokumentöversikt");
   requestFreeText.value = prefs.currentFreeText || "";
   requestLinks.value = prefs.linkDraft || "";
   setRequestStatusUi(false, "");
