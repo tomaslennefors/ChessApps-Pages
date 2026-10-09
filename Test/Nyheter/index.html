@@ -613,7 +613,12 @@
     const answer = window.prompt("Login:", "");
     const normalized = normalizeLoginAnswer(answer);
     if (!normalized) {
+      localStorage.removeItem(userIdKey);
+      localStorage.removeItem(userNameKey);
+      localStorage.removeItem(userRoleKey);
+      publicIdentity = null;
       if (answer !== null && String(answer).trim()) alert("Ogiltig inloggning.");
+      denyAppAccess();
       return null;
     }
     const identity = {
@@ -650,7 +655,10 @@
     let longPressTriggered = false;
     const changeLogin = async () => {
       const nextIdentity = showLogin(false);
-      if (!nextIdentity) return;
+      if (!nextIdentity) {
+        privateNewsById = new Map();
+        return;
+      }
       try {
         privateNewsById = await readPrivateNewsMetadata(sharedDataToken());
       } catch (err) {
