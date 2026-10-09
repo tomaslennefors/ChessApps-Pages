@@ -128,7 +128,9 @@
     .article-resize-handle{height:22px;margin:-27px 0 5px;position:relative;z-index:6;cursor:ns-resize;touch-action:none;user-select:none}
     .article-resize-handle::after{content:"";position:absolute;left:12%;right:12%;top:9px;border-top:3px solid #8c959f;border-radius:999px;opacity:.65}
     .article-resize-handle:hover::after{opacity:1}
-    .archive-btn.on{font-weight:700}
+    .archive-icon{position:absolute;top:12px;right:94px;border:0;background:transparent;color:#8c959f;font-size:22px;line-height:1;padding:4px;cursor:pointer}
+    .archive-icon.on{color:#d1242f}
+    .archive-icon:hover{background:transparent;transform:scale(1.08)}
     .small{font-size:.9rem;color:var(--muted)}
     .count{font-weight:650}
     .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
@@ -1905,14 +1907,16 @@
         actions.append(video);
       }
 
-      const archiveBtn = makeButton(archived ? "Visa dokument" : "Dölj", "archive-btn" + (archived ? " on" : ""), () => {
+      const archiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
         if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
         savePrefs();
         applyFilters();
       });
-      actions.append(archiveBtn);
+      archiveIcon.title = archived ? "Visa dokument igen" : "Dölj dokument";
+      archiveIcon.setAttribute("aria-label", archiveIcon.title);
+      archiveIcon.setAttribute("aria-pressed", String(archived));
 
-      article.append(star, copyNewsBtn);
+      article.append(star, copyNewsBtn, archiveIcon);
       if (detailedArticle) article.append(selectionStats);
       article.append(h2);
       if (ownerMode && detailedArticle) article.append(webAddress);
@@ -2032,15 +2036,15 @@
             } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
             if (mode === "1") {
               column.append(textBox);
-              const originalActions = document.createElement("div");
-              originalActions.className = "card-actions";
-              const originalArchiveBtn = makeButton(archived ? "Visa dokument" : "Dölj", "archive-btn" + (archived ? " on" : ""), () => {
+              const originalArchiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
                 if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
                 savePrefs();
                 applyFilters();
               });
-              originalActions.append(originalArchiveBtn);
-              column.append(originalActions);
+              originalArchiveIcon.title = archived ? "Visa dokument igen" : "Dölj dokument";
+              originalArchiveIcon.setAttribute("aria-label", originalArchiveIcon.title);
+              originalArchiveIcon.setAttribute("aria-pressed", String(archived));
+              column.append(originalArchiveIcon);
             } else column.append(heading, textBox);
           }
           compare.append(column);
