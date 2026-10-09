@@ -1941,6 +1941,19 @@
           } else {
             const heading = document.createElement("h3");
             heading.textContent = mode === "1" ? "1. Originaltext" : "3. AI-text för 10-åringar";
+            if (mode === "1") {
+              const source = originalNewsById.get(String(item.id));
+              const metadata = document.createElement("div");
+              metadata.className = "details";
+              metadata.textContent = [
+                "ID: " + item.id,
+                source?.publiceringsdatum ? "Datum: " + source.publiceringsdatum : "",
+                source?.kalla ? "Källa: " + source.kalla : "",
+                source?.sprak ? "Språk: " + source.sprak : "",
+                source?.dokumenttyp ? "Dokumenttyp: " + source.dokumenttyp : ""
+              ].filter(Boolean).join(" · ");
+              column.append(metadata);
+            }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
             const source = originalNewsById.get(String(item.id));
