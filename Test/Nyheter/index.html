@@ -2684,7 +2684,7 @@
   setPrivacyUi();
   const isOwner = await detectOwnerMode();
   if (isOwner) {
-    const identity = readPublicIdentity() || {userId:"OWNER",userName:"Ägare",userRole:"OWNER"};
+    const identity = readPublicIdentity() || {userId:"OWNER",userName:"Ägare-TomasL",userRole:"OWNER"};
     void appendAppStartLog(identity, ownerToken || sharedDataToken()).catch(err =>
       console.warn("Kunde inte logga ägarens appstart:", err)
     );
