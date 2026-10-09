@@ -108,6 +108,9 @@
     .saved-listboxes label{margin:0}
     .saved-listboxes select{margin-top:4px}
     .full-title-filter{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:10px 0 12px}
+    .document-navigation-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:10px}
+    .document-navigation-row>div{min-width:0}
+    @media(max-width:650px){.document-navigation-row{grid-template-columns:minmax(0,1fr)}}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
     [hidden]{display:none!important}
     .request-history{margin-top:16px}
@@ -284,14 +287,20 @@
   </div>
   <button id="filterSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj filtrering</span></button>
 
-  <div id="fullTitlePanel" class="full-title-filter">
-    <h2>Dokumentöversikt</h2>
-    <div id="status">Hämtar dokument...</div>
-    <label for="documentSortMode">Sortera dokument efter</label>
-    <select id="documentSortMode" aria-label="Sortera dokument efter"><option value="publication">Publiceringsdatum (nyast först)</option><option value="retrieval">Hämtdatum (nyast först)</option><option value="alphabetical">Rubrik (A–Ö)</option></select>
+  <div id="fullTitlePanel" class="full-title-filter" title="Dokumentöversikt" aria-label="Dokumentöversikt">
+    <div class="small" style="font-weight:650">Filter</div>
+    <div id="status" aria-live="polite">Hämtar dokument...</div>
+    <div class="document-navigation-row">
+      <div>
+        <label for="documentSortMode">Sortera dokument efter</label>
+        <select id="documentSortMode" aria-label="Sortera dokument efter"><option value="publication">Publiceringsdatum (nyast först)</option><option value="retrieval">Hämtdatum (nyast först)</option><option value="alphabetical">Rubrik (A–Ö)</option></select>
+      </div>
+      <div>
+        <label for="exactTitleFilter"><span id="exactTitleCaption">Fullständig rubrik</span></label>
+        <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
+      </div>
+    </div>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
-    <label for="exactTitleFilter"><span id="exactTitleCaption">Fullständig rubrik</span></label>
-    <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
   </div>
 
   <div id="list"></div>
@@ -1819,7 +1828,31 @@
 
     const favCount = allNews.filter(x => !!prefs.favorites[itemKey(x)]).length;
     const archCount = allNews.filter(x => !!prefs.archived[itemKey(x)]).length;
-    statusEl.textContent = "Visar " + sorted.length + " av " + allNews.length + " dokument. Favoriter: " + favCount + ". Arkiverade: " + archCount + ".";
+    statusEl.textContent = activeFilterSummary();
+  }
+
+  function activeFilterSummary() {
+    const parts = [];
+    const addSelect = (control, prefix = "") => {
+      if (!control?.value) return;
+      const selected = control.selectedOptions?.[0];
+      const label = (selected?.textContent || control.value).replace(/\\s*\\(\\d+\\)\\s*$/, "").trim();
+      parts.push(prefix + label);
+    };
+    addSelect(typeFilter);
+    if (dateFilter.value.trim()) parts.push(dateFilter.value.trim());
+    addSelect(favoriteFilter);
+    if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Arkiverade");
+    addSelect(categoryFilter);
+    addSelect(languageFilter, "Språk: ");
+    addSelect(sourceFilter, "Källa: ");
+    addSelect(publisherFilter, "Utgivare: ");
+    addSelect(channelFilter, "Kanal: ");
+    addSelect(transcriptStatusFilter, "Transkriptstatus: ");
+    for (const [control, label] of [[summaryFilter,"Innehåll"],[webAddressFilter,"Webbadress"],[transcriptFilter,"Transkript"]]) {
+      if (control.value.trim()) parts.push(label + ": " + control.value.trim());
+    }
+    return parts.length ? parts.join("---") : "Alla dokument";
   }
 
   function updateExactTitleOptions() {
