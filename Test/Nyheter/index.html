@@ -39,6 +39,8 @@
     .filter-grid>label:has(#favoriteFilter),.filter-grid>label:has(#archiveFilter){flex:0 1 145px}
     .filter-grid>label:has(.date-range-fields){flex:1 1 285px}
     .filter-grid>label:has(#summaryFilter){flex:2 1 300px}
+    .date-range-fields .small{color:#fff;font-weight:650}
+    #exactTitleFilter.filter-active{background:#cf222e!important;color:#fff!important;border-color:#a40e26!important}
     .filter-group-title{font-size:1rem;margin:14px 0 10px;font-weight:700}
     .filter-group-title:first-of-type{margin-top:8px}
     @media(max-width:520px){.filter-grid>label{flex:1 1 100%}.filter-grid>label:has(#idNumberFilter),.filter-grid>label:has(#typeFilter),.filter-grid>label:has(#favoriteFilter),.filter-grid>label:has(#archiveFilter){flex:1 1 135px}}
@@ -217,12 +219,12 @@
     <h3 class="filter-group-title">Text</h3>
     <div class="filter-grid">
       <label>
-        <span class="label-row">ID</span>
+        <span class="label-row">1. ID</span>
         <select id="idNumberFilter"><option value="">Alla ID</option></select>
       </label>
 
       <label>
-        Dokumenttyp
+        <span class="label-row">2. Dokumenttyp</span>
         <select id="typeFilter">
           <option value="">Alla</option>
           <option value="IT-Fakta">IT-Fakta</option>
@@ -232,7 +234,7 @@
       </label>
 
       <label>
-        <span class="label-row">Datumintervall</span>
+        <span class="label-row">3. Datumintervall</span>
         <span class="date-range-fields">
           <span><span class="small">Start</span><input id="dateStartFilter" type="date" aria-label="Startdatum"></span>
           <span><span class="small">Slut</span><input id="dateEndFilter" type="date" aria-label="Slutdatum"></span>
@@ -240,7 +242,7 @@
       </label>
 
       <label>
-        Favoriter
+        <span class="label-row">4. Favoriter</span>
         <select id="favoriteFilter">
           <option value="">Alla</option>
           <option value="yes">Endast favoriter</option>
@@ -249,7 +251,7 @@
       </label>
 
       <label>
-        Dolda
+        <span class="label-row">5. Dolda</span>
         <select id="archiveFilter">
           <option value="all">Alla</option>
           <option value="active" selected>Ej dolda</option>
@@ -258,17 +260,12 @@
       </label>
 
       <label>
-        <span class="label-row">Kategori</span>
+        <span class="label-row">6. Kategori</span>
         <select id="categoryFilter"><option value="">Alla kategorier</option></select>
       </label>
 
-      <label>
-        <span class="label-row">Innehåll</span>
-        <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
-      </label>
-
       <label id="sourceFilterWrap" hidden>
-        <span class="label-row">Källa</span>
+        <span class="label-row">7. Källa</span>
         <select id="sourceFilter"><option value="">Alla källor</option></select>
       </label>
 
@@ -276,34 +273,39 @@
     <h3 class="filter-group-title">YouTube och övriga filter</h3>
     <div class="filter-grid">
       <label>
-        <span class="label-row">Kanal</span>
+        <span class="label-row">8. Kanal</span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
       </label>
 
       <label>
-        <span class="label-row">Utgivare</span>
+        <span class="label-row">9. Utgivare</span>
         <select id="publisherFilter"><option value="">Alla utgivare</option></select>
       </label>
 
       <label>
-        <span class="label-row">Webbadress</span>
+        <span class="label-row">10. Webbadress</span>
         <input id="webAddressFilter" type="search" placeholder="Sök i webbadress">
       </label>
 
       <label>
-        <span class="label-row">Språk</span>
+        <span class="label-row">11. Språk</span>
         <select id="languageFilter"><option value="">Alla språk</option></select>
       </label>
 
       <label>
-        <span class="label-row">Transkribering</span>
+        <span class="label-row">12. Transkribering</span>
         <select id="transcriptStatusFilter"><option value="">Alla transkriberingar</option></select>
       </label>
 
       <label>
-        <span class="label-row">Transkript/ämnen</span>
+        <span class="label-row">13. Transkript/ämnen</span>
         <input id="transcriptFilter" type="search" placeholder="Sök i transkriptinformation">
       </label>
+      <label>
+        <span class="label-row">14. Innehåll</span>
+        <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
+      </label>
+
     </div>
 
     <div class="actions">
@@ -1905,8 +1907,8 @@
       const label = (selected?.textContent || control.value).replace(/\s*\(\d+\)\s*$/, "").trim();
       parts.push(prefix + label);
     };
-    addSelect(typeFilter);
     if (idNumberFilter.value) parts.push("ID: " + idNumberFilter.value);
+    addSelect(typeFilter);
     if (dateStartFilter.value || dateEndFilter.value) parts.push((dateStartFilter.value || "…").replaceAll("-", "") + "-" + (dateEndFilter.value || "…").replaceAll("-", ""));
     addSelect(favoriteFilter);
     if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Dolda");
