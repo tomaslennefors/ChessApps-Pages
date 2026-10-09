@@ -1791,7 +1791,18 @@
           const textBox = document.createElement("div");
           textBox.className = "article-body";
           if (String(value).trim()) renderStructuredArticleBody(textBox, value);
-          else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
+          else if (mode === "1") {
+            textBox.textContent = "Originaltext saknas i det privata registret. ";
+            const source = originalNewsById.get(String(item.id));
+            if (source?.url) {
+              const link = document.createElement("a");
+              link.href = source.url;
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              link.textContent = "Öppna originalartikeln hos källan";
+              textBox.append(link);
+            }
+          } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
           column.append(heading, textBox);
           compare.append(column);
         }
@@ -2436,6 +2447,7 @@
 
         try {
           privateNewsById = await readPrivateNewsMetadata();
+          try { await loadOriginalNews(); } catch (err) { console.warn("Originalregistret kunde inte läsas:", err); }
           applyPrivateNewsMetadata();
           refreshViewAfterPrivacyChange();
         } catch (err) {
