@@ -1955,7 +1955,40 @@
                 source?.sprak ? "Språk: " + source.sprak : "",
                 source?.dokumenttyp ? "Dokumenttyp: " + source.dokumenttyp : ""
               ].filter(Boolean).join(" · ");
-              column.append(heading, originalTitle, metadata);
+              const originalLinkLine = document.createElement("div");
+              originalLinkLine.className = "web-address";
+              if (source?.url) {
+                const link = document.createElement("a");
+                link.href = source.url;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = source.url;
+                originalLinkLine.append("Webbadress: ", link);
+              }
+              const originalTags = document.createElement("div");
+              originalTags.className = "tags";
+              for (const category of (Array.isArray(source?.kategorier) ? source.kategorier : (item.kategorier || []))) {
+                const tag = document.createElement("span");
+                tag.className = "tag";
+                tag.textContent = category;
+                originalTags.append(tag);
+              }
+              const originalIngress = document.createElement("div");
+              originalIngress.className = "article-ingress";
+              originalIngress.textContent = item.sammanfattning || "";
+              const applyOriginalMetadataVisibility = () => {
+                const hidden = localStorage.getItem(metadataHiddenKey) === "1";
+                metadata.hidden = hidden;
+                originalTags.hidden = hidden;
+              };
+              originalTitle.title = "Klicka eller tryck på rubriken för att visa/dölja metadata.";
+              originalTitle.style.cursor = "pointer";
+              originalTitle.addEventListener("click", () => {
+                localStorage.setItem(metadataHiddenKey, localStorage.getItem(metadataHiddenKey) === "1" ? "0" : "1");
+                applyFilters();
+              });
+              applyOriginalMetadataVisibility();
+              column.append(heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
             }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
