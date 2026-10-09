@@ -192,55 +192,56 @@
   <button id="ownerSplitter" class="section-splitter" type="button" hidden aria-expanded="true"><span>▲ Dölj HämtaNyheter</span></button>
 
   <div id="filterPanel" class="filters">
+    <h2>Filter</h2>
     <div class="filter-grid">
       <label>
-        <span class="label-row"><span id="dateFilterCaption">Datum</span> <input class="sortno" data-sort="datum" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row"><span id="dateFilterCaption">Datum</span></span>
         <input id="dateFilter" type="search" list="dateFilterOptions" placeholder="ÅÅÅÅ, ÅÅÅÅ-MM eller ÅÅÅÅ-MM-DD" autocomplete="off">
         <datalist id="dateFilterOptions"></datalist>
       </label>
 
       <label id="sourceFilterWrap" hidden>
-        <span class="label-row">Källa <input class="sortno" data-sort="källa" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Källa</span>
         <select id="sourceFilter"><option value="">Alla källor</option></select>
       </label>
 
       <label>
-        <span class="label-row">Utgivare <input class="sortno" data-sort="utgivare" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Utgivare</span>
         <select id="publisherFilter"><option value="">Alla utgivare</option></select>
       </label>
 
       <label>
-        <span class="label-row">Kanal <input class="sortno" data-sort="kanal" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Kanal</span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
       </label>
 
       <label>
-        <span class="label-row">Webbadress <input class="sortno" data-sort="webbadress" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Webbadress</span>
         <input id="webAddressFilter" type="search" placeholder="Sök i webbadress">
       </label>
 
       <label>
-        <span class="label-row">Innehåll <input class="sortno" data-sort="sammanfattning" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Innehåll</span>
         <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
       </label>
 
       <label>
-        <span class="label-row">Språk <input class="sortno" data-sort="språk" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Språk</span>
         <select id="languageFilter"><option value="">Alla språk</option></select>
       </label>
 
       <label>
-        <span class="label-row">Transkribering <input class="sortno" data-sort="transkribering" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Transkribering</span>
         <select id="transcriptStatusFilter"><option value="">Alla transkriberingar</option></select>
       </label>
 
       <label>
-        <span class="label-row">Transkript/ämnen <input class="sortno" data-sort="transkript" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Transkript/ämnen</span>
         <input id="transcriptFilter" type="search" placeholder="Sök i transkriptinformation">
       </label>
 
       <label>
-        <span class="label-row">Kategori <input class="sortno" data-sort="kategori" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <span class="label-row">Kategori</span>
         <select id="categoryFilter"><option value="">Alla kategorier</option></select>
       </label>
 
@@ -277,7 +278,6 @@
       <button id="clearBtn" type="button">Rensa filter</button>
       <button id="reloadBtn" type="button">Uppdatera filtrering</button>
     </div>
-    <p class="small">Sorteringsnummer: 1 sorteras först, 2 därefter osv. Lämna tomt eller 0 för att inte använda fältet vid sortering. Datum sorteras nyast först; textfält A–Ö.</p>
   </div>
   <button id="filterSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj filtrering</span></button>
 
@@ -464,7 +464,6 @@
   const favoriteFilter = document.getElementById("favoriteFilter");
   const archiveFilter = document.getElementById("archiveFilter");
   const typeFilter = document.getElementById("typeFilter");
-  const sortInputs = [...document.querySelectorAll(".sortno")];
 
   let allNews = [];
   let duplicateCount = 0;
@@ -1219,9 +1218,6 @@
     typeFilter.value = savedType === "IT-Nyheter" ? "IT-Nyhet" : savedType;
     requestFreeText.value = prefs.currentFreeText || "";
     requestLinks.value = prefs.linkDraft || "";
-    sortInputs.forEach(input => {
-      input.value = prefs.sort[input.dataset.sort] || "";
-    });
     updateFavoriteFilterCounts();
     updateArchiveFilterCounts();
     updateContentTypeFilterCounts();
@@ -1248,11 +1244,6 @@
     };
     prefs.currentFreeText = requestFreeText.value;
     prefs.linkDraft = requestLinks.value;
-    prefs.sort = {};
-    sortInputs.forEach(input => {
-      const n = Number(input.value);
-      if (Number.isFinite(n) && n > 0) prefs.sort[input.dataset.sort] = Math.trunc(n);
-    });
     savePrefs();
   }
 
@@ -1323,7 +1314,7 @@
   }
 
   function sortNews(items) {
-    // Detta val styr huvudsorteringen oberoende av övriga sorteringsnummer.
+    // Dokumentens ordning styrs av listan Sortera dokument efter.
     const mode = documentSortMode.value;
     const sorted = [...items];
     sorted.sort((a,b) => {
@@ -1844,7 +1835,6 @@
     favoriteFilter.value = "";
     archiveFilter.value = "all";
     typeFilter.value = "";
-    sortInputs.forEach(x => x.value = "");
     applyFilters();
   }
 
@@ -2535,7 +2525,6 @@
   for (const control of [dateFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
-  sortInputs.forEach(x => x.addEventListener("change", () => applyFilters(false)));
   requestFreeText.addEventListener("input", () => {
     prefs.currentFreeText = requestFreeText.value;
     savePrefs();
