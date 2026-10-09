@@ -126,6 +126,7 @@
   </style>
 </head>
 <body>
+  <div id="RubrikOmråde">
   <h1><span id="title">IT-Nyheter</span><span id="appVersion" class="app-version" title="Senaste ändring av appens HTML-kod">OLD: 2026-10-08 06:29</span></h1>
   <div id="meta"></div>
   <div id="documentsVersion" class="small">Dokument uppdaterade: hämtar tid...</div>
@@ -142,6 +143,8 @@
     <div id="contextText" class="markdown-doc" hidden aria-label="Sammanhang för IT-Nyheter"></div>
     <pre id="userLogText" class="markdown-doc" hidden aria-label="Användarlogg" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
   </div>
+  </div>
+  <button id="rubrikSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj RubrikOmråde</span></button>
 
   <section id="ownerPanel" class="panel" hidden>
     <h2>HämtaNyheter</h2>
@@ -416,6 +419,8 @@
     try { return new TextDecoder().decode(x); } catch { return ""; }
   }
 
+  const rubrikOmrade = document.getElementById("RubrikOmråde");
+  const rubrikSplitter = document.getElementById("rubrikSplitter");
   const titleEl = document.getElementById("title");
   const metaEl = document.getElementById("meta");
   const privateViewControl = document.getElementById("privateViewControl");
@@ -778,13 +783,14 @@
         currentFreeText: typeof p.currentFreeText === "string" ? p.currentFreeText : (draftSplit.text || latestFree?.text || ""),
         currentFreeTextSavedAt: typeof p.currentFreeTextSavedAt === "string" ? p.currentFreeTextSavedAt : (latestFree?.savedAt || ""),
         linkDraft: p.requestUiVersion === 2 && typeof p.linkDraft === "string" ? p.linkDraft : "",
+        rubrikCollapsed: !!p.rubrikCollapsed,
         ownerCollapsed: !!p.ownerCollapsed,
         filterCollapsed: !!p.filterCollapsed,
         privateView: p.privateView !== false,
         articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
+      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", rubrikCollapsed:false, ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
     }
   }
 
@@ -2665,6 +2671,11 @@
     refreshViewAfterPrivacyChange();
   });
 
+  rubrikSplitter.addEventListener("click", () => {
+    prefs.rubrikCollapsed = !prefs.rubrikCollapsed;
+    savePrefs();
+    setSectionCollapsed(rubrikOmrade, rubrikSplitter, prefs.rubrikCollapsed, "RubrikOmråde");
+  });
   ownerSplitter.addEventListener("click", () => {
     prefs.ownerCollapsed = !prefs.ownerCollapsed;
     savePrefs();
@@ -2676,6 +2687,7 @@
     setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   });
 
+  setSectionCollapsed(rubrikOmrade, rubrikSplitter, prefs.rubrikCollapsed, "RubrikOmråde");
   requestFreeText.value = prefs.currentFreeText || "";
   requestLinks.value = prefs.linkDraft || "";
   setRequestStatusUi(false, "");
