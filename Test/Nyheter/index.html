@@ -217,6 +217,11 @@
       </label>
 
       <label>
+        <span class="label-row">ID-NR</span>
+        <input id="idNumberFilter" type="search" placeholder="Sök dokument-ID" autocomplete="off">
+      </label>
+
+      <label>
         <span class="label-row">Datumintervall</span>
         <span class="date-range-fields">
           <span><span class="small">Start</span><input id="dateStartFilter" type="date" aria-label="Startdatum"></span>
@@ -474,6 +479,7 @@
   const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
   const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
   const otherLinksSelect = document.getElementById("otherLinksSelect");
+  const idNumberFilter = document.getElementById("idNumberFilter");
   const dateStartFilter = document.getElementById("dateStartFilter");
   const dateEndFilter = document.getElementById("dateEndFilter");
   const sourceFilterWrap = document.getElementById("sourceFilterWrap");
@@ -1221,6 +1227,7 @@
 
   function updateActiveFilterStyles() {
     const controls = [
+      [idNumberFilter, () => !!idNumberFilter.value.trim()],
       [dateStartFilter, () => !!dateStartFilter.value],
       [dateEndFilter, () => !!dateEndFilter.value],
       [sourceFilter, () => !!sourceFilter.value],
@@ -1311,6 +1318,7 @@
 
   function restoreControls() {
     const f = prefs.filters;
+    idNumberFilter.value = f.idNumber || "";
     dateStartFilter.value = f.dateStart || "";
     dateEndFilter.value = f.dateEnd || "";
     sourceFilter.value = ownerMode ? (f.source || "") : "";
@@ -1338,6 +1346,7 @@
 
   function captureControls() {
     prefs.filters = {
+      idNumber: idNumberFilter.value,
       dateStart: dateStartFilter.value,
       dateEnd: dateEndFilter.value,
       source: sourceFilter.value,
@@ -1361,6 +1370,7 @@
   }
 
   function getFilteredNews(ignoreExactTitle = false) {
+    const idNumber = idNumberFilter.value.trim().toLocaleLowerCase("sv");
     const dateStart = dateStartFilter.value;
     const dateEnd = dateEndFilter.value;
     const source = sourceFilter.value;
@@ -1378,6 +1388,7 @@
     const type = typeFilter.value;
 
     return allNews.filter(item => {
+      if (idNumber && !String(item.id ?? "").toLocaleLowerCase("sv").includes(idNumber)) return false;
       const key = itemKey(item);
       const categories = Array.isArray(item.kategorier) ? item.kategorier : [];
       const favorite = !!prefs.favorites[key];
@@ -1864,6 +1875,7 @@
       parts.push(prefix + label);
     };
     addSelect(typeFilter);
+    if (idNumberFilter.value.trim()) parts.push("ID-NR: " + idNumberFilter.value.trim());
     if (dateStartFilter.value || dateEndFilter.value) parts.push((dateStartFilter.value || "…").replaceAll("-", "") + "-" + (dateEndFilter.value || "…").replaceAll("-", ""));
     addSelect(favoriteFilter);
     if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Dolda");
@@ -1961,6 +1973,7 @@
   }
 
   function clearFilters() {
+    idNumberFilter.value = "";
     dateStartFilter.value = "";
     dateEndFilter.value = "";
     sourceFilter.value = "";
@@ -2663,7 +2676,7 @@
     }
   });
 
-  for (const control of [dateStartFilter, dateEndFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
+  for (const control of [idNumberFilter, dateStartFilter, dateEndFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
   requestFreeText.addEventListener("input", () => {
