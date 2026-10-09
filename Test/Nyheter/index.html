@@ -220,11 +220,6 @@
       </label>
 
       <label>
-        <span class="label-row">Rubrik <input class="sortno" data-sort="titel" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
-        <input id="titleFilter" type="search" placeholder="Sök i rubrik">
-      </label>
-
-      <label>
         <span class="label-row">Innehåll <input class="sortno" data-sort="sammanfattning" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
         <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
       </label>
@@ -458,7 +453,6 @@
   const publisherFilter = document.getElementById("publisherFilter");
   const channelFilter = document.getElementById("channelFilter");
   const webAddressFilter = document.getElementById("webAddressFilter");
-  const titleFilter = document.getElementById("titleFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
   const documentSortMode = document.getElementById("documentSortMode");
   const exactTitleCaption = document.getElementById("exactTitleCaption");
@@ -1122,7 +1116,6 @@
       [publisherFilter, () => !!publisherFilter.value],
       [channelFilter, () => !!channelFilter.value],
       [webAddressFilter, () => !!webAddressFilter.value.trim()],
-      [titleFilter, () => !!titleFilter.value.trim()],
       [exactTitleFilter, () => !!exactTitleFilter.value],
       [summaryFilter, () => !!summaryFilter.value.trim()],
       [languageFilter, () => !!languageFilter.value],
@@ -1213,7 +1206,6 @@
     publisherFilter.value = f.publisher || "";
     channelFilter.value = f.channel || "";
     webAddressFilter.value = f.webAddress || "";
-    titleFilter.value = f.title || "";
     exactTitleFilter.value = "";
     documentSortMode.value = f.documentSortMode || "publication";
     summaryFilter.value = f.summary || "";
@@ -1243,7 +1235,6 @@
       publisher: publisherFilter.value,
       channel: channelFilter.value,
       webAddress: webAddressFilter.value,
-      title: titleFilter.value,
       exactTitle: "",
       documentSortMode: documentSortMode.value,
       summary: summaryFilter.value,
@@ -1271,7 +1262,6 @@
     const publisher = publisherFilter.value;
     const channel = channelFilter.value;
     const webAddress = normalize(webAddressFilter.value.trim());
-    const title = normalize(titleFilter.value.trim());
     const exactTitle = exactTitleFilter.value;
     const summary = normalize(summaryFilter.value.trim());
     const language = languageFilter.value;
@@ -1294,7 +1284,6 @@
       if (publisher && item.utgivare !== publisher) return false;
       if (channel && item.kanal !== channel) return false;
       if (webAddress && !normalize(item.webbadress || item.länk).includes(webAddress)) return false;
-      if (title && !normalize(item.titel).includes(title)) return false;
       if (!ignoreExactTitle && exactTitle && String(item.id) !== exactTitle) return false;
       if (summary && !normalize([displayTitle(item), item.titel || "", item.sammanfattning || "", item.läsvy || item.lasvy || ""].join(" ")).includes(summary)) return false;
       if (language && item.språk !== language) return false;
@@ -1846,7 +1835,6 @@
     publisherFilter.value = "";
     channelFilter.value = "";
     webAddressFilter.value = "";
-    titleFilter.value = "";
     exactTitleFilter.value = "";
     summaryFilter.value = "";
     languageFilter.value = "";
@@ -2544,7 +2532,7 @@
     }
   });
 
-  for (const control of [dateFilter, webAddressFilter, titleFilter, summaryFilter, transcriptFilter]) {
+  for (const control of [dateFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
   sortInputs.forEach(x => x.addEventListener("change", () => applyFilters(false)));
