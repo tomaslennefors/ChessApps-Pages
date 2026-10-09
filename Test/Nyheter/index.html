@@ -46,9 +46,9 @@
     .filter-grid>label:has(#languageFilter)>select{width:155px}
     .filter-grid>label:has(#transcriptStatusFilter)>select{width:205px}
     .filter-grid>label:has(#dateStartFilter),.filter-grid>label:has(#dateEndFilter){width:155px}
-    /* Filter 10 slutar i linje med filter 7 vid normal skrivbordsbredd: 1022 - 150 - 155 - 2*12 = 693 px. */
-    .filter-grid>label:has(#summaryFilter){flex:0 1 693px;width:693px;min-width:0}
-    .filter-grid>label:has(#transcriptFilter){flex:1 1 250px;min-width:250px}
+    /* Finjusterat mot högerkanten på Kategori i skärmbilden vid 100 % zoom. */
+    .filter-grid>label:has(#summaryFilter){flex:0 1 708px;width:708px;min-width:0}
+    .filter-grid>label:has(#transcriptFilter){flex:1 1 250px;min-width:250px;margin-right:16px}
     .filter-grid>label>input{width:100%;box-sizing:border-box}
     .filter-grid>label:has(#transcriptFilter)>input{width:100%}
     @media(max-width:520px){.filter-grid>label{max-width:100%}.filter-grid>label:has(#summaryFilter){min-width:0;flex:1 1 100%}.filter-grid>label:has(#transcriptFilter){width:100%}}
