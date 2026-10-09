@@ -1884,7 +1884,7 @@
       actions.className = "card-actions";
 
       const originalUrl = String(item.länk || (isVipUser() ? item.original_länk : "") || "").trim();
-      if (originalUrl && (youtube || hasEnhancedNewsAccess())) {
+      if (originalUrl && youtube) {
         const link = document.createElement("a");
         link.className = "button";
         link.textContent = youtube ? "Öppna YouTube" : "Läs webb-sidan";
@@ -2034,16 +2034,6 @@
               column.append(textBox);
               const originalActions = document.createElement("div");
               originalActions.className = "card-actions";
-              const originalUrl = String(source?.url || item.original_länk || item.länk || "").trim();
-              if (originalUrl) {
-                const originalLink = document.createElement("a");
-                originalLink.className = "button";
-                originalLink.textContent = "Läs webb-sidan";
-                originalLink.href = originalUrl;
-                originalLink.target = "_blank";
-                originalLink.rel = "noopener noreferrer";
-                originalActions.append(originalLink);
-              }
               const originalArchiveBtn = makeButton(archived ? "Visa dokument" : "Dölj", "archive-btn" + (archived ? " on" : ""), () => {
                 if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
                 savePrefs();
