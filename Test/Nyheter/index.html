@@ -1016,6 +1016,27 @@
     if ([...select.options].some(o => o.value === current)) select.value = current;
   }
 
+  function fillCountedSelect(select, field, firstText) {
+    const current = select.value;
+    const counts = new Map();
+    for (const item of allNews) {
+      const value = String(item[field] || "").trim();
+      if (value) counts.set(value, (counts.get(value) || 0) + 1);
+    }
+    select.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = firstText + " (" + allNews.length + ")";
+    select.append(first);
+    for (const value of uniqueSorted([...counts.keys()])) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value + " (" + counts.get(value) + ")";
+      select.append(option);
+    }
+    if ([...select.options].some(o => o.value === current)) select.value = current;
+  }
+
   function fillChannelSelect() {
     const current = channelFilter.value;
     const counts = new Map();
@@ -1100,11 +1121,11 @@
 
   function buildFilterOptions() {
     updateContentTypeFilterCounts();
-    fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
-    fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
+    fillCountedSelect(sourceFilter, "källa", "Alla källor");
+    fillCountedSelect(publisherFilter, "utgivare", "Alla utgivare");
     fillChannelSelect();
     fillExactTitleSelect(allNews, "Alla rubriker (" + allNews.length + ")");
-    fillSelect(languageFilter, uniqueSorted(allNews.map(x => x.språk)), "Alla språk");
+    fillCountedSelect(languageFilter, "språk", "Alla språk");
     fillSelect(transcriptStatusFilter, uniqueSorted(allNews.map(x => x.transkribering_status)), "Alla transkriberingar");
     fillCategorySelect();
   }
