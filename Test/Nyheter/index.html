@@ -38,15 +38,16 @@
     .filter-grid>label:has(#idNumberFilter)>select{width:100px}
     .filter-grid>label:has(#typeFilter)>select{width:125px}
     .filter-grid>label:has(#favoriteFilter)>select,.filter-grid>label:has(#archiveFilter)>select{width:125px}
-    .filter-grid>label:has(#categoryFilter)>select,.filter-grid>label:has(#sourceFilter)>select{width:125px}
-    .filter-grid>label:has(#channelFilter)>select,.filter-grid>label:has(#publisherFilter)>select{width:130px}
+    .filter-grid>label:has(#categoryFilter)>select,.filter-grid>label:has(#sourceFilter)>select{width:137px}
+    .filter-grid>label:has(#channelFilter)>select{width:142px}
+    .filter-grid>label:has(#publisherFilter)>select{width:130px}
     .filter-grid>label:has(#languageFilter)>select{width:115px}
-    .filter-grid>label:has(#transcriptStatusFilter)>select{width:145px}
-    .filter-grid>label:has(.date-range-fields){width:250px}
-    .filter-grid>label:has(#summaryFilter){width:300px}
-    .filter-grid>label:has(#webAddressFilter),.filter-grid>label:has(#transcriptFilter){width:240px}
+    .filter-grid>label:has(#transcriptStatusFilter)>select{width:157px}
+    .filter-grid>label:has(#dateStartFilter),.filter-grid>label:has(#dateEndFilter){width:155px}
+    .filter-grid>label:has(#summaryFilter){flex:1 1 315px;min-width:315px}
+    .filter-grid>label:has(#transcriptFilter){width:252px}
     .filter-grid>label>input{width:100%;box-sizing:border-box}
-    @media(max-width:520px){.filter-grid>label{max-width:100%}.filter-grid>label:has(.date-range-fields),.filter-grid>label:has(#summaryFilter),.filter-grid>label:has(#webAddressFilter),.filter-grid>label:has(#transcriptFilter){width:100%}}
+    @media(max-width:520px){.filter-grid>label{max-width:100%}.filter-grid>label:has(#summaryFilter){min-width:0;flex:1 1 100%}.filter-grid>label:has(#transcriptFilter){width:100%}}
     .date-range-fields .small{color:#fff;font-weight:650}
     #exactTitleFilter.filter-active{background:#cf222e!important;color:#fff!important;border-color:#a40e26!important}
     .filter-group-title{font-size:1rem;margin:14px 0 10px;font-weight:700}
@@ -242,15 +243,17 @@
       </label>
 
       <label>
-        <span class="label-row">3. Datumintervall</span>
-        <span class="date-range-fields">
-          <span><span class="small">Start</span><input id="dateStartFilter" type="date" aria-label="Startdatum"></span>
-          <span><span class="small">Slut</span><input id="dateEndFilter" type="date" aria-label="Slutdatum"></span>
-        </span>
+        <span class="label-row">3. DatumFrån</span>
+        <input id="dateStartFilter" type="date" aria-label="Datum från">
       </label>
 
       <label>
-        <span class="label-row">4. Favoriter</span>
+        <span class="label-row">4. DatumTill</span>
+        <input id="dateEndFilter" type="date" aria-label="Datum till">
+      </label>
+
+      <label>
+        <span class="label-row">5. Favoriter</span>
         <select id="favoriteFilter">
           <option value="">Alla</option>
           <option value="yes">Endast favoriter</option>
@@ -259,7 +262,7 @@
       </label>
 
       <label>
-        <span class="label-row">5. Dolda</span>
+        <span class="label-row">6. Dolda</span>
         <select id="archiveFilter">
           <option value="all">Alla</option>
           <option value="active" selected>Ej dolda</option>
@@ -268,22 +271,22 @@
       </label>
 
       <label>
-        <span class="label-row">6. Kategori</span>
+        <span class="label-row">7. Kategori</span>
         <select id="categoryFilter"><option value="">Alla kategorier</option></select>
       </label>
 
       <label id="sourceFilterWrap" hidden>
-        <span class="label-row">7. Källa</span>
+        <span class="label-row">8. Källa</span>
         <select id="sourceFilter"><option value="">Alla källor</option></select>
       </label>
 
       <label>
-        <span class="label-row">8. Språk</span>
+        <span class="label-row">9. Språk</span>
         <select id="languageFilter"><option value="">Alla språk</option></select>
       </label>
 
       <label>
-        <span class="label-row">9. Innehåll</span>
+        <span class="label-row">10. Innehåll</span>
         <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
       </label>
 
@@ -291,24 +294,24 @@
     <h3 class="filter-group-title">YouTube och övriga filter</h3>
     <div class="filter-grid">
       <label>
-        <span class="label-row">10. Kanal</span>
+        <span class="label-row">11. Kanal</span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
       </label>
 
       <label>
-        <span class="label-row">11. Utgivare</span>
+        <span class="label-row">12. Utgivare</span>
         <select id="publisherFilter"><option value="">Alla utgivare</option></select>
       </label>
 
       <input id="webAddressFilter" type="hidden" value="">
 
       <label>
-        <span class="label-row">12. Transkribering</span>
+        <span class="label-row">13. Transkribering</span>
         <select id="transcriptStatusFilter"><option value="">Alla transkriberingar</option></select>
       </label>
 
       <label>
-        <span class="label-row">13. Transkript/ämnen</span>
+        <span class="label-row">14. Transkript/ämnen</span>
         <input id="transcriptFilter" type="search" placeholder="Sök i transkriptinformation">
       </label>
 
