@@ -1855,8 +1855,8 @@
 
       const webAddress = document.createElement("div");
       webAddress.className = "web-address";
-      if (youtube) {
-        const addr = String(item.webbadress || item.länk || "");
+      if (youtube || (ownerMode && detailedArticle)) {
+        const addr = String(youtube ? (item.webbadress || item.länk || "") : (originalNewsById.get(String(item.id))?.url || item.original_länk || item.länk || ""));
         const label = document.createTextNode("Webbadress: ");
         const a = document.createElement("a");
         a.href = addr;
@@ -1914,7 +1914,9 @@
 
       article.append(star, copyNewsBtn);
       if (detailedArticle) article.append(selectionStats);
-      article.append(h2, details, tags, summary);
+      article.append(h2);
+      if (ownerMode && detailedArticle) article.append(webAddress);
+      article.append(details, tags, summary);
       if (detailedArticle) {
         article.append(body);
       } else if (youtube) {
@@ -1988,7 +1990,27 @@
                 applyFilters();
               });
               applyOriginalMetadataVisibility();
-              column.append(heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
+              const originalStar = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
+                if (prefs.favorites[key]) delete prefs.favorites[key]; else prefs.favorites[key] = true;
+                savePrefs();
+                applyFilters();
+              });
+              originalStar.title = favorite ? "Ta bort favorit" : "Markera som favorit";
+              originalStar.setAttribute("aria-label", originalStar.title);
+              const originalCopy = makeButton("⧉", "copy-news", async () => {
+                const originalText = [
+                  source?.originalrubrik || "",
+                  metadata.textContent,
+                  (Array.isArray(source?.kategorier) ? source.kategorier : item.kategorier || []).join(", "),
+                  "Webbadress: " + (source?.url || ""),
+                  item.sammanfattning || "",
+                  source?.originaltext || ""
+                ].filter(Boolean).join("\n\n");
+                await copyText(originalText, "Hela dokumentet är kopierat till Urklipp.");
+              });
+              originalCopy.title = "Kopiera hela dokumentet";
+              originalCopy.setAttribute("aria-label", originalCopy.title);
+              column.append(originalStar, originalCopy, heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
             }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
