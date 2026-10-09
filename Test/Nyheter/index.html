@@ -1612,6 +1612,82 @@
     }
   }
 
+  // Markdown från originaltext-registret renderas som HTML-element, aldrig som osäker innerHTML.
+  function appendMarkdownInline(container, text) {
+    const pattern = /(\*\*[^*\n]+\*\*|\*[^*\n]+\*|\x60[^\x60\n]+\x60|\[[^\]]+\]\(https?:\/\/[^)]+\))/g;
+    const value = String(text || "");
+    let last = 0;
+    for (const match of value.matchAll(pattern)) {
+      if (match.index > last) container.append(document.createTextNode(value.slice(last, match.index)));
+      const token = match[0];
+      if (token.startsWith("**")) {
+        const el = document.createElement("strong");
+        el.textContent = token.slice(2, -2);
+        container.append(el);
+      } else if (token.startsWith("*")) {
+        const el = document.createElement("em");
+        el.textContent = token.slice(1, -1);
+        container.append(el);
+      } else if (token.startsWith("\x60")) {
+        const el = document.createElement("code");
+        el.textContent = token.slice(1, -1);
+        container.append(el);
+      } else {
+        const parts = token.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+        const el = document.createElement("a");
+        el.textContent = parts[1];
+        el.href = parts[2];
+        el.target = "_blank";
+        el.rel = "noopener noreferrer";
+        container.append(el);
+      }
+      last = match.index + token.length;
+    }
+    if (last < value.length) container.append(document.createTextNode(value.slice(last)));
+  }
+
+  function renderOriginalMarkdown(container, markdown) {
+    container.replaceChildren();
+    const lines = String(markdown || "").replace(/\r\n?/g, "\n").split("\n");
+    let list = null;
+    let paragraph = [];
+    const flushParagraph = () => {
+      if (!paragraph.length) return;
+      const el = document.createElement("p");
+      appendMarkdownInline(el, paragraph.join(" ").replace(/ {2,}/g, " "));
+      container.append(el);
+      paragraph = [];
+    };
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) { flushParagraph(); list = null; continue; }
+      const heading = trimmed.match(/^(#{1,6})\s+(.+)$/);
+      if (heading) {
+        flushParagraph(); list = null;
+        const el = document.createElement("h" + heading[1].length);
+        appendMarkdownInline(el, heading[2]);
+        container.append(el);
+        continue;
+      }
+      const bullet = trimmed.match(/^([-*+] |\d+\. )(.+)$/);
+      if (bullet) {
+        flushParagraph();
+        const ordered = /^\d/.test(bullet[1]);
+        if (!list || list.tagName !== (ordered ? "OL" : "UL")) {
+          list = document.createElement(ordered ? "ol" : "ul");
+          container.append(list);
+        }
+        const el = document.createElement("li");
+        appendMarkdownInline(el, bullet[2]);
+        list.append(el);
+        continue;
+      }
+      list = null;
+      paragraph.push(trimmed);
+    }
+    flushParagraph();
+  }
+
   function renderStructuredArticleBody(container, text) {
     container.replaceChildren();
     const blocks = String(text || "").split("\n\n").map(x => x.trim()).filter(Boolean);
@@ -2030,7 +2106,7 @@
             const value = mode === "1"
               ? source?.originaltext || ""
               : item.ai_barn || item.ai_10aring || item.barntext || "";
-            if (String(value).trim()) renderStructuredArticleBody(textBox, value);
+            if (String(value).trim()) { if (mode === "1") renderOriginalMarkdown(textBox, value); else renderStructuredArticleBody(textBox, value); }
             else if (mode === "1") {
               textBox.textContent = "Originaltext saknas i det privata registret. ";
               if (source?.url) {
