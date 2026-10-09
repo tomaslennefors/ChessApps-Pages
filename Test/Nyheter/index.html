@@ -34,19 +34,22 @@
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
     .filter-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:flex-start}
     .filter-grid>label{flex:0 1 auto;width:max-content;max-width:100%;min-width:0}
+    .youtube-filter-grid{width:100%}
     .filter-grid>label>select{width:auto;min-width:115px;max-width:100%;box-sizing:border-box}
     .filter-grid>label:has(#idNumberFilter)>select{width:100px}
     .filter-grid>label:has(#typeFilter)>select{width:125px}
     .filter-grid>label:has(#favoriteFilter)>select,.filter-grid>label:has(#archiveFilter)>select{width:125px}
-    .filter-grid>label:has(#categoryFilter)>select,.filter-grid>label:has(#sourceFilter)>select{width:137px}
-    .filter-grid>label:has(#channelFilter)>select{width:142px}
-    .filter-grid>label:has(#publisherFilter)>select{width:130px}
-    .filter-grid>label:has(#languageFilter)>select{width:115px}
-    .filter-grid>label:has(#transcriptStatusFilter)>select{width:157px}
+    .filter-grid>label:has(#categoryFilter)>select{width:165px}
+    .filter-grid>label:has(#sourceFilter)>select{width:150px}
+    .filter-grid>label:has(#channelFilter)>select{width:190px}
+    .filter-grid>label:has(#publisherFilter)>select{width:190px}
+    .filter-grid>label:has(#languageFilter)>select{width:155px}
+    .filter-grid>label:has(#transcriptStatusFilter)>select{width:205px}
     .filter-grid>label:has(#dateStartFilter),.filter-grid>label:has(#dateEndFilter){width:155px}
-    .filter-grid>label:has(#summaryFilter){flex:1 1 315px;min-width:315px}
-    .filter-grid>label:has(#transcriptFilter){width:252px}
+    .filter-grid>label:has(#summaryFilter){flex:0 1 440px;width:440px;min-width:0}
+    .filter-grid>label:has(#transcriptFilter){flex:1 1 250px;min-width:250px}
     .filter-grid>label>input{width:100%;box-sizing:border-box}
+    .filter-grid>label:has(#transcriptFilter)>input{width:100%}
     @media(max-width:520px){.filter-grid>label{max-width:100%}.filter-grid>label:has(#summaryFilter){min-width:0;flex:1 1 100%}.filter-grid>label:has(#transcriptFilter){width:100%}}
     .date-range-fields .small{color:#fff;font-weight:650}
     #exactTitleFilter.filter-active{background:#cf222e!important;color:#fff!important;border-color:#a40e26!important}
@@ -292,7 +295,7 @@
 
     </div>
     <h3 class="filter-group-title">YouTube och övriga filter</h3>
-    <div class="filter-grid">
+    <div class="filter-grid youtube-filter-grid">
       <label>
         <span class="label-row">11. Kanal</span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
