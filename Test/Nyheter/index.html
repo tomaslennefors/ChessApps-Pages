@@ -237,8 +237,8 @@
         Dolda
         <select id="archiveFilter">
           <option value="all">Alla</option>
-          <option value="active" selected>Ej arkiverade</option>
-          <option value="archived">Endast arkiverade</option>
+          <option value="active" selected>Ej dolda</option>
+          <option value="archived">Endast dolda</option>
         </select>
       </label>
 
@@ -504,7 +504,7 @@
   let requestStatusChangedAt = "";
   let prefs = loadPrefs();
   // Varje ny sidstart börjar med öppna filtervillkor och hopfällda områden.
-  // Favorit- och arkivmarkeringar för dokument behålls.
+  // Favorit- och döljmarkeringar för dokument behålls.
   prefs.filters = {archive:"all"};
   prefs.rubrikCollapsed = true;
   prefs.ownerCollapsed = true;
@@ -1279,8 +1279,8 @@
     const activeCount = totalCount - archivedCount;
     const labels = {
       all: "Alla (" + totalCount + ")",
-      active: "Ej arkiverade (" + activeCount + ")",
-      archived: "Endast arkiverade (" + archivedCount + ")"
+      active: "Ej dolda (" + activeCount + ")",
+      archived: "Endast dolda (" + archivedCount + ")"
     };
     for (const option of archiveFilter.options) {
       if (labels[option.value]) option.textContent = labels[option.value];
@@ -1692,7 +1692,7 @@
       parts.push("Dokumenttyp: " + displayTypeLabel(item));
       if (item.version) parts.push("Version: " + item.version);
       if (youtube && item.transkribering_status) parts.push("Transkribering: " + item.transkribering_status);
-      if (archived) parts.push("Arkiverad");
+      if (archived) parts.push("Dold");
       details.textContent = parts.join(" · ");
 
       const metadataHidden = () => localStorage.getItem(metadataHiddenKey) === "1";
@@ -1784,7 +1784,7 @@
         actions.append(video);
       }
 
-      const archiveBtn = makeButton(archived ? "Återställ från arkiv" : "Arkivera", "archive-btn" + (archived ? " on" : ""), () => {
+      const archiveBtn = makeButton(archived ? "Visa dokument" : "Dölj", "archive-btn" + (archived ? " on" : ""), () => {
         if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
         savePrefs();
         applyFilters();
@@ -1845,7 +1845,7 @@
     addSelect(typeFilter);
     if (dateStartFilter.value || dateEndFilter.value) parts.push((dateStartFilter.value || "…").replaceAll("-", "") + "-" + (dateEndFilter.value || "…").replaceAll("-", ""));
     addSelect(favoriteFilter);
-    if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Arkiverade");
+    if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Dolda");
     addSelect(categoryFilter);
     addSelect(languageFilter, "Språk: ");
     addSelect(sourceFilter, "Källa: ");
