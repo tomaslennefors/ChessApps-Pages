@@ -573,9 +573,9 @@
   let requestCompleted = false;
   let requestStatusChangedAt = "";
   let prefs = loadPrefs();
-  // Varje ny sidstart börjar med öppna filtervillkor och hopfällda områden.
+  // Ägaren behåller sina sparade filter mellan sidstarter.
+  // VIP och publika användare börjar med återställda filter.
   // Favorit- och döljmarkeringar för dokument behålls.
-  prefs.filters = {archive:"all"};
   prefs.rubrikCollapsed = true;
   prefs.ownerCollapsed = true;
   prefs.filterCollapsed = true;
@@ -3013,6 +3013,7 @@
     );
   }
   if (!isOwner) {
+    prefs.filters = {archive:"all"};
     await loadSharedTokenPayload();
     const identity = initPublicIdentity();
     if (!identity) return;
