@@ -503,6 +503,13 @@
   let requestCompleted = false;
   let requestStatusChangedAt = "";
   let prefs = loadPrefs();
+  // Varje ny sidstart börjar med öppna filtervillkor och hopfällda områden.
+  // Favorit- och arkivmarkeringar för dokument behålls.
+  prefs.filters = {archive:"all"};
+  prefs.rubrikCollapsed = true;
+  prefs.ownerCollapsed = true;
+  prefs.filterCollapsed = true;
+  prefs.documentOverviewCollapsed = true;
 
   function splitLegacyRequest(value) {
     const lines = String(value || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
