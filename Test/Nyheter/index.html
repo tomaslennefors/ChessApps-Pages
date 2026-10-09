@@ -1772,44 +1772,6 @@
       const youtube = isYoutube(item);
       const detailedArticle = showSingle && !youtube;
 
-      // Jämförelse visas endast för ägaren och när exakt ett textdokument är valt.
-      if (ownerMode && detailedArticle && selectedContentModes.size && !(selectedContentModes.size === 1 && selectedContentModes.has("2"))) {
-        const compare = document.createElement("div");
-        compare.className = "owner-content-compare";
-        compare.style.setProperty("--compare-count", String(selectedContentModes.size));
-        const modes = [
-          ["1", "1. Originaltext", originalNewsById.get(String(item.id))?.originaltext || ""],
-          ["2", "2. AI-text för vuxna", item.ai_vuxen || item.läsvy || item.lasvy || item.sammanfattning || ""],
-          ["3", "3. AI-text för 10-åringar", item.ai_barn || item.ai_10aring || item.barntext || ""]
-        ];
-        for (const [mode, title, value] of modes) {
-          if (!selectedContentModes.has(mode)) continue;
-          const column = document.createElement("section");
-          column.className = "owner-content-column";
-          const heading = document.createElement("h3");
-          heading.textContent = title;
-          const textBox = document.createElement("div");
-          textBox.className = "article-body";
-          if (String(value).trim()) renderStructuredArticleBody(textBox, value);
-          else if (mode === "1") {
-            textBox.textContent = "Originaltext saknas i det privata registret. ";
-            const source = originalNewsById.get(String(item.id));
-            if (source?.url) {
-              const link = document.createElement("a");
-              link.href = source.url;
-              link.target = "_blank";
-              link.rel = "noopener noreferrer";
-              link.textContent = "Öppna originalartikeln hos källan";
-              textBox.append(link);
-            }
-          } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
-          column.append(heading, textBox);
-          compare.append(column);
-        }
-        listEl.append(compare);
-        continue;
-      }
-
       const article = document.createElement("article");
       article.className = "news" + (archived ? " archived" : "") + (detailedArticle ? " article-detailed" : "");
       if (detailedArticle && Number(prefs.articleHeight) >= 220) {
@@ -1959,9 +1921,54 @@
         article.append(webAddress, transcriptInfo);
       }
       article.append(actions);
-      listEl.append(article);
+      // Behåll den fullständiga ordinarie vyn för innehållstyp 2 även i jämförelseläge.
+      const comparisonActive = ownerMode && detailedArticle
+        && !(selectedContentModes.size === 1 && selectedContentModes.has("2"))
+        && selectedContentModes.size > 0;
+      if (comparisonActive) {
+        const compare = document.createElement("div");
+        compare.className = "owner-content-compare";
+        compare.style.setProperty("--compare-count", String(selectedContentModes.size));
+        for (const mode of ["1", "2", "3"]) {
+          if (!selectedContentModes.has(mode)) continue;
+          const column = document.createElement("section");
+          column.className = "owner-content-column";
+          if (mode === "2") {
+            // Rubrik, metadata, kategorier, ingress, artikeltext och åtgärder behålls.
+            article.style.height = "auto";
+            article.style.maxHeight = "none";
+            column.append(article);
+          } else {
+            const heading = document.createElement("h3");
+            heading.textContent = mode === "1" ? "1. Originaltext" : "3. AI-text för 10-åringar";
+            const textBox = document.createElement("div");
+            textBox.className = "article-body";
+            const source = originalNewsById.get(String(item.id));
+            const value = mode === "1"
+              ? source?.originaltext || ""
+              : item.ai_barn || item.ai_10aring || item.barntext || "";
+            if (String(value).trim()) renderStructuredArticleBody(textBox, value);
+            else if (mode === "1") {
+              textBox.textContent = "Originaltext saknas i det privata registret. ";
+              if (source?.url) {
+                const link = document.createElement("a");
+                link.href = source.url;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = "Öppna originalartikeln hos källan";
+                textBox.append(link);
+              }
+            } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
+            column.append(heading, textBox);
+          }
+          compare.append(column);
+        }
+        listEl.append(compare);
+      } else {
+        listEl.append(article);
+      }
 
-      if (detailedArticle) {
+      if (detailedArticle && !comparisonActive) {
         const resizeHandle = document.createElement("div");
         resizeHandle.className = "article-resize-handle";
         attachArticleResize(resizeHandle, article);
