@@ -278,7 +278,12 @@
       </label>
 
       <label>
-        <span class="label-row">8. Innehåll</span>
+        <span class="label-row">8. Språk</span>
+        <select id="languageFilter"><option value="">Alla språk</option></select>
+      </label>
+
+      <label>
+        <span class="label-row">9. Innehåll</span>
         <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
       </label>
 
@@ -286,32 +291,24 @@
     <h3 class="filter-group-title">YouTube och övriga filter</h3>
     <div class="filter-grid">
       <label>
-        <span class="label-row">9. Kanal</span>
+        <span class="label-row">10. Kanal</span>
         <select id="channelFilter"><option value="">Alla kanaler</option></select>
       </label>
 
       <label>
-        <span class="label-row">10. Utgivare</span>
+        <span class="label-row">11. Utgivare</span>
         <select id="publisherFilter"><option value="">Alla utgivare</option></select>
       </label>
 
-      <label>
-        <span class="label-row">11. Webbadress</span>
-        <input id="webAddressFilter" type="search" placeholder="Sök i webbadress">
-      </label>
+      <input id="webAddressFilter" type="hidden" value="">
 
       <label>
-        <span class="label-row">12. Språk</span>
-        <select id="languageFilter"><option value="">Alla språk</option></select>
-      </label>
-
-      <label>
-        <span class="label-row">13. Transkribering</span>
+        <span class="label-row">12. Transkribering</span>
         <select id="transcriptStatusFilter"><option value="">Alla transkriberingar</option></select>
       </label>
 
       <label>
-        <span class="label-row">14. Transkript/ämnen</span>
+        <span class="label-row">13. Transkript/ämnen</span>
         <input id="transcriptFilter" type="search" placeholder="Sök i transkriptinformation">
       </label>
 
@@ -1366,7 +1363,7 @@
     sourceFilter.value = ownerMode ? (f.source || "") : "";
     publisherFilter.value = f.publisher || "";
     channelFilter.value = f.channel || "";
-    webAddressFilter.value = f.webAddress || "";
+    webAddressFilter.value = "";
     exactTitleFilter.value = "";
     documentSortMode.value = f.documentSortMode || "publication";
     summaryFilter.value = f.summary || "";
