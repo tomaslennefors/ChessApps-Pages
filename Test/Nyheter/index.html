@@ -225,8 +225,8 @@
       </label>
 
       <label>
-        <span class="label-row">Sammanfattning <input class="sortno" data-sort="sammanfattning" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
-        <input id="summaryFilter" type="search" placeholder="Sök i sammanfattning">
+        <span class="label-row">Innehåll <input class="sortno" data-sort="sammanfattning" type="number" min="0" max="99" inputmode="numeric" title="Sorteringsordning"><span class="sorthint">sort.nr</span></span>
+        <input id="summaryFilter" type="search" placeholder="Sök i rubrik, ingress och dokumenttext">
       </label>
 
       <label>
@@ -1296,7 +1296,7 @@
       if (webAddress && !normalize(item.webbadress || item.länk).includes(webAddress)) return false;
       if (title && !normalize(item.titel).includes(title)) return false;
       if (!ignoreExactTitle && exactTitle && String(item.id) !== exactTitle) return false;
-      if (summary && !normalize(item.sammanfattning).includes(summary)) return false;
+      if (summary && !normalize([displayTitle(item), item.titel || "", item.sammanfattning || "", item.läsvy || item.lasvy || ""].join(" ")).includes(summary)) return false;
       if (language && item.språk !== language) return false;
       if (transcriptStatus && item.transkribering_status !== transcriptStatus) return false;
       if (transcript) {
@@ -1325,7 +1325,7 @@
     if (field === "kanal") return String(item.kanal || "");
     if (field === "webbadress") return String(item.webbadress || item.länk || "");
     if (field === "titel" || field === "fullTitel") return String(item.titel || "");
-    if (field === "sammanfattning") return String(item.sammanfattning || "");
+    if (field === "sammanfattning") return [item.titel || "", item.sammanfattning || "", item.läsvy || item.lasvy || ""].join(" ");
     if (field === "språk") return String(item.språk || "");
     if (field === "transkribering") return String(item.transkribering_status || "");
     if (field === "transkript") return (Array.isArray(item.transkript_ämnen) ? item.transkript_ämnen : []).join(" | ");
