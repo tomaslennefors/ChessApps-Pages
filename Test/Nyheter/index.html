@@ -207,6 +207,11 @@
     <h2>Filter</h2>
     <div class="filter-grid">
       <label>
+        <span class="label-row">ID</span>
+        <select id="idNumberFilter"><option value="">Alla ID</option></select>
+      </label>
+
+      <label>
         Dokumenttyp
         <select id="typeFilter">
           <option value="">Alla</option>
@@ -214,11 +219,6 @@
           <option value="IT-Nyhet">IT-Nyhet</option>
           <option value="IT-YouTube">IT-YouTube</option>
         </select>
-      </label>
-
-      <label>
-        <span class="label-row">ID-NR</span>
-        <input id="idNumberFilter" type="search" placeholder="Sök dokument-ID" autocomplete="off">
       </label>
 
       <label>
@@ -1125,11 +1125,29 @@
     if ([...exactTitleFilter.options].some(o => o.value === current)) exactTitleFilter.value = current;
   }
 
+  function fillIdNumberSelect() {
+    const current = idNumberFilter.value;
+    const ids = uniqueSorted(allNews.map(item => String(item.id ?? "").trim()));
+    idNumberFilter.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = "Alla ID (" + ids.length + ")";
+    idNumberFilter.append(first);
+    for (const id of ids) {
+      const option = document.createElement("option");
+      option.value = id;
+      option.textContent = id;
+      idNumberFilter.append(option);
+    }
+    if (ids.includes(current)) idNumberFilter.value = current;
+  }
+
   function buildFilterOptions() {
     updateContentTypeFilterCounts();
     fillCountedSelect(sourceFilter, "källa", "Alla källor");
     fillCountedSelect(publisherFilter, "utgivare", "Alla utgivare");
     fillChannelSelect();
+    fillIdNumberSelect();
     fillExactTitleSelect(allNews, "Alla rubriker (" + allNews.length + ")");
     fillCountedSelect(languageFilter, "språk", "Alla språk");
     fillSelect(transcriptStatusFilter, uniqueSorted(allNews.map(x => x.transkribering_status)), "Alla transkriberingar");
@@ -1227,7 +1245,7 @@
 
   function updateActiveFilterStyles() {
     const controls = [
-      [idNumberFilter, () => !!idNumberFilter.value.trim()],
+      [idNumberFilter, () => !!idNumberFilter.value],
       [dateStartFilter, () => !!dateStartFilter.value],
       [dateEndFilter, () => !!dateEndFilter.value],
       [sourceFilter, () => !!sourceFilter.value],
@@ -1370,7 +1388,7 @@
   }
 
   function getFilteredNews(ignoreExactTitle = false) {
-    const idNumber = idNumberFilter.value.trim().toLocaleLowerCase("sv");
+    const idNumber = idNumberFilter.value;
     const dateStart = dateStartFilter.value;
     const dateEnd = dateEndFilter.value;
     const source = sourceFilter.value;
@@ -1388,7 +1406,7 @@
     const type = typeFilter.value;
 
     return allNews.filter(item => {
-      if (idNumber && !String(item.id ?? "").toLocaleLowerCase("sv").includes(idNumber)) return false;
+      if (idNumber && String(item.id ?? "").trim() !== idNumber) return false;
       const key = itemKey(item);
       const categories = Array.isArray(item.kategorier) ? item.kategorier : [];
       const favorite = !!prefs.favorites[key];
@@ -1875,7 +1893,7 @@
       parts.push(prefix + label);
     };
     addSelect(typeFilter);
-    if (idNumberFilter.value.trim()) parts.push("ID-NR: " + idNumberFilter.value.trim());
+    if (idNumberFilter.value) parts.push("ID: " + idNumberFilter.value);
     if (dateStartFilter.value || dateEndFilter.value) parts.push((dateStartFilter.value || "…").replaceAll("-", "") + "-" + (dateEndFilter.value || "…").replaceAll("-", ""));
     addSelect(favoriteFilter);
     if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Dolda");
@@ -2676,7 +2694,8 @@
     }
   });
 
-  for (const control of [idNumberFilter, dateStartFilter, dateEndFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
+  idNumberFilter.addEventListener("change", () => applyFilters(true));
+  for (const control of [dateStartFilter, dateEndFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
   requestFreeText.addEventListener("input", () => {
