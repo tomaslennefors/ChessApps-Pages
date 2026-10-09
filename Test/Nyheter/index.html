@@ -1773,7 +1773,7 @@
       const detailedArticle = showSingle && !youtube;
 
       // Jämförelse visas endast för ägaren och när exakt ett textdokument är valt.
-      if (ownerMode && detailedArticle && selectedContentModes.size) {
+      if (ownerMode && detailedArticle && selectedContentModes.size && !(selectedContentModes.size === 1 && selectedContentModes.has("2"))) {
         const compare = document.createElement("div");
         compare.className = "owner-content-compare";
         compare.style.setProperty("--compare-count", String(selectedContentModes.size));
