@@ -929,6 +929,30 @@
     if ([...select.options].some(o => o.value === current)) select.value = current;
   }
 
+  function fillChannelSelect() {
+    const current = channelFilter.value;
+    const counts = new Map();
+    let total = 0;
+    for (const item of allNews) {
+      if (!isYoutube(item)) continue;
+      total++;
+      const channel = String(item.kanal || "").trim();
+      if (channel) counts.set(channel, (counts.get(channel) || 0) + 1);
+    }
+    channelFilter.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = "Alla kanaler (" + total + ")";
+    channelFilter.append(first);
+    for (const channel of uniqueSorted([...counts.keys()])) {
+      const option = document.createElement("option");
+      option.value = channel;
+      option.textContent = channel + " (" + counts.get(channel) + ")";
+      channelFilter.append(option);
+    }
+    if ([...channelFilter.options].some(option => option.value === current)) channelFilter.value = current;
+  }
+
   function fillCategorySelect() {
     const current = categoryFilter.value;
     const counts = new Map();
@@ -1012,7 +1036,7 @@
     updateContentTypeFilterCounts();
     fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
     fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
-    fillSelect(channelFilter, uniqueSorted(allNews.map(x => x.kanal)), "Alla kanaler");
+    fillChannelSelect();
     fillExactTitleSelect(allNews, "Alla rubriker (" + allNews.length + ")");
     fillSelect(languageFilter, uniqueSorted(allNews.map(x => x.språk)), "Alla språk");
     fillSelect(transcriptStatusFilter, uniqueSorted(allNews.map(x => x.transkribering_status)), "Alla transkriberingar");
