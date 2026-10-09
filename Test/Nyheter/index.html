@@ -610,10 +610,10 @@
 
   function showLogin(firstStart = false) {
     const previous = readPublicIdentity();
-    const answer = window.prompt("Login: VIP-<Namn> (minst två bokstäver)", "");
+    const answer = window.prompt("Login:", "");
     const normalized = normalizeLoginAnswer(answer);
     if (!normalized) {
-      if (answer !== null && String(answer).trim()) alert("Ogiltigt login. Ange VIP- följt av minst två bokstäver.");
+      if (answer !== null && String(answer).trim()) alert("Ogiltig inloggning.");
       return null;
     }
     const identity = {
@@ -629,7 +629,7 @@
 
   function denyAppAccess() {
     document.body.replaceChildren();
-    document.body.textContent = "Inloggning krävs. Öppna appen igen och ange VIP- följt av ett namn med minst två bokstäver.";
+    document.body.textContent = "Inloggning krävs. Öppna appen igen.";
     try { window.close(); } catch {}
   }
 
