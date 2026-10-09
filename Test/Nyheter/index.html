@@ -503,18 +503,14 @@
   }
 
   function normalizeLoginAnswer(answer) {
-    const text = String(answer ?? "").trim();
-    if (!text) return {userName:"OKÄND", userRole:"PUBLIC"};
+    const match = /^VIP-([\\p{L}]{2,})$/iu.exec(String(answer ?? "").trim());
+    if (!match) return null;
+    return {userName:"VIP-" + match[1], userRole:"VIP"};
+  }
 
-    if (/^vip/i.test(text)) {
-      let name = text.slice(3).trim().replace(/^[-\s]+/, "").trim();
-      return {
-        userName: name ? "VIP-" + name : "VIP",
-        userRole: "VIP"
-      };
-    }
-
-    return {userName:text, userRole:"PUBLIC"};
+  function validStoredIdentity(identity) {
+    return !!identity?.userId && identity.userRole === "VIP" &&
+      !!normalizeLoginAnswer(identity.userName);
   }
 
   function readPublicIdentity() {
@@ -613,62 +609,73 @@
   }
 
   function showLogin(firstStart = false) {
-    let identity = readPublicIdentity();
-    if (!identity) {
-      identity = {userId:generateUserId(), userName:"", userRole:"PUBLIC"};
-    }
-
-    const currentName = identity.userName && identity.userName !== "OKÄND" ? identity.userName : "";
-    const answer = window.prompt("Login:\n(Stäng login med ESC eller ENTER)", currentName);
+    const previous = readPublicIdentity();
+    const answer = window.prompt("Login: VIP-<Namn> (minst två bokstäver)", "");
     const normalized = normalizeLoginAnswer(answer);
-
-    identity = {
-      userId:identity.userId,
+    if (!normalized) {
+      if (answer !== null && String(answer).trim()) alert("Ogiltigt login. Ange VIP- följt av minst två bokstäver.");
+      return null;
+    }
+    const identity = {
+      userId:previous?.userId || generateUserId(),
       userName:normalized.userName,
-      userRole:normalized.userRole
+      userRole:"VIP"
     };
     savePublicIdentity(identity);
     publicIdentity = identity;
-
-    // Första login är samtidigt första appstarten. Vid manuell omlogin
-    // uppdateras användarregistret men ingen extra appstart skapas.
     void syncPublicIdentityToData(identity, firstStart);
     return identity;
   }
 
+  function denyAppAccess() {
+    document.body.replaceChildren();
+    document.body.textContent = "Inloggning krävs. Öppna appen igen och ange VIP- följt av ett namn med minst två bokstäver.";
+    try { window.close(); } catch {}
+  }
+
   function initPublicIdentity() {
     let identity = readPublicIdentity();
-    const firstStart = !identity;
-
-    if (!identity) {
-      identity = {userId:generateUserId(), userName:"", userRole:"PUBLIC"};
-      savePublicIdentity(identity);
+    if (!validStoredIdentity(identity)) {
       identity = showLogin(true);
-    } else {
-      if (!identity.userName) {
-        identity.userName = "OKÄND";
-        savePublicIdentity(identity);
+      if (!identity) {
+        denyAppAccess();
+        return null;
       }
+    } else {
       publicIdentity = identity;
       void syncPublicIdentityToData(identity, true);
     }
 
-    titleEl.addEventListener("contextmenu", async event => {
-      event.preventDefault();
+    let pressTimer = null;
+    let longPressTriggered = false;
+    const changeLogin = async () => {
       const nextIdentity = showLogin(false);
+      if (!nextIdentity) return;
       try {
-        if (nextIdentity?.userRole === "VIP") {
-          privateNewsById = await readPrivateNewsMetadata(sharedDataToken());
-        } else {
-          privateNewsById = new Map();
-        }
+        privateNewsById = await readPrivateNewsMetadata(sharedDataToken());
       } catch (err) {
         privateNewsById = new Map();
         console.warn("Kunde inte läsa VIP-metadata:", err);
       }
       setPrivacyUi();
       await loadNews();
+    };
+    titleEl.addEventListener("contextmenu", event => {
+      event.preventDefault();
+      if (longPressTriggered) return;
+      void changeLogin();
     });
+    titleEl.addEventListener("touchstart", () => {
+      longPressTriggered = false;
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => {
+        longPressTriggered = true;
+        void changeLogin();
+      }, 650);
+    }, {passive:true});
+    for (const eventName of ["touchend", "touchcancel", "touchmove"]) {
+      titleEl.addEventListener(eventName, () => clearTimeout(pressTimer), {passive:true});
+    }
 
     return identity;
   }
@@ -2633,6 +2640,7 @@
   if (!isOwner) {
     await loadSharedTokenPayload();
     const identity = initPublicIdentity();
+    if (!identity) return;
     if (identity?.userRole === "VIP") {
       try {
         privateNewsById = await readPrivateNewsMetadata(sharedDataToken());
