@@ -32,6 +32,15 @@
     .markdown-doc hr{border:0;border-top:1px solid var(--line);margin:1.2em 0}
     .markdown-doc a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
     .panel,.filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0 18px}
+    .owner-content-modes{min-width:135px}
+    .owner-mode-buttons{display:flex;gap:6px;margin-top:6px}
+    .owner-mode-btn{min-width:35px;padding:8px 10px;border:1px solid #8c959f;background:#fff;color:#24292f;border-radius:6px;cursor:pointer}
+    .owner-mode-btn[aria-pressed="true"]{background:#0969da;color:#fff;border-color:#0969da}
+    .owner-content-compare{display:grid;grid-template-columns:repeat(var(--compare-count),minmax(0,1fr));gap:12px;margin-top:14px;align-items:stretch}
+    .owner-content-column{min-width:0;border:1px solid #d0d7de;border-radius:8px;padding:12px;overflow-wrap:anywhere;background:#fff;max-height:72vh;overflow:auto}
+    .owner-content-column h3{margin:0 0 12px;font-size:1rem}
+    .owner-content-column .article-body{height:auto;max-height:none;overflow:visible}
+    @media(max-width:850px){.owner-content-compare{grid-template-columns:1fr}}
     .filter-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:flex-start}
     .filter-grid>label{flex:0 1 auto;width:max-content;max-width:100%;min-width:0}
     .youtube-filter-grid{width:100%}
@@ -138,7 +147,7 @@
     .date-range-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
     .date-range-fields input{min-width:0}
     @media(max-width:450px){.date-range-fields{grid-template-columns:1fr}}
-    .document-navigation-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,3fr);gap:12px;margin-top:10px}
+    .document-navigation-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,3fr) auto;gap:12px;margin-top:10px}
     .document-navigation-row>div{min-width:0}
     @media(max-width:650px){.document-navigation-row{grid-template-columns:minmax(0,1fr)}}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
@@ -340,6 +349,14 @@
         <label for="exactTitleFilter"><span id="exactTitleCaption">Fullständig rubrik</span></label>
         <select id="exactTitleFilter"><option value="">Alla rubriker</option></select>
       </div>
+      <div id="ownerContentModes" class="owner-content-modes" hidden>
+        <span class="label-row">Typ av innehåll</span>
+        <div class="owner-mode-buttons" role="group" aria-label="Välj innehållsversioner">
+          <button type="button" class="owner-mode-btn" data-mode="1" aria-pressed="false" title="1: Originaltext">1</button>
+          <button type="button" class="owner-mode-btn" data-mode="2" aria-pressed="true" title="2: AI-text för vuxna">2</button>
+          <button type="button" class="owner-mode-btn" data-mode="3" aria-pressed="false" title="3: AI-text för 10-åringar">3</button>
+        </div>
+      </div>
     </div>
     <div class="small">Tangentbord: ↑ / ↓ = föregående/nästa dokument · Mellanslag = starta valt YouTube-dokument. Dokument visas i AI-läsvy.</div>
   </div>
@@ -516,6 +533,21 @@
   const channelFilter = document.getElementById("channelFilter");
   const webAddressFilter = document.getElementById("webAddressFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
+  const ownerContentModes = document.getElementById("ownerContentModes");
+  const ownerModeButtons = [...ownerContentModes.querySelectorAll("[data-mode]")];
+  const selectedContentModes = new Set(["2"]);
+  function refreshContentModeButtons() {
+    for (const button of ownerModeButtons) {
+      button.setAttribute("aria-pressed", String(selectedContentModes.has(button.dataset.mode)));
+    }
+  }
+  for (const button of ownerModeButtons) button.addEventListener("click", () => {
+    const mode = button.dataset.mode;
+    if (selectedContentModes.has(mode)) selectedContentModes.delete(mode);
+    else selectedContentModes.add(mode);
+    refreshContentModeButtons();
+    renderNews(getFilteredNews());
+  });
   const documentSortMode = document.getElementById("documentSortMode");
   const exactTitleCaption = document.getElementById("exactTitleCaption");
   const summaryFilter = document.getElementById("summaryFilter");
@@ -948,6 +980,7 @@
   function setPrivacyUi() {
     const enhancedAccess = hasEnhancedNewsAccess();
     sourceFilterWrap.hidden = !enhancedAccess;
+    ownerContentModes.hidden = !ownerMode;
     exactTitleCaption.textContent = enhancedAccess ? "Fullständig rubrik" : "Omskriven rubrik";
 
     if (!ownerAuthenticated) {
@@ -1728,6 +1761,33 @@
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
       const detailedArticle = showSingle && !youtube;
+
+      // Jämförelse visas endast för ägaren och när exakt ett textdokument är valt.
+      if (ownerMode && detailedArticle && selectedContentModes.size) {
+        const compare = document.createElement("div");
+        compare.className = "owner-content-compare";
+        compare.style.setProperty("--compare-count", String(selectedContentModes.size));
+        const modes = [
+          ["1", "1. Originaltext", item.originaltext || item.original_text || item.original_text_content || ""],
+          ["2", "2. AI-text för vuxna", item.ai_vuxen || item.läsvy || item.lasvy || item.sammanfattning || ""],
+          ["3", "3. AI-text för 10-åringar", item.ai_barn || item.ai_10aring || item.barntext || ""]
+        ];
+        for (const [mode, title, value] of modes) {
+          if (!selectedContentModes.has(mode)) continue;
+          const column = document.createElement("section");
+          column.className = "owner-content-column";
+          const heading = document.createElement("h3");
+          heading.textContent = title;
+          const textBox = document.createElement("div");
+          textBox.className = "article-body";
+          if (String(value).trim()) renderStructuredArticleBody(textBox, value);
+          else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
+          column.append(heading, textBox);
+          compare.append(column);
+        }
+        listEl.append(compare);
+        continue;
+      }
 
       const article = document.createElement("article");
       article.className = "news" + (archived ? " archived" : "") + (detailedArticle ? " article-detailed" : "");
