@@ -503,7 +503,7 @@
   }
 
   function normalizeLoginAnswer(answer) {
-    const match = /^VIP-([\\p{L}]{2,})$/iu.exec(String(answer ?? "").trim());
+    const match = /^VIP-([\p{L}]{2,})$/iu.exec(String(answer ?? "").trim());
     if (!match) return null;
     return {userName:"VIP-" + match[1], userRole:"VIP"};
   }
