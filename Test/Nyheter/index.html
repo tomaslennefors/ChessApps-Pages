@@ -1836,7 +1836,7 @@
     const addSelect = (control, prefix = "") => {
       if (!control?.value) return;
       const selected = control.selectedOptions?.[0];
-      const label = (selected?.textContent || control.value).replace(/\\s*\\(\\d+\\)\\s*$/, "").trim();
+      const label = (selected?.textContent || control.value).replace(/\s*\(\d+\)\s*$/, "").trim();
       parts.push(prefix + label);
     };
     addSelect(typeFilter);
