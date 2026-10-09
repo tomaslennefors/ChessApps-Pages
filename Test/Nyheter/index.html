@@ -424,6 +424,7 @@
   const userLogDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/UserLog.json";
   const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
   const privateNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_privata.json";
+  const originalNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_originaltexter.json";
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
   const filterSchemaVersion = 5;
@@ -566,6 +567,7 @@
   let ownerMode = false;
   let publicIdentity = null;
   let privateNewsById = new Map();
+  let originalNewsById = new Map();
   let requestCompleted = false;
   let requestStatusChangedAt = "";
   let prefs = loadPrefs();
@@ -1038,6 +1040,14 @@
     return map;
   }
 
+  async function loadOriginalNews(token = ownerToken) {
+    if (!token || !ownerAuthenticated) return;
+    const response = await fetch(originalNewsDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {headers:githubHeaders(token),cache:"no-store"});
+    if (!response.ok) throw new Error("Kunde inte läsa originalregistret. HTTP " + response.status);
+    const file = await response.json();
+    const data = JSON.parse(decodeBase64Utf8(file.content || ""));
+    originalNewsById = new Map((data.artiklar || []).map(item => [String(item.id),item]));
+  }
   function applyPrivateNewsMetadata() {
     if (!hasEnhancedNewsAccess() || !privateNewsById.size) return;
     for (const item of allNews) {
@@ -1768,7 +1778,7 @@
         compare.className = "owner-content-compare";
         compare.style.setProperty("--compare-count", String(selectedContentModes.size));
         const modes = [
-          ["1", "1. Originaltext", item.originaltext || item.original_text || item.original_text_content || ""],
+          ["1", "1. Originaltext", originalNewsById.get(String(item.id))?.originaltext || ""],
           ["2", "2. AI-text för vuxna", item.ai_vuxen || item.läsvy || item.lasvy || item.sammanfattning || ""],
           ["3", "3. AI-text för 10-åringar", item.ai_barn || item.ai_10aring || item.barntext || ""]
         ];
