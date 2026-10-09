@@ -1943,16 +1943,19 @@
             heading.textContent = mode === "1" ? "1. Originaltext" : "3. AI-text för 10-åringar";
             if (mode === "1") {
               const source = originalNewsById.get(String(item.id));
+              const originalTitle = document.createElement("h2");
+              originalTitle.textContent = source?.originalrubrik || "Originalrubrik saknas";
               const metadata = document.createElement("div");
               metadata.className = "details";
               metadata.textContent = [
                 "ID: " + item.id,
-                source?.publiceringsdatum ? "Datum: " + source.publiceringsdatum : "",
+                "Publiceringsdatum: " + (source?.publiceringsdatum || "Okänt"),
+                "Hämtdatum: " + (source?.hamtdatum || item.hämtdatum || "Okänt"),
                 source?.kalla ? "Källa: " + source.kalla : "",
                 source?.sprak ? "Språk: " + source.sprak : "",
                 source?.dokumenttyp ? "Dokumenttyp: " + source.dokumenttyp : ""
               ].filter(Boolean).join(" · ");
-              column.append(metadata);
+              column.append(heading, originalTitle, metadata);
             }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
@@ -1972,7 +1975,8 @@
                 textBox.append(link);
               }
             } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
-            column.append(heading, textBox);
+            if (mode === "1") column.append(textBox);
+            else column.append(heading, textBox);
           }
           compare.append(column);
         }
