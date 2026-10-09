@@ -108,6 +108,9 @@
     .saved-listboxes label{margin:0}
     .saved-listboxes select{margin-top:4px}
     .full-title-filter{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:10px 0 12px}
+    .date-range-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .date-range-fields input{min-width:0}
+    @media(max-width:450px){.date-range-fields{grid-template-columns:1fr}}
     .document-navigation-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:10px}
     .document-navigation-row>div{min-width:0}
     @media(max-width:650px){.document-navigation-row{grid-template-columns:minmax(0,1fr)}}
@@ -201,9 +204,11 @@
     <h2>Filter</h2>
     <div class="filter-grid">
       <label>
-        <span class="label-row"><span id="dateFilterCaption">Datum</span></span>
-        <input id="dateFilter" type="search" list="dateFilterOptions" placeholder="ÅÅÅÅ, ÅÅÅÅ-MM eller ÅÅÅÅ-MM-DD" autocomplete="off">
-        <datalist id="dateFilterOptions"></datalist>
+        <span class="label-row">Datumintervall</span>
+        <span class="date-range-fields">
+          <span><span class="small">Start</span><input id="dateStartFilter" type="date" aria-label="Startdatum"></span>
+          <span><span class="small">Slut</span><input id="dateEndFilter" type="date" aria-label="Slutdatum"></span>
+        </span>
       </label>
 
       <label id="sourceFilterWrap" hidden>
@@ -459,9 +464,8 @@
   const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
   const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
   const otherLinksSelect = document.getElementById("otherLinksSelect");
-  const dateFilter = document.getElementById("dateFilter");
-  const dateFilterOptions = document.getElementById("dateFilterOptions");
-  const dateFilterCaption = document.getElementById("dateFilterCaption");
+  const dateStartFilter = document.getElementById("dateStartFilter");
+  const dateEndFilter = document.getElementById("dateEndFilter");
   const sourceFilterWrap = document.getElementById("sourceFilterWrap");
   const sourceFilter = document.getElementById("sourceFilter");
   const publisherFilter = document.getElementById("publisherFilter");
@@ -892,9 +896,6 @@
   function setPrivacyUi() {
     const enhancedAccess = hasEnhancedNewsAccess();
     sourceFilterWrap.hidden = !enhancedAccess;
-    dateFilter.type = "search";
-    dateFilterCaption.textContent = "Datum";
-    dateFilter.placeholder = "ÅÅÅÅ, ÅÅÅÅ-MM eller ÅÅÅÅ-MM-DD";
     exactTitleCaption.textContent = enhancedAccess ? "Fullständig rubrik" : "Omskriven rubrik";
 
     if (!ownerAuthenticated) {
@@ -1079,28 +1080,7 @@
     if ([...exactTitleFilter.options].some(o => o.value === current)) exactTitleFilter.value = current;
   }
 
-  function buildDateFilterOptions() {
-    const values = new Set();
-
-    for (const item of allNews) {
-      const value = displayDate(item);
-      if (/^\d{4}/.test(value)) values.add(value.slice(0, 4));
-      if (/^\d{4}-\d{2}/.test(value)) values.add(value.slice(0, 7));
-      if (/^\d{4}-\d{2}-\d{2}/.test(value)) values.add(value.slice(0, 10));
-    }
-
-    const current = dateFilter.value;
-    dateFilterOptions.replaceChildren();
-    [...values].sort((a,b) => b.localeCompare(a)).forEach(value => {
-      const option = document.createElement("option");
-      option.value = value;
-      dateFilterOptions.append(option);
-    });
-    dateFilter.value = current;
-  }
-
   function buildFilterOptions() {
-    buildDateFilterOptions();
     updateContentTypeFilterCounts();
     fillSelect(sourceFilter, uniqueSorted(allNews.map(x => x.källa)), "Alla källor");
     fillSelect(publisherFilter, uniqueSorted(allNews.map(x => x.utgivare)), "Alla utgivare");
@@ -1202,7 +1182,8 @@
 
   function updateActiveFilterStyles() {
     const controls = [
-      [dateFilter, () => !!dateFilter.value],
+      [dateStartFilter, () => !!dateStartFilter.value],
+      [dateEndFilter, () => !!dateEndFilter.value],
       [sourceFilter, () => !!sourceFilter.value],
       [publisherFilter, () => !!publisherFilter.value],
       [channelFilter, () => !!channelFilter.value],
@@ -1291,8 +1272,8 @@
 
   function restoreControls() {
     const f = prefs.filters;
-    const savedDate = f.date || "";
-    dateFilter.value = savedDate;
+    dateStartFilter.value = f.dateStart || "";
+    dateEndFilter.value = f.dateEnd || "";
     sourceFilter.value = ownerMode ? (f.source || "") : "";
     publisherFilter.value = f.publisher || "";
     channelFilter.value = f.channel || "";
@@ -1318,7 +1299,8 @@
 
   function captureControls() {
     prefs.filters = {
-      date: dateFilter.value,
+      dateStart: dateStartFilter.value,
+      dateEnd: dateEndFilter.value,
       source: sourceFilter.value,
       publisher: publisherFilter.value,
       channel: channelFilter.value,
@@ -1340,7 +1322,8 @@
   }
 
   function getFilteredNews(ignoreExactTitle = false) {
-    const date = dateFilter.value;
+    const dateStart = dateStartFilter.value;
+    const dateEnd = dateEndFilter.value;
     const source = sourceFilter.value;
     const publisher = publisherFilter.value;
     const channel = channelFilter.value;
@@ -1362,7 +1345,9 @@
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
 
-      if (date && !displayDate(item).startsWith(date)) return false;
+      const itemDate = displayDate(item);
+      if (dateStart && (!itemDate || itemDate.slice(0, 10) < dateStart)) return false;
+      if (dateEnd && (!itemDate || itemDate.slice(0, 10) > dateEnd)) return false;
       if (source && item.källa !== source) return false;
       if (publisher && item.utgivare !== publisher) return false;
       if (channel && item.kanal !== channel) return false;
@@ -1840,7 +1825,7 @@
       parts.push(prefix + label);
     };
     addSelect(typeFilter);
-    if (dateFilter.value.trim()) parts.push(dateFilter.value.trim());
+    if (dateStartFilter.value || dateEndFilter.value) parts.push((dateStartFilter.value || "…").replaceAll("-", "") + "-" + (dateEndFilter.value || "…").replaceAll("-", ""));
     addSelect(favoriteFilter);
     if (archiveFilter.value !== "all") parts.push(archiveFilter.value === "active" ? "EjDolda" : "Arkiverade");
     addSelect(categoryFilter);
@@ -1937,7 +1922,8 @@
   }
 
   function clearFilters() {
-    dateFilter.value = "";
+    dateStartFilter.value = "";
+    dateEndFilter.value = "";
     sourceFilter.value = "";
     publisherFilter.value = "";
     channelFilter.value = "";
@@ -2638,7 +2624,7 @@
     }
   });
 
-  for (const control of [dateFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
+  for (const control of [dateStartFilter, dateEndFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
   requestFreeText.addEventListener("input", () => {
