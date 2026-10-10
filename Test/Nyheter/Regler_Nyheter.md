@@ -45,7 +45,7 @@ Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omsk
 ## VIP-inloggning – användarnamn, inte lösenord
 
 - VIP-inloggningen är ett **inloggningsnamn**, inte ett lösenord. Den kräver inte lösenord eller e-postadress.
-- Formatet är `VIP-` följt av **1–50 valfria tecken**. Bindestreck, siffror, mellanslag och andra tecken får användas i namnet.
+- Formatet är `VIP-` följt av **2–50 tecken**, varav **minst två måste vara bokstäver**. Utöver dessa bokstäver får bindestreck, siffror, mellanslag och andra tecken användas i namnet.
 - Prefixet `VIP-` är obligatoriskt och får skrivas med stora eller små bokstäver.
 - Exempel på godkänd inloggning: `VIP-TomasL-Edge`.
 - Appen får inte införa ytterligare teckenbegränsningar utan Tomas godkännande. Alla inloggningsregler ska finnas i detta dokument.
