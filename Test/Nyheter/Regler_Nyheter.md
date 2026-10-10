@@ -1,124 +1,80 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-08 01:28
+Senast uppdaterad: 2026-10-10 02:52
 
-## 1. Olika visning för Tomas och andra användare
+Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
-Appen ska se olika ut beroende på om Tomas använder appen eller om det är en annan användare.
+## 1. Originalrubrik och dokumentvisning
 
-Knappen **Regler** är privat och ska endast vara synlig för Tomas när **Privat visning** är aktiverad. När Tomas avmarkerar Privat visning ska även Regler-knappen döljas, så att den publika förhandsvisningen motsvarar vad andra användare ser.
+1. **Samma originalrubrik** ska visas för ägaren i **1. Originaltext** och **2. AI-text för vuxna**, och originalrubriken får även visas för VIP.
+2. GPT får inte ersätta originalrubriken med en ny, omskriven rubrik i AI-versionen.
+3. Om första Markdown-huvudrubriken (`# Rubrik`) finns i originaltexten ska den inte visas en gång till i brödtexten.
+4. Om Markdown-huvudrubriken skiljer sig från tidigare lagrad originalrubrik ska Markdown-rubriken få företräde i visningen. Den ska därefter utelämnas ur den renderade originaltexten.
+5. IT-nyheters rubrik ska ha prefixet **N:** exakt en gång. IT-Fakta har **!** och IT-YouTube **Y:**.
+6. Originaltext i Markdown ska alltid renderas med korrekt formatering.
+7. Knapp 1 och 2 ska ha samma kolumnbredd, marginaler, rubriktypografi och ikonplacering. Inga extra inre ramar i knapp 2.
+8. Båda vyerna har favorit-, kopiera- och döljikon. Döljikonen blir **röd** när dokumentet är dolt. Dolda dokument kan tas fram via arkivfiltret.
+9. Den klickbara **webbadressen** visas under rubriken i båda vyerna. Ingen separat knapp **Läs webb-sidan** ska finnas.
+10. Klick eller tryck på dokumentrubriken visar eller döljer metadata och kategorier.
 
-### 1a. Tomas
+## 2. Ingress – gemensam för original och AI-text
 
-Tomas ska ha alla funktioner. När appen har verifierat Tomas privata GitHub-token kan han använda **Privat visning**.
+1. GPT ska läsa originaltexten och skriva en **gemensam ingress** för knapp 1 och knapp 2.
+2. Ingressen ska vara en **självständig, korrekt sammanfattning** av originalnyheten, inte en kopia av AI-brödtexten.
+3. Riktlinjen är **cirka 100 ord**.
+4. Språket ska vara tydligt, lättbegripligt och använda **lagom korta meningar**.
+5. Ta med nyhetens huvudbudskap och relevanta fakta: viktiga siffror, risker, vem som säger vad, tidsperioder, konsekvenser, slutsatser och nödvändiga reservationer.
+6. Bevara viktiga nyanser. Förenkling får inte ändra innebörden.
+7. Skriv med egna ord. Lägg inte till obekräftade fakta.
+8. Ingressen visas i **fetstil**, utan en extra rubrik ”Ingress”.
+9. GPT ska ta fram ingressen **innan** AI-brödtexten skapas.
 
-I privat visning ska Tomas kunna se och använda:
-- HämtaNyheter.
-- Filter för källa.
-- Fullständig/original rubrik för vanliga dokument.
-- Exakt datum i formatet YYYY-MM-DD.
-- Källa i dokumentinformationen.
-- Knappen **Läs originaldokumentet** för vanliga dokument.
-- Privat dokumentmetadata som hämtas från det privata repositoryt Data.
-- Kryssrutan **Privat visning** för att växla mellan Tomas vy och den publika vyn.
-- Knappen **Regler** och innehållet i `Regler_Nyheter.md`. Denna knapp ska endast visas för Tomas när den privata GitHub-token har verifierats **och Privat visning är aktiverad**.
+## 3. AI-brödtext för vuxna
 
-När Tomas avmarkerar **Privat visning** ska han kunna kontrollera hur appen ser ut för andra användare.
+1. AI-brödtexten ska återge originalnyhetens **viktigaste fakta och sammanhang** med ett enklare, mer pedagogiskt språk än originalet.
+2. **Undvik långa meningar.** Dela upp komplicerade resonemang i kortare, tydliga meningar. Använd gärna korta stycken.
+3. Förklara svåra ord och begrepp när det behövs.
+4. Texten får bli **längre än originaltexten** om det förbättrar förståelsen.
+5. Använd vid behov **mellanrubriker, pedagogiska punktlistor, numrerade listor och relevanta extralänkar**.
+6. Skilj tydligt på fakta som originalartikeln rapporterar och GPT:s kompletterande förklaringar eller slutsatser.
+7. Hitta inte på fakta eller citat och kopiera inte längre formuleringar från nyhetskällan.
+8. Upprepa inte bara ingressen. Brödtexten ska ge fördjupning och förklara **varför** och **hur**.
+9. Brödtexten ska formateras med fungerande rubriker, listor, länkar och stycken.
+10. Arbetsordning: **läs original → kontrollera originalrubrik → skriv ingress → skriv AI-brödtext → kontrollera saklighet, begriplighet och formatering**.
 
-### 1b. Andra användare
+## 4. Behörigheter – en ägare och VIP
 
-Andra användare ska ha en mer begränsad visning av vanliga webbdokument av upphovsrättsskäl.
+### 4a. Ägaren
 
-För vanliga dokument ska andra användare:
-- inte se källa,
-- se en omskriven rubrik i stället för originalrubriken,
-- endast se år och månad, YYYY-MM,
-- inte få någon knapp eller originallänk till originaldokumentet,
-- se en egen omskriven ingress och dokumenttext.
+- Har tillgång till **originaltext**, **AI-text för vuxna** och tillgängliga övriga textlägen.
+- Har tillgång till hela området **HämtaNyheter**, inklusive dess splitterline.
+- Får se originalrubrik, källinformation, datum, kategorier och klickbar länk till originalwebbplatsen.
+- Vid appstart, F5 och annan omladdning ska **ägarens filtervillkor bevaras**.
+- Vid appstart och omladdning ska **alla områden som styrs av splitterlines vara öppna**.
+- Endast verifierad ägare får använda ägarfunktionerna och läsa originaltexterna från det privata Data-registret.
 
-Den publika filen `nyheter.json` ska därför inte innehålla privat dokumentmetadata som källa, exakt datum eller originallänk för vanliga dokument.
+### 4b. VIP
 
-Privat dokumentmetadata ligger i `Data/Test/Nyheter/nyheter_privata.json`.
+- Får **inte läsa originaltexten inne i appen**.
+- Får **läsa originalrubriken**, AI-ingressen och AI-brödtexten.
+- Får **se och klicka på webbadressen till källans webbplats**.
+- Får **inte se området HämtaNyheter**. Hela området och dess splitterline ska vara dolda.
+- Vid **varje appstart eller omladdning** ska **alla filter vara rensade**.
+- Vid **varje appstart eller omladdning** ska tillgängliga **splitterlines vara stängda**.
+- VIP:s tillgång till källans webbsida innebär inte att originaltexten får visas i appens egen originaltextvy.
 
-### 1c. PUBLIC/VIP-identitet
+### 4c. Behörighet och datalagring
 
-Den privata ägarinloggningen med Tomas befintliga GitHub-token ska alltid kontrolleras först. Om tokenen finns och verifieras ska PUBLIC/VIP-rutinerna inte köras på den datorn och Tomas ska komma in i appen på vanligt sätt.
+- Appen finns på GitHub Pages i **ChessApps-Pages**.
+- AI-bearbetade dokument lagras i `Test/Nyheter/nyheter.json`.
+- Privat metadata finns i **Data/Test/Nyheter/nyheter_privata.json**.
+- Originaltexter finns i **Data/Test/Nyheter/nyheter_originaltexter.json**.
+- Det är **behörighetskontrollen och datatillgången**, inte bara dolda knappar, som ska hindra VIP från att läsa originaltexten.
+- Det finns **ingen PUBLIC-roll** i den aktuella behörighetsmodellen. Gamla instruktioner för PUBLIC ska inte tillämpas.
 
-För andra användare används följande tre värden i `localStorage`:
-- `ITNyheter_UserId` – ett slumpmässigt permanent ID för den aktuella webbläsarprofilen,
-- `ITNyheter_UserName`,
-- `ITNyheter_UserRole` – `PUBLIC` eller `VIP`.
+## 5. Dokumenttyper och presentation
 
-Vid första appstarten, när `ITNyheter_UserId` saknas:
-- appen skapar ett nytt `ITNyheter_UserId`,
-- grundrollen sätts till `PUBLIC`,
-- en login-ruta visas automatiskt med texten **Login:** och informationen **Stäng login med ESC eller ENTER**,
-- tomt svar eller ESC ger `userName = OKÄND` och `userRole = PUBLIC`,
-- ett svar som börjar med **VIP**, oberoende av versaler/gemener, ger `userRole = VIP`,
-- VIP-namnet normaliseras till formen **VIP-Namn**, till exempel `vip-Olof` → `VIP-Olof`, `VipAnna` → `VIP-Anna` och `VIP Tomas` → `VIP-Tomas`,
-- övriga svar sparas som användarnamn och får rollen `PUBLIC`.
-
-Vid senare appstarter visas ingen automatisk login-ruta om `userId` redan finns.
-
-Högerklick på app-rubriken **IT-Nyheter** ska öppna login-rutan igen för PUBLIC/VIP-användare. `ITNyheter_UserId` ska då behållas, medan `ITNyheter_UserName` och `ITNyheter_UserRole` får ändras.
-
-Två filer används i privata repot **Data**:
-- `Test/Nyheter/Users.json` – en unik post per `userId` med `userId`, `userName` och `userRole`,
-- `Test/Nyheter/UserLog.json` – en loggrad vid varje appstart med `userId`, `userName`, `userRole` och datum/tid i formen `YYYY-MM-DD  HH:MM:SS`.
-
-Den separata begränsade GitHub-tokenen lagras som Repository Secret med namnet `ITNYHETER_LOG_TOKEN` i `ChessApps-Pages`. Workflow-filen `.github/workflows/itnyheter-check-token.yml` kontrollerar att Secret-värdet fungerar mot privata repot Data och loggfilerna.
-
-Appen har en förberedd skyddad token-payload för PUBLIC/VIP-loggning. Så länge den payloaden är tom fungerar lokal identitet och login, men ingen PUBLIC/VIP-logg skrivs till Data.
-
-### YouTube är ett undantag
-
-YouTube-klipp behandlas inte som vanliga webbdokument i denna upphovsrättsregel.
-
-För YouTube får följande vara synligt även för andra användare:
-- originalrubrik,
-- exakt publiceringsdatum när det är känt,
-- källa YouTube,
-- kanal och utgivare när de är kända,
-- original-/YouTube-länk,
-- inbäddad YouTube-spelare.
-
-## 2. Rubrik, ingress och fullt dokument
-
-**Terminologi i appen:** Det gemensamma användarordet är **Dokument**. Dokumenttypen är **IT-Fakta**, **IT-Nyhet** eller **IT-YouTube**. Filtret heter **Dokumenttyp**. Appens huvudrubrik **IT-Nyheter** samt tekniska filnamn och kommandot `HämtaNyheter` behålls.
-
-Ingressen ska vara cirka **100 ord** och ge en korrekt sammanfattning av det viktigaste i nyheten.
-
-Ingressen ska prioritera:
-- huvudbudskapet,
-- viktiga siffror och riskbedömningar,
-- vem som säger vad,
-- viktiga tidsperioder,
-- viktiga konsekvenser och slutsatser,
-- centrala reservationer och osäkerheter.
-
-Språket ska vara lätt att förstå. Viktig innebörd får inte tas bort bara för att texten förenklas.
-
-### 2a. Ett dokument valt via rubriklistan
-
-När användaren väljer en bestämt dokument i listan **Fullständig rubrik** eller **Omskriven rubrik** ska appen visa:
-- rubrik,
-- synligt **ID-nummer** för dokumentposten,
-- metadata enligt användarens behörighet,
-- **Dokumenttyp** så att det framgår om dokumentet är **IT-Fakta**, **IT-Nyhet** eller **IT-YouTube**,
-- kategorier,
-- ingress,
-- hela den längre omskrivna dokumenttexten.
-
-Ingressen visas som första fetstilade stycke. Orden "Ingress" och "Dokumentet" ska inte användas som extra mellanrubriker.
-
-### 2b. Flera dokument samtidigt
-
-När flera dokument visas samtidigt ska varje vanlig dokument endast visa ingressen, inte den längre dokumenttexten.
-
-ID-numret ska vara synligt i informationsraden för varje dokumentpost, oavsett dokumenttyp.
-
-
-## 2c. Dokumenttyper
+### Dokumenttyper
 
 Alla poster ska ha en av följande typer:
 - **IT-Fakta** – beständiga faktabaserade referens- och sammanställningsdokument som GPT skapar.
@@ -130,7 +86,7 @@ Dokumentnamnets prefix ska göra dokumenttypen synlig direkt:
 - **N:** = IT-Nyhet.
 - **Y:** = IT-YouTube.
 
-För IT-Nyhet och IT-YouTube ska prefixet lagras i den publika rubriken `titel`. En privat `fullständig_rubrik` som återger källans originalrubrik ska däremot inte skrivas om; appen lägger till rätt prefix när den visar dokumentnamnet.
+För IT-Nyhet och IT-YouTube ska prefixet lagras i den rubriken `titel`. En `fullständig_rubrik` som återger källans originalrubrik ska däremot inte skrivas om; appen lägger till rätt prefix när den visar dokumentnamnet.
 
 Samma tre typnamn ska användas både som **Dokumenttyp** i varje dokument och som alternativ i appens filter **Dokumenttyp**.
 
@@ -143,7 +99,7 @@ Filtret **Dokumenttyp** ska visa antal poster inom parentes för samtliga val:
 Antalen ska räknas från den aktuella dokumentfilen när appen läser in dokumenten och räknas därför om automatiskt vid **Uppdatera filtrering** eller F5.
 
 För **IT-Fakta** gäller dessutom:
-- både den publika rubriken `titel` och den privata fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när dokumentet är en beständig referens,
+- både den rubriken `titel` och den fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när dokumentet är en beständig referens,
 - tecknet **!** markerar att innehållet är en beständig referens/sammanställning och inte hårt knutet till ett enskilt publiceringsdatum,
 - fältet `datum` ska ange när just den aktuella versionen av IT-Fakta-posten skapades eller publicerades,
 - varje IT-Fakta-post ska ha ett versionsnummer i formen **V1, V2, V3 ...**,
@@ -159,7 +115,15 @@ Exempel på IT-Fakta:
 - **!AI-historik ...**
 - **!AI-begrepp ...**
 
-## 3. HämtaNyheter och dataflöde
+
+
+- När **ett dokument** valts visas originalrubrik, tillåten metadata, kategorier, gemensam ingress och vald brödtext.
+- När **flera dokument** visas räcker ingressen i respektive dokumentkort.
+- Dokumentens typ och prefix ska vara konsekventa.
+
+## 6. HämtaNyheter och arbetsflöde
+
+### Arbetsflöde
 
 Tomas skriver sina önskemål i klartext i appens privata del **HämtaNyheter**.
 
@@ -168,12 +132,12 @@ Tomas skriver sina önskemål i klartext i appens privata del **HämtaNyheter**.
 
 GPT läser önskemålen därifrån och hämtar eller bearbetar relevanta dokument.
 
-De publika, bearbetade dokumenten sparas i repositoryt **ChessApps-Pages**, i:
+De AI-bearbetade dokumenten sparas i repositoryt **ChessApps-Pages**, i:
 `Test/Nyheter/nyheter.json`
 
 Appen läser sedan in dokumenten från den publika JSON-filen.
 
-Privat metadata för vanliga dokument sparas separat i repositoryt **Data** och ska bara läsas när Tomas är verifierad.
+Privat metadata och originaltexter sparas separat i **Data**. Originaltexterna får bara visas för den verifierade ägaren. VIP får läsa originalrubrik, metadata och länken till källans webbplats, men inte originaltexten.
 
 ### 3a. Status för aktuellt önskemål
 
@@ -208,53 +172,17 @@ Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras m
 **Spara önskemål** betyder att texten skickas till den privata Data-filen. Det är inte samma sak som att appen får ändra innehållet i textrutan.
 
 Önskemål-rutan ska använda webbläsarens inbyggda storleksändring via draghandtaget nere till höger. Rutan ska kunna minskas till ungefär en textrad och förstoras efter behov. Kontrollerna under rutan ska ligga i normalt dokumentflöde och därför följa med när rutan görs högre eller lägre.
-## 4. Upphovsrätt och omskrivning
 
-För vanliga webbdokument ska den publika texten skrivas med egna ord.
 
-GPT ska:
-- skriva om rubriken så att den tydligt skiljer sig från originalrubriken,
-- skriva en ingress på cirka 100 ord,
-- skriva en längre lättläst text som behåller den viktiga innebörden,
-- behålla centrala fakta, siffror, namn, riskbedömningar, tidsperioder och slutsatser,
-- undvika att kopiera längre formuleringar ordagrant från originaldokumentet.
+## 7. Appens övriga funktioner
 
-Målet är att ge en sakligt korrekt och lättläst återgivning utan att återpublicera originaldokumentet.
+- En diskret appversion visas vid rubriken **IT-Nyheter**.
+- Filter, sortering, favoriter, döljmarkeringar och inställningar sparas lokalt, men **filteråterställningen skiljer mellan ägare och VIP enligt avsnitt 4**.
+- **Uppdatera filtrering** ska endast tillämpa filter på nytt och **inte** ladda om HTML-sidan. **F5** laddar om appen.
+- **Rensa filter** återställer samtliga filtervillkor; arkivfiltret sätts då till **Alla**.
+- Inga inaktuella regler om omskrivna rubriker för PUBLIC eller separata **Läs originaldokumentet/Läs webb-sidan**-knappar gäller.
 
-## 5. Appens visning, storleksändring och lokal lagring
-
-En diskret **appversion** ska visas intill rubriken **IT-Nyheter**. Versionsvärdet avser versionen av appens HTML-kod och används för att kontrollera att webbläsaren verkligen har laddat den senaste GitHub Pages-versionen.
-
-### 5a. Statistik för markerad text
-
-När användaren markerar text i en detaljerad nyhetsdokument ska appen visa statistik för:
-- ingressens antal ord och bokstäver,
-- dokumentets antal ord och bokstäver,
-- den markerade textens antal ord och bokstäver.
-
-Statistiken visas i en flytande textruta **ovanför dokumentets rubrik**. Rutan ska följa med vid rullning i den detaljerade dokumentrutan så att statistiken förblir synlig.
-
-### 5b. Storleken på den detaljerade dokumentrutan
-
-Den stora dokumentrutan som visar både ingress och den fullständiga detaljerade dokumenttexten ska kunna ändras i höjd genom att användaren drar i rutans nederkant.
-
-Detta ska fungera:
-- med mus på dator,
-- med pekning/touch på mobil och surfplatta.
-
-Användaren ska kunna göra rutan högre för att se fler rader samtidigt eller lägre för att spara skärmutrymme.
-
-Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
-
-### 5c. Publik nyhetsfil, lokala inställningar och privat ägardel
-
-- Dokumentfilen ligger publikt tillsammans med appen på GitHub Pages.
-- Filter, sorteringsordning, favoriter och arkivering sparas bara lokalt i respektive webbläsare.
-- Ägardelen **HämtaNyheter** visas endast för en webbläsare vars GitHub-token har åtkomst till det privata Data-repot.
-
-Dessa uppgifter ska finnas i regeldokumentet men **inte visas som en förklarande text längst ner under dokumenten i appen**.
-
-## 6. IT-Fakta och appbeteende
+### IT-Fakta och sammanställningar
 
 ### 6a. Dokumenttypen IT-Fakta
 
@@ -279,6 +207,8 @@ Detaljerad information om AI-bolag, deras modellfamiljer och verktyg ska ligga i
 
 I **!AI-historik** ska däremot korta årtalsnotiser finnas kvar så att den historiska tidslinjen fortfarande visar när viktiga händelser inom AI-schack och AI-bolag/modeller inträffade.
 
+
+
 ### 6c. Markering av aktiva filter och knappar
 
 Alla aktiva filtervillkor ska markeras tydligt med **röd bakgrundsfärg** i appen.
@@ -287,7 +217,7 @@ När ett filtervillkor inte längre är aktivt ska den röda markeringen försvi
 
 När användaren trycker på **Rensa filter** ska samtliga filter återställas och alla röda filtermarkeringar försvinna. För filtret **Arkiv** betyder rensat läge **Alla**.
 
-När appen startas utan ett tidigare sparat val ska filtret **Arkiv** som standard vara **Ej arkiverade**. När **Uppdatera filtrering** eller F5 används ska det aktuella valet i Arkiv-filtret bevaras, även om valet är **Alla** efter att Rensa filter har använts.
+För ägaren ska alla filterval bevaras vid F5 och omstart. För VIP ska alla filter återställas vid start eller omladdning. **Uppdatera filtrering** ska inte ladda om sidan.
 
 De tre alternativen i Arkiv-filtret ska alltid visa antal inom parentes:
 - **Alla (antal)**
@@ -309,13 +239,7 @@ Om en dokument har flera kategorier ska den räknas en gång i varje kategori so
 
 Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med vit text**. Knappar eller kontroller som redan har en särskild betydelsefärg, exempelvis den röda **Uppdatera filtrering**, ska behålla sin specialfärg.
 
-### 6d. Meddelande efter Spara önskemål
 
-När användaren trycker på **Spara önskemål** och sparningen har lyckats ska appen visa meddelandet:
-
-**Önskemålen är hämtade.**
-
-Meddelandet ska försvinna automatiskt så fort användaren klickar eller trycker någon annanstans i appen.
 
 ### 6f. Tangentbordsscrollning i detaljerad dokument
 
@@ -324,17 +248,7 @@ När en detaljerad dokument är öppen gäller:
 - **Shift + Pil upp / Shift + Pil ned** scrollar inne i den öppna dokumentet.
 - Varje tryck på Shift + pil ska flytta texten ungefär **två textrader** uppåt eller nedåt, beräknat från dokumenttextens faktiska radavstånd.
 
-### 6e. Uppdatera filtrering laddar om appen
 
-Knappen **Uppdatera filtrering** ska vara tydligt **röd** så att Tomas lättare kommer ihåg att använda den.
-
-När användaren trycker på **Uppdatera filtrering** ska appen göra en fullständig siduppdatering motsvarande **F5**. Därmed läses den senaste versionen av appens HTML/JavaScript och den senaste dokumentfilen in.
-
-Efter en lyckad **Spara önskemål** ska meddelandet även påminna:
-
-**Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.**
-
-Den tidigare regeln gäller fortfarande att meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
 
 ### 6g. Datumfilter
 
@@ -347,30 +261,11 @@ När bara år anges ska alla dokument under året matcha. När år och månad an
 
 Alla datumvärden som finns tillgängliga för den aktuella användaren ska byggas upp som valbara sökvillkor i datumfältet. År och år–månad ska också skapas från de fullständiga datumen.
 
-Det valda datumvillkoret och övriga filtervillkor ska sparas lokalt och ligga kvar synliga efter **Uppdatera filtrering** och den fullständiga siduppdateringen. Filtervillkor får inte återställas automatiskt bara för att de för tillfället ger 0 träffar.
+Ägarens datumvillkor och övriga filtervillkor ska sparas lokalt och ligga kvar efter **Uppdatera filtrering** och F5. VIP:s filter återställs vid sidstart och omladdning. Filtervillkor får inte återställas automatiskt bara för att de för tillfället ger 0 träffar.
 
 Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den röda markeringen.
 
-### 6h. Omskrivna IT-nyheter utan medienamn i dokumenttexten
 
-- Alla dokument av typen **IT-Nyhet** ska skrivas med egna ord, tydligt och lättförståeligt. Skriv så att innehållet står på egna ben utan formuleringar som ”enligt Aftonbladet”, ”DN skriver” eller ”Reuters rapporterar”.
-- Ta bort nyhetsmediets namn ur den publika rubriken, ingressen och brödtexten **när namnet bara anger var nyheten hämtats**. Detta gäller även kortformer som DN och SvD.
-- Behåll namn på företag, organisationer och personer när de faktiskt är en del av nyhetens sakuppgifter, exempelvis när en artikel handlar om OpenAI, Google eller Wikimedia. Förvanska aldrig vem som uttalat sig eller vem som utfört en åtgärd.
-- Källans namn, originalrubrik, länk och exakt publiceringsdatum ska fortsatt bevaras separat i privat metadata enligt gällande behörighetsregler.
-- Vid framtida HämtaNyheter ska denna kontroll göras innan nya IT-Nyheter sparas.
-
-### 6i. Hämtdatum – behörighetsstyrd visning
-
-- Dokumentets **Hämtdatum** ska inte visas för användare med rollen **PUBLIC**.
-- Hämtdatum får visas för **VIP** och i **privat ägarvisning**.
-- Fältet `hämtdatum` behålls i nyhetsdata för sortering och administrativ användning. Denna regel gäller visningen i dokumentet, inte lagring eller sorteringsfunktion.
-
-### 6j. Originalknapp för VIP
-
-- **VIP** ska, liksom privat ägarvisning, kunna öppna originalwebbsidan för ett IT-Nyhetsdokument via knappen **Läs originaldokumentet**.
-- **PUBLIC** ska inte se denna knapp för IT-Nyheter.
-- För VIP får den nödvändiga originaladressen finnas som separat tekniskt fält i den publikt läsbara datafilen, men appen får inte visa adressen eller knappen för PUBLIC.
-- Privat metadata som källa och fullständig originalrubrik ska även fortsättningsvis följa sina separata behörighetsregler.
 
 ### 6k. Visa eller dölj metadata i dokument
 
@@ -379,3 +274,4 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 - På dator gör ett vanligt vänsterklick på dokumentrubriken samma sak. Vänsterklick och snabbt tryck är alltså likvärdiga för denna funktion.
 - Valet sparas lokalt på enheten och gäller för alla dokument och framtida besök tills användaren själv ändrar valet igen.
 - När metadata döljs ska rubriken och själva dokumenttexten fortfarande visas.
+
