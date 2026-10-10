@@ -44,6 +44,11 @@
     .owner-content-column .news.article-detailed{width:100%;box-sizing:border-box;height:auto;min-height:0;max-height:none;overflow:visible;scrollbar-gutter:auto;padding:0;margin:0;border:0;border-radius:0}
     .owner-content-column .news.article-detailed h2{font-size:1.22rem;line-height:1.45;margin:0 92px 8px 0}
     .owner-content-column .article-body{height:auto;max-height:none;overflow:visible}
+    .owner-content-compare{align-items:start}
+    .owner-content-column{box-sizing:border-box;height:min(72vh,900px);min-height:220px;max-height:none;overflow-y:auto;overflow-x:hidden}
+    .owner-content-column .text-stats{margin:8px 0 12px}
+    .owner-content-compare .article-resize-handle{margin:0 0 2px;height:18px;flex-shrink:0}
+    .owner-content-compare .article-resize-handle::after{top:7px}
     @media(max-width:850px){.owner-content-compare{grid-template-columns:1fr}}
     .filter-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:flex-start}
     .filter-grid>label{flex:0 1 auto;width:max-content;max-width:100%;min-width:0}
@@ -1818,40 +1823,29 @@
 
 
   function updateSelectionStats() {
-    const card = document.querySelector(".news.article-detailed");
-    const box = card?.querySelector(".text-stats");
-    if (!card || !box) return;
-
     const selection = document.getSelection();
-    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
-      box.classList.remove("visible");
-      return;
+    const range = selection && selection.rangeCount && !selection.isCollapsed
+      ? selection.getRangeAt(0) : null;
+    const selectedText = range ? selection.toString().trim() : "";
+    const cards = listEl.querySelectorAll(".news.article-detailed, .owner-content-column");
+    for (const card of cards) {
+      const box = card.querySelector(".text-stats");
+      if (!box) continue;
+      const node = range && (range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+        ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement);
+      if (!selectedText || !node || !card.contains(node)) {
+        box.classList.remove("visible");
+        continue;
+      }
+      const ingress = card.querySelector(".article-ingress")?.textContent || "";
+      const body = card.querySelector(".article-body")?.textContent || "";
+      box.textContent = [
+        statsLabel("Ingress", ingress),
+        statsLabel("Dokument", body),
+        statsLabel("Markering", selectedText)
+      ].join(" · ");
+      box.classList.add("visible");
     }
-
-    const range = selection.getRangeAt(0);
-    const node = range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
-      ? range.commonAncestorContainer
-      : range.commonAncestorContainer.parentElement;
-
-    if (!node || !card.contains(node)) {
-      box.classList.remove("visible");
-      return;
-    }
-
-    const selectedText = selection.toString().trim();
-    if (!selectedText) {
-      box.classList.remove("visible");
-      return;
-    }
-
-    const ingress = card.querySelector(".article-ingress")?.textContent || "";
-    const body = card.querySelector(".article-body")?.textContent || "";
-    box.textContent = [
-      statsLabel("Ingress", ingress),
-      statsLabel("Dokument", body),
-      statsLabel("Markering", selectedText)
-    ].join(" · ");
-    box.classList.add("visible");
   }
 
   function renderNews(items) {
@@ -2152,7 +2146,27 @@
 
             } else column.append(heading, textBox);
           }
-          compare.append(column);
+          // Statistik och höjdjustering gäller varje kolumn separat.
+          if (mode !== "2") {
+            const stats = document.createElement("div");
+            stats.className = "text-stats";
+            stats.setAttribute("aria-live", "polite");
+            column.insertBefore(stats, column.querySelector("h2, .article-body") || column.firstChild);
+          }
+          if (mode === "2" && selectionStats.parentElement !== column) {
+            column.insertBefore(selectionStats, column.querySelector("h2") || column.firstChild);
+          }
+          const wrapper = document.createElement("div");
+          wrapper.className = "owner-compare-pane";
+          wrapper.style.minWidth = "0";
+          wrapper.style.display = "flex";
+          wrapper.style.flexDirection = "column";
+          wrapper.append(column);
+          const resizeHandle = document.createElement("div");
+          resizeHandle.className = "article-resize-handle";
+          attachArticleResize(resizeHandle, column);
+          wrapper.append(resizeHandle);
+          compare.append(wrapper);
         }
         listEl.append(compare);
       } else {
