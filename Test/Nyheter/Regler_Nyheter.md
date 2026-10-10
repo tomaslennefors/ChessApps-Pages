@@ -1,8 +1,35 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-10 (mobil växling mellan dokument och ingresser; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-10 21:09 (syfte och metod för kunskapsutveckling; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
+
+## Syfte och metod
+
+### Syfte
+
+IT-Nyheter ska **väcka nyfikenhet och öka kunskaperna inom AI och IT**, med så liten lästid som möjligt. Innehållet består av tre dokumenttyper: **IT-Nyhet, IT-Fakta och IT-YouTube** (YouTube-klipp).
+
+GPT ska **välja relevant och värdefullt innehåll**, förklara svåra samband bättre och tydligare än vad en vanlig nyhetssammanfattning gör och hjälpa läsaren att lära sig något nytt. Ägaren och VIP-användarna ska kunna bedöma om innehållet är begripligt, intressant och kunskapshöjande.
+
+### Metod – tips för ökad kunskap
+
+- **Syfte och sammanhang:** Börja med vad som är viktigt och varför.
+- **Begrepp och förklaringar:** Förklara svåra ord direkt, gärna med enkla exempel.
+- **Struktur:** Använd tydliga rubriker, korta listor och relevanta länkar.
+- **Kort och koncist:** Skriv korta meningar. Undvik upprepningar och onödig text.
+- **Faktasamling och fördjupning:** Lägg fördjupande detaljer och extralänkar i slutet.
+- **Faktakontroll och ärlighet:** Kontrollera påståenden innan de skrivs. Gissa aldrig. Redovisa tydligt vad som är osäkert.
+
+### Arbetssätt för GPT
+
+1. Välj nyheter, fakta och YouTube-klipp efter **kunskapsvärde**, inte enbart uppmärksamhet.
+2. Kontrollera centrala fakta och skilj mellan **källa, fakta, förklaring och bedömning**.
+3. Skriv en **kort, självständig ingress** och en lättbegriplig förklaring. Utelämna inte viktiga reservationer.
+4. Hänvisa till **Work** när ett ämne kräver djupare undersökning. Redovisa därefter en kort, begriplig sammanfattning och vid behov ett fördjupningsdokument.
+5. Bedöm kvaliteten utifrån läsarens **förståelse, nya kunskaper och väckta nyfikenhet** – inte textmängden.
+
+**Huvudprincip: Maximal kunskap med minimal lästid, utan att kompromissa med faktakontrollen.**
 
 ## 1. Originalrubrik och dokumentvisning
 
