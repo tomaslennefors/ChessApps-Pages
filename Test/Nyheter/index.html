@@ -1947,15 +1947,15 @@
 
       const webAddress = document.createElement("div");
       webAddress.className = "web-address";
-      if (youtube || (ownerMode && detailedArticle)) {
-        const addr = String(youtube ? (item.webbadress || item.länk || "") : (originalNewsById.get(String(item.id))?.url || item.original_länk || item.länk || ""));
+      if (youtube || ((ownerMode || isVipUser()) && detailedArticle)) {
+        const addr = String(youtube ? (item.webbadress || item.länk || "") : ((ownerMode ? originalNewsById.get(String(item.id))?.url : "") || item.original_länk || item.länk || item.webbadress || ""));
         const label = document.createTextNode("Webbadress: ");
         const a = document.createElement("a");
         a.href = addr;
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         a.textContent = addr;
-        webAddress.append(label, a);
+        if (addr) webAddress.append(label, a);
       }
 
       const transcriptInfo = document.createElement("div");
@@ -2009,7 +2009,7 @@
       article.append(star, copyNewsBtn, archiveIcon);
       if (detailedArticle) article.append(selectionStats);
       article.append(h2);
-      if (ownerMode && detailedArticle) article.append(webAddress);
+      if ((ownerMode || isVipUser()) && detailedArticle) article.append(webAddress);
       article.append(details, tags, summary);
       if (detailedArticle) {
         article.append(body);
