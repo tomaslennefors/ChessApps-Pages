@@ -96,7 +96,7 @@ Filtret **Dokumenttyp** ska visa antal poster inom parentes för samtliga val:
 - **IT-Nyhet (antal)**
 - **IT-YouTube (antal)**
 
-Antalen ska räknas från den aktuella dokumentfilen när appen läser in dokumenten och räknas därför om automatiskt vid **Uppdatera filtrering** eller F5.
+Antalen räknas från inlästa dokument och uppdateras när filtreringen tillämpas. **Uppdatera filtrering** laddar inte om dokumentfilen; **F5** gör en fullständig omladdning.
 
 För **IT-Fakta** gäller dessutom:
 - både den rubriken `titel` och den fullständiga rubriken `fullständig_rubrik` ska alltid börja med tecknet **!** när dokumentet är en beständig referens,
@@ -167,7 +167,7 @@ Appen och GPT får aldrig ändra texten i själva textrutan.
 
 När appen eller GPT behöver bearbeta, kontrollera, trimma, dela upp, omformatera eller på annat sätt förändra texten ska en **kopia** av texten användas. Originaltexten i textrutan ska alltid lämnas orörd.
 
-Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras med **F5** eller **Uppdatera filtrering** ska exakt samma text visas igen, även om Tomas ännu inte har tryckt **Spara önskemål**.
+Texten i textrutan ska bevaras lokalt medan Tomas skriver. Vid **F5** ska exakt samma text visas igen; **Uppdatera filtrering** ska inte ladda om sidan eller ändra texten, även om Tomas ännu inte har tryckt **Spara önskemål**.
 
 **Spara önskemål** betyder att texten skickas till den privata Data-filen. Det är inte samma sak som att appen får ändra innehållet i textrutan.
 
@@ -178,7 +178,7 @@ Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras m
 
 - En diskret appversion visas vid rubriken **IT-Nyheter**.
 - Filter, sortering, favoriter, döljmarkeringar och inställningar sparas lokalt, men **filteråterställningen skiljer mellan ägare och VIP enligt avsnitt 4**.
-- **Uppdatera filtrering** ska göra en fullständig siduppdatering motsvarande **F5**, enligt den tidigare fastställda regeln. Ägarens filter bevaras; VIP:s filter återställs enligt avsnitt 4.
+- **Uppdatera filtrering** ska endast tillämpa de aktuella filtervillkoren på dokumentlistan, **utan sidomladdning**. **F5** laddar däremot om hela appen. Ägarens filter bevaras vid omladdning; VIP:s filter återställs enligt avsnitt 4.
 - **Rensa filter** återställer samtliga filtervillkor; arkivfiltret sätts då till **Alla**.
 - Inga inaktuella regler om omskrivna rubriker för PUBLIC eller separata **Läs originaldokumentet/Läs webb-sidan**-knappar gäller.
 
@@ -322,7 +322,7 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 
 - Efter lyckad sparning visas **Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.**
 - Meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
-- **Uppdatera filtrering** ska enligt tidigare dokument uppdatera sidan motsvarande F5. Detta är den bevarade tidigare funktionen; eventuell ändring kräver ett separat beslut.
+- Den gamla regeln att **Uppdatera filtrering** ska fungera som **F5** är upphävd och får inte återinföras. Knappen filtrerar utan att ladda om appen.
 
 ### 9d. Säker lagring och användargränssnitt
 
