@@ -2045,7 +2045,10 @@
             heading.textContent = "2. AI-text för vuxna";
             // Flytta ikonerna till samma kolumnnivå som originaltextens ikoner.
             // Annars positioneras de relativt den inre artikeln, under lägesrubriken.
-            column.append(star, copyNewsBtn, archiveIcon, heading, article);
+            column.append(star, copyNewsBtn, archiveIcon, heading);
+            // Samma DOM-nivå för allt dokumentinnehåll i båda kolumnerna:
+            // ingen inre .news-container som ger andra bredder eller marginaler.
+            while (article.firstChild) column.append(article.firstChild);
           } else {
             const heading = document.createElement("h3");
             heading.textContent = mode === "1" ? "1. Originaltext" : "3. AI-text för 10-åringar";
