@@ -276,14 +276,24 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 - När metadata döljs ska rubriken och själva dokumenttexten fortfarande visas.
 
 
-## 8. Bevarade funktioner från originalreglerna
+## 8. Jämförelseläge – statistik och höjdjustering
 
-### 8a. YouTube-dokument
+- I jämförelseläge ska **varje dokumentkolumn** ha ett eget reglage i nederkanten för att ändra höjden med mus eller pekskärm.
+- Varje kolumn ska kunna rullas separat när innehållet är längre än den valda höjden.
+- Vid markering av text ska en **statistikruta visas i den aktuella kolumnen**, med antal ord och bokstäver för ingress, brödtext och markerad text.
+- Statistiken ska följa med vid rullning i kolumnen och inte visas i andra kolumner där ingen text är markerad.
+- Funktionerna ska fungera både i vanlig detaljvisning och vid jämförelse mellan originaltext och AI-text.
+- Kolumnerna ska fortsatt ha **samma bredd och marginaler**.
+- Den senast ändrade dokumenthöjden ska lagras lokalt, enligt regeln för vanlig dokumentvisning.
+
+## 9. Bevarade funktioner från originalreglerna
+
+### 9a. YouTube-dokument
 
 - YouTube-dokument får visa originalrubrik, exakt publiceringsdatum när känt, källa YouTube, kanal/utgivare och klickbar YouTube-länk.
 - Inbäddad YouTube-spelare ska kunna visas. Behörighetsreglerna i avsnitt 4 gäller fortfarande; det finns ingen PUBLIC-roll.
 
-### 8b. Statistik och storleksändring
+### 9b. Statistik och storleksändring
 
 #### Statistik: Statistik för markerad text
 
@@ -308,15 +318,28 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 
 
 
-### 8c. Meddelanden efter Spara önskemål
+### 9c. Meddelanden efter Spara önskemål
 
 - Efter lyckad sparning visas **Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.**
 - Meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
 - **Uppdatera filtrering** ska enligt tidigare dokument uppdatera sidan motsvarande F5. Detta är den bevarade tidigare funktionen; eventuell ändring kräver ett separat beslut.
 
-### 8d. Säker lagring och användargränssnitt
+### 9d. Säker lagring och användargränssnitt
 
 - Dokumentfilen finns tillsammans med appen på GitHub Pages.
 - Filter, sortering, favoriter och arkivering lagras lokalt; VIP:s filter återställs enligt avsnitt 4.
 - HämtaNyheter får bara visas för verifierad ägare och får inte visas för VIP.
 - Tekniska upplysningar om lagring ska stå i regeldokumentet, inte som förklarande text under dokumenten i appen.
+
+## 10. Ytterligare detaljer som bevarats vid genomgång av originalfilen
+
+- **YouTube** är ett särskilt dokumentfall: visa kanal/utgivare när de är kända, publiceringsdatum, källa och inbäddad spelare. Originaltextbegränsningen för VIP gäller fortfarande.
+- **Statistikrutans placering:** Den ska visas ovanför dokumentrubriken eller i respektive jämförelsekolumn och följa med vid rullning.
+- **Höjdreglaget:** Den detaljerade dokumentrutan ska kunna göras både högre och lägre. Reglaget ska fungera på dator, mobil och surfplatta och den valda höjden sparas lokalt.
+- **Ägarens inloggning:** Ägarfunktioner kräver verifierad GitHub-token med åtkomst till privata Data-repot. VIP ska inte få originaltext enbart genom att manipulera visningen.
+- **Sparmeddelandet:** Efter lyckad sparning av önskemål visas påminnelsen om Uppdatera filtrering. Meddelandet försvinner vid nästa klick eller tryck någon annanstans i appen.
+- **Fritexten:** Endast ägaren får ändra önskemålstexten. GPT och appen ska arbeta med en kopia och får inte skriva om originalet i textrutan.
+- **Ordval:** Använd **Dokument**, **Dokumenttyp**, **IT-Nyhet**, **IT-Fakta** och **IT-YouTube**. Äldre beteckningar som **IT-Dokument** ska inte återinföras.
+- **Dokumentversioner:** För IT-Fakta skapas en ny post och ett nytt versionsnummer när innehållet ändras. Äldre versioner bevaras tills ägaren väljer att arkivera dem.
+
+Originalfilen `Regler_Nyheter_original.md` behålls oförändrad som historisk referens. Tidigare regler om PUBLIC, omskrivna originalrubriker och separata originalknappar ska inte återföras.
