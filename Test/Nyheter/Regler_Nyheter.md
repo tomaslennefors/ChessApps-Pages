@@ -42,6 +42,15 @@ Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omsk
 9. Brödtexten ska formateras med fungerande rubriker, listor, länkar och stycken.
 10. Arbetsordning: **läs original → kontrollera originalrubrik → skriv ingress → skriv AI-brödtext → kontrollera saklighet, begriplighet och formatering**.
 
+## VIP-inloggning – användarnamn, inte lösenord
+
+- VIP-inloggningen är ett **inloggningsnamn**, inte ett lösenord. Den kräver inte lösenord eller e-postadress.
+- Formatet är `VIP-` följt av **1–50 valfria tecken**. Bindestreck, siffror, mellanslag och andra tecken får användas i namnet.
+- Prefixet `VIP-` är obligatoriskt och får skrivas med stora eller små bokstäver.
+- Exempel på godkänd inloggning: `VIP-TomasL-Edge`.
+- Appen får inte införa ytterligare teckenbegränsningar utan Tomas godkännande. Alla inloggningsregler ska finnas i detta dokument.
+- VIP-namnet identifierar användaren men innebär ingen säker lösenordsautentisering.
+
 ## 4. Behörigheter – en ägare och VIP
 
 ### Placering av ägarens kontroller
