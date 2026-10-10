@@ -181,9 +181,11 @@
     @media(max-width:650px){
       body.mobile-document-nav-active{padding-bottom:calc(95px + env(safe-area-inset-bottom))}
       .mobile-document-nav:not([hidden]){position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:#fff;border-top:1px solid var(--line);box-shadow:0 -3px 12px rgba(31,35,40,.15)}
-      .mobile-document-nav button{flex:1 1 0;min-width:0;min-height:44px;margin:0;padding:9px 5px;white-space:nowrap;font-size:.9rem;font-weight:650}
+      .mobile-document-nav button{flex:1 1 0;min-width:0;min-height:48px;margin:0;padding:9px 5px;white-space:nowrap;font-size:.9rem;font-weight:650}
       .mobile-document-nav button:disabled{opacity:.42;cursor:default}
-      .mobile-document-position{flex:0 0 auto;min-width:60px;text-align:center;font-weight:700;font-size:.92rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+      .mobile-document-position{flex:0 0 79px;min-width:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;font-weight:700;font-size:.9rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+      .mobile-document-position .mobile-document-action{font-size:.76rem;font-weight:600}
+      .mobile-document-position[aria-pressed="true"]{background:#0550ae;border-color:#0550ae}
     }
   </style>
 </head>
@@ -387,7 +389,10 @@
 
   <nav id="mobileDocumentNav" class="mobile-document-nav" aria-label="Bläddra mellan dokument" hidden>
     <button id="mobilePreviousDocument" type="button" aria-label="Föregående dokument">◀ Föregående</button>
-    <span id="mobileDocumentPosition" class="mobile-document-position" role="status" aria-live="polite" aria-atomic="true"></span>
+    <button id="mobileDocumentPosition" class="mobile-document-position" type="button" aria-label="Visa ingresser" aria-pressed="false" title="Visa ingresser">
+      <span id="mobileDocumentCounter" aria-hidden="true"></span>
+      <span id="mobileDocumentToggleLabel" class="mobile-document-action" aria-hidden="true">Ingresser</span>
+    </button>
     <button id="mobileNextDocument" type="button" aria-label="Nästa dokument">Nästa ▶</button>
   </nav>
 
@@ -565,6 +570,10 @@
   const mobilePreviousDocument = document.getElementById("mobilePreviousDocument");
   const mobileNextDocument = document.getElementById("mobileNextDocument");
   const mobileDocumentPosition = document.getElementById("mobileDocumentPosition");
+  const mobileDocumentCounter = document.getElementById("mobileDocumentCounter");
+  const mobileDocumentToggleLabel = document.getElementById("mobileDocumentToggleLabel");
+  let mobileIngressMode = false;
+  let mobileReturnDocumentId = "";
   const ownerContentModes = document.getElementById("ownerContentModes");
   const ownerModeButtons = [...ownerContentModes.querySelectorAll("[data-mode]")];
   const selectedContentModes = new Set(["2"]);
@@ -2258,14 +2267,49 @@
 
   function updateMobileDocumentNav(showSingle) {
     const total = Math.max(0, exactTitleFilter.options.length - 1);
-    const index = exactTitleFilter.selectedIndex;
-    const active = showSingle && index >= 1 && total >= 1;
+    if (mobileIngressMode && exactTitleFilter.value) {
+      // Ett vanligt dokumentval, t.ex. via listboxen, avslutar ingressläget.
+      mobileIngressMode = false;
+      mobileReturnDocumentId = "";
+    }
+    if (mobileIngressMode && total > 0
+        && ![...exactTitleFilter.options].some(option => option.value === mobileReturnDocumentId)) {
+      // Om filtret har ändrats återgår vi till första kvarvarande dokument.
+      mobileReturnDocumentId = exactTitleFilter.options[1]?.value || "";
+    }
+    const index = mobileIngressMode
+      ? [...exactTitleFilter.options].findIndex(option => option.value === mobileReturnDocumentId)
+      : exactTitleFilter.selectedIndex;
+    const active = total > 0 && index >= 1 && (mobileIngressMode || showSingle);
     mobileDocumentNav.hidden = !active;
     document.body.classList.toggle("mobile-document-nav-active", active);
     if (!active) return;
-    mobileDocumentPosition.textContent = index + " / " + total;
-    mobilePreviousDocument.disabled = index <= 1;
-    mobileNextDocument.disabled = index >= total;
+    mobileDocumentCounter.textContent = index + " / " + total;
+    mobileDocumentToggleLabel.textContent = mobileIngressMode ? "Dokument" : "Ingresser";
+    mobileDocumentPosition.setAttribute("aria-pressed", String(mobileIngressMode));
+    mobileDocumentPosition.setAttribute("aria-label", mobileIngressMode ? "Visa hela dokumentet" : "Visa ingresser");
+    mobileDocumentPosition.title = mobileIngressMode ? "Visa hela dokumentet" : "Visa ingresser";
+    mobilePreviousDocument.disabled = mobileIngressMode || index <= 1;
+    mobileNextDocument.disabled = mobileIngressMode || index >= total;
+  }
+
+  function toggleMobileDocumentView() {
+    if (mobileIngressMode) {
+      // Återställ det dokument som var valt innan ingresslistan öppnades.
+      const remembered = [...exactTitleFilter.options].some(option => option.value === mobileReturnDocumentId)
+        ? mobileReturnDocumentId : (exactTitleFilter.options[1]?.value || "");
+      mobileIngressMode = false;
+      mobileReturnDocumentId = "";
+      if (!remembered) return;
+      exactTitleFilter.value = remembered;
+    } else {
+      if (!exactTitleFilter.value) return;
+      mobileReturnDocumentId = exactTitleFilter.value;
+      mobileIngressMode = true;
+      exactTitleFilter.value = "";
+    }
+    applyFilters(false);
+    listEl.scrollIntoView({block:"start", behavior:"auto"});
   }
 
   function stepExactTitle(direction) {
@@ -2964,8 +3008,13 @@
   for (const control of [sourceFilter, publisherFilter, channelFilter, languageFilter, transcriptStatusFilter, categoryFilter, favoriteFilter, archiveFilter, typeFilter]) {
     control.addEventListener("change", () => applyFilters(true));
   }
-  exactTitleFilter.addEventListener("change", () => applyFilters(false));
+  exactTitleFilter.addEventListener("change", () => {
+    mobileIngressMode = false;
+    mobileReturnDocumentId = "";
+    applyFilters(false);
+  });
   documentSortMode.addEventListener("change", () => applyFilters(true));
+  mobileDocumentPosition.addEventListener("click", toggleMobileDocumentView);
   function navigateMobileDocument(direction) {
     if (stepExactTitle(direction)) {
       // Visa början av det nyvalda dokumentet, utan att behöva återvända till rubriklistan.
