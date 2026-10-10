@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-10 16:38 (mobil dokumentbläddring; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-10 (mobil växling mellan dokument och ingresser; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -288,11 +288,15 @@ När ett enskilt dokument är valt i **Fullständig rubrik** ska mobilvyn (skär
 
 - Knapp **◀ Föregående** väljer föregående dokument.
 - Knapp **Nästa ▶** väljer nästa dokument.
-- Mellan knapparna visas **aktuellt nummer / antal dokument** i den för tillfället filtrerade och sorterade rubriklistan, exempelvis `8 / 57`.
+- **Mittknappen** visar **aktuellt nummer / antal dokument** i den för tillfället filtrerade och sorterade rubriklistan, exempelvis `8 / 57`.
+- Ett tryck på mittknappen i fullständigt dokumentläge visar en **rullbar lista med alla matchande dokuments rubriker och ingresser**, utan fullständiga brödtexter.
+- Mittknappen står då i läget **Dokument**; ett nytt tryck återgår till det **tidigare valda fullständiga dokumentet** och visar dokumentet från början.
+- Den aktuella sorteringen och samtliga övriga filtervillkor bevaras under växlingen. Vid filtreringsändringar som tar bort det tidigare valda dokumentet ska första kvarvarande dokument väljas när man återgår.
+- Föregående- och Nästa-knapparna är inaktiva medan ingresslistan visas. De aktiveras igen i fullständigt dokumentläge.
 - När första respektive sista dokumentet är valt är knappen i den riktningen inaktiv; inget automatiskt omslag sker.
 - Efter byte visas **början av det nya dokumentet** så att användaren inte behöver scrolla tillbaka till rubriklistan.
-- Navigeringsraden visas endast vid val av **ett** dokument; när samtliga dokument visas är den dold. Den ska inte täcka dokumentets nedersta text, och mobilens nedre säkra skärmområde ska respekteras.
-- Funktionen gäller **både ägare och VIP** och ska fungera även vid val av YouTube-dokument.
+- Navigeringsraden visas vid val av **ett** dokument och behålls vid växling till ingresser via mittknappen. När samtliga dokument visas på vanligt sätt utan att mittknappen använts är raden dold. Den ska inte täcka dokumentets nedersta text, och mobilens nedre säkra skärmområde ska respekteras.
+- Funktionen gäller **både ägare och VIP** och ska fungera även vid val av YouTube-dokument. Ingresslistan ska enbart innehålla sammanfattningar samt befintlig tillåten metadata.
 - Datorns befintliga **pil upp / pil ned** ska fortsätta bläddra som tidigare. Funktionen kräver inga svepgester och får inte störa vanlig vertikal scrollning, textmarkering, filter eller sortering.
 
 ### 6k. Visa eller dölj metadata i dokument
