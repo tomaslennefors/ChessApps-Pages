@@ -184,6 +184,10 @@
   <div id="meta"></div>
   <div id="documentsVersion" class="small">Dokument uppdaterade: hämtar tid...</div>
 
+  <button id="rubrikSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj RubrikOmråde</span></button>
+
+  <section id="ownerPanel" class="panel" hidden>
+    <h2>HämtaNyheter</h2>
   <div id="privateViewControl" class="private-view-control" hidden>
     <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
   </div>
@@ -196,11 +200,7 @@
     <div id="contextText" class="markdown-doc" hidden aria-label="Sammanhang för IT-Nyheter"></div>
     <pre id="userLogText" class="markdown-doc" hidden aria-label="Användarlogg" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
   </div>
-  </div>
-  <button id="rubrikSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj RubrikOmråde</span></button>
 
-  <section id="ownerPanel" class="panel" hidden>
-    <h2>HämtaNyheter</h2>
 
     <label>
       Önskemål i fritext
@@ -1016,14 +1016,11 @@
     }
     privateViewCheckbox.checked = ownerMode;
 
-    if (ownerMode) {
-      ownerSplitter.hidden = false;
-      setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
-    } else {
-      ownerPanel.hidden = true;
-      ownerSplitter.hidden = true;
-      sourceFilter.value = "";
-    }
+    // Ägarens reglage ligger i HämtaNyheter och måste gå att nå även
+    // när Privat visning tillfälligt är avstängd.
+    ownerSplitter.hidden = false;
+    setSectionCollapsed(ownerPanel, ownerSplitter, ownerMode ? prefs.ownerCollapsed : false, "HämtaNyheter");
+    if (!ownerMode) sourceFilter.value = "";
   }
 
   function refreshViewAfterPrivacyChange() {
