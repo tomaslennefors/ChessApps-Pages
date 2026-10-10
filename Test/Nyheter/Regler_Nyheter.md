@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-10 02:52
+Senast uppdaterad: 2026-10-10 02:52 (kompletterad efter jämförelse med originalreglerna)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -178,7 +178,7 @@ Texten i textrutan ska bevaras lokalt medan Tomas skriver. Om sidan uppdateras m
 
 - En diskret appversion visas vid rubriken **IT-Nyheter**.
 - Filter, sortering, favoriter, döljmarkeringar och inställningar sparas lokalt, men **filteråterställningen skiljer mellan ägare och VIP enligt avsnitt 4**.
-- **Uppdatera filtrering** ska endast tillämpa filter på nytt och **inte** ladda om HTML-sidan. **F5** laddar om appen.
+- **Uppdatera filtrering** ska göra en fullständig siduppdatering motsvarande **F5**, enligt den tidigare fastställda regeln. Ägarens filter bevaras; VIP:s filter återställs enligt avsnitt 4.
 - **Rensa filter** återställer samtliga filtervillkor; arkivfiltret sätts då till **Alla**.
 - Inga inaktuella regler om omskrivna rubriker för PUBLIC eller separata **Läs originaldokumentet/Läs webb-sidan**-knappar gäller.
 
@@ -275,3 +275,48 @@ Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** s
 - Valet sparas lokalt på enheten och gäller för alla dokument och framtida besök tills användaren själv ändrar valet igen.
 - När metadata döljs ska rubriken och själva dokumenttexten fortfarande visas.
 
+
+## 8. Bevarade funktioner från originalreglerna
+
+### 8a. YouTube-dokument
+
+- YouTube-dokument får visa originalrubrik, exakt publiceringsdatum när känt, källa YouTube, kanal/utgivare och klickbar YouTube-länk.
+- Inbäddad YouTube-spelare ska kunna visas. Behörighetsreglerna i avsnitt 4 gäller fortfarande; det finns ingen PUBLIC-roll.
+
+### 8b. Statistik och storleksändring
+
+#### Statistik: Statistik för markerad text
+
+När användaren markerar text i en detaljerad nyhetsdokument ska appen visa statistik för:
+- ingressens antal ord och bokstäver,
+- dokumentets antal ord och bokstäver,
+- den markerade textens antal ord och bokstäver.
+
+Statistiken visas i en flytande textruta **ovanför dokumentets rubrik**. Rutan ska följa med vid rullning i den detaljerade dokumentrutan så att statistiken förblir synlig.
+
+#### Storlek: Storleken på den detaljerade dokumentrutan
+
+Den stora dokumentrutan som visar både ingress och den fullständiga detaljerade dokumenttexten ska kunna ändras i höjd genom att användaren drar i rutans nederkant.
+
+Detta ska fungera:
+- med mus på dator,
+- med pekning/touch på mobil och surfplatta.
+
+Användaren ska kunna göra rutan högre för att se fler rader samtidigt eller lägre för att spara skärmutrymme.
+
+Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
+
+
+
+### 8c. Meddelanden efter Spara önskemål
+
+- Efter lyckad sparning visas **Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.**
+- Meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
+- **Uppdatera filtrering** ska enligt tidigare dokument uppdatera sidan motsvarande F5. Detta är den bevarade tidigare funktionen; eventuell ändring kräver ett separat beslut.
+
+### 8d. Säker lagring och användargränssnitt
+
+- Dokumentfilen finns tillsammans med appen på GitHub Pages.
+- Filter, sortering, favoriter och arkivering lagras lokalt; VIP:s filter återställs enligt avsnitt 4.
+- HämtaNyheter får bara visas för verifierad ägare och får inte visas för VIP.
+- Tekniska upplysningar om lagring ska stå i regeldokumentet, inte som förklarande text under dokumenten i appen.
