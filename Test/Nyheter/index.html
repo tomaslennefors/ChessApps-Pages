@@ -176,6 +176,15 @@
     .request-item.expanded .request-preview{font-weight:650}
     @media(max-width:600px){.request-head{grid-template-columns:1fr auto}.request-date{grid-column:1}.request-preview{grid-column:1 / -1;grid-row:2}.request-head button{grid-column:2;grid-row:1}}
     @media(max-width:600px){body{margin-top:16px}.news{padding:15px}.news h2{margin:35px 0 8px}}
+    /* Mobil: dokumentbläddring som stannar längst ned på skärmen. */
+    .mobile-document-nav{display:none}
+    @media(max-width:650px){
+      body.mobile-document-nav-active{padding-bottom:calc(95px + env(safe-area-inset-bottom))}
+      .mobile-document-nav:not([hidden]){position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:#fff;border-top:1px solid var(--line);box-shadow:0 -3px 12px rgba(31,35,40,.15)}
+      .mobile-document-nav button{flex:1 1 0;min-width:0;min-height:44px;margin:0;padding:9px 5px;white-space:nowrap;font-size:.9rem;font-weight:650}
+      .mobile-document-nav button:disabled{opacity:.42;cursor:default}
+      .mobile-document-position{flex:0 0 auto;min-width:60px;text-align:center;font-weight:700;font-size:.92rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+    }
   </style>
 </head>
 <body>
@@ -376,6 +385,12 @@
 
   <div id="list"></div>
 
+  <nav id="mobileDocumentNav" class="mobile-document-nav" aria-label="Bläddra mellan dokument" hidden>
+    <button id="mobilePreviousDocument" type="button" aria-label="Föregående dokument">◀ Föregående</button>
+    <span id="mobileDocumentPosition" class="mobile-document-position" role="status" aria-live="polite" aria-atomic="true"></span>
+    <button id="mobileNextDocument" type="button" aria-label="Nästa dokument">Nästa ▶</button>
+  </nav>
+
 <script>
 (async () => {
   // Versionsdatum hämtas från GitHub. OLD: markerar att endast ett äldre reservvärde finns.
@@ -546,6 +561,10 @@
   const channelFilter = document.getElementById("channelFilter");
   const webAddressFilter = document.getElementById("webAddressFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
+  const mobileDocumentNav = document.getElementById("mobileDocumentNav");
+  const mobilePreviousDocument = document.getElementById("mobilePreviousDocument");
+  const mobileNextDocument = document.getElementById("mobileNextDocument");
+  const mobileDocumentPosition = document.getElementById("mobileDocumentPosition");
   const ownerContentModes = document.getElementById("ownerContentModes");
   const ownerModeButtons = [...ownerContentModes.querySelectorAll("[data-mode]")];
   const selectedContentModes = new Set(["2"]);
@@ -1849,13 +1868,13 @@
   function renderNews(items) {
     listEl.replaceChildren();
     const sorted = sortNews(items);
+    const showSingle = !!exactTitleFilter.value && sorted.length === 1;
+    updateMobileDocumentNav(showSingle);
 
     if (!sorted.length) {
       statusEl.textContent = "Inga dokument matchar de valda filtren.";
       return;
     }
-
-    const showSingle = !!exactTitleFilter.value && sorted.length === 1;
 
     for (const item of sorted) {
       const key = itemKey(item);
@@ -2235,6 +2254,18 @@
     if (current && [...exactTitleFilter.options].some(o => o.value === current)) {
       exactTitleFilter.value = current;
     }
+  }
+
+  function updateMobileDocumentNav(showSingle) {
+    const total = Math.max(0, exactTitleFilter.options.length - 1);
+    const index = exactTitleFilter.selectedIndex;
+    const active = showSingle && index >= 1 && total >= 1;
+    mobileDocumentNav.hidden = !active;
+    document.body.classList.toggle("mobile-document-nav-active", active);
+    if (!active) return;
+    mobileDocumentPosition.textContent = index + " / " + total;
+    mobilePreviousDocument.disabled = index <= 1;
+    mobileNextDocument.disabled = index >= total;
   }
 
   function stepExactTitle(direction) {
@@ -2935,6 +2966,14 @@
   }
   exactTitleFilter.addEventListener("change", () => applyFilters(false));
   documentSortMode.addEventListener("change", () => applyFilters(true));
+  function navigateMobileDocument(direction) {
+    if (stepExactTitle(direction)) {
+      // Visa början av det nyvalda dokumentet, utan att behöva återvända till rubriklistan.
+      listEl.scrollIntoView({block:"start", behavior:"auto"});
+    }
+  }
+  mobilePreviousDocument.addEventListener("click", () => navigateMobileDocument(-1));
+  mobileNextDocument.addEventListener("click", () => navigateMobileDocument(1));
 
   exactTitleFilter.addEventListener("keydown", event => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
