@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-10 02:52 (kompletterad efter jämförelse med originalreglerna)
+Senast uppdaterad: 2026-10-10 16:38 (mobil dokumentbläddring; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -281,6 +281,19 @@ Alla datumvärden som finns tillgängliga för den aktuella användaren ska bygg
 Alla aktiva filtervillkor ska markeras med **röd bakgrund**. **Rensa filter** ska ta bort både filtervärdena och den röda markeringen.
 
 
+
+### 6h. Mobil navigering mellan dokument
+
+När ett enskilt dokument är valt i **Fullständig rubrik** ska mobilvyn (skärmbredd högst 650 pixlar) visa en **fast navigeringsrad längst ned på skärmen**:
+
+- Knapp **◀ Föregående** väljer föregående dokument.
+- Knapp **Nästa ▶** väljer nästa dokument.
+- Mellan knapparna visas **aktuellt nummer / antal dokument** i den för tillfället filtrerade och sorterade rubriklistan, exempelvis `8 / 57`.
+- När första respektive sista dokumentet är valt är knappen i den riktningen inaktiv; inget automatiskt omslag sker.
+- Efter byte visas **början av det nya dokumentet** så att användaren inte behöver scrolla tillbaka till rubriklistan.
+- Navigeringsraden visas endast vid val av **ett** dokument; när samtliga dokument visas är den dold. Den ska inte täcka dokumentets nedersta text, och mobilens nedre säkra skärmområde ska respekteras.
+- Funktionen gäller **både ägare och VIP** och ska fungera även vid val av YouTube-dokument.
+- Datorns befintliga **pil upp / pil ned** ska fortsätta bläddra som tidigare. Funktionen kräver inga svepgester och får inte störa vanlig vertikal scrollning, textmarkering, filter eller sortering.
 
 ### 6k. Visa eller dölj metadata i dokument
 
