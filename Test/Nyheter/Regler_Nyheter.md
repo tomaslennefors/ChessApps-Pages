@@ -44,6 +44,12 @@ Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omsk
 
 ## 4. Behörigheter – en ägare och VIP
 
+### Placering av ägarens kontroller
+
+- **Privat visning** och de tre knapparna **Regler**, **Sammanhang** och **Användarlogg** ska ligga **inne i området HämtaNyheter**, inte ovanför området i rubrikdelen.
+- Dessa kontroller ska vara åtkomliga för den verifierade ägaren. När Privat visning stängs av måste kryssrutan fortfarande kunna nås så att privat visning kan slås på igen.
+- VIP ska inte se dessa kontroller eller området HämtaNyheter.
+
 ### 4a. Ägaren
 
 - Har tillgång till **originaltext**, **AI-text för vuxna** och tillgängliga övriga textlägen.
