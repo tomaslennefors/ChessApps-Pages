@@ -300,7 +300,7 @@
         <span class="label-row">5. Favoriter</span>
         <select id="favoriteFilter">
           <option value="">Alla</option>
-          <option value="yes">Endast favoriter</option>
+          <option value="yes">Favoriter</option>
           <option value="no">Ej favoriter</option>
         </select>
       </label>
@@ -310,7 +310,7 @@
         <select id="archiveFilter">
           <option value="all">Alla</option>
           <option value="active" selected>Ej dolda</option>
-          <option value="archived">Endast dolda</option>
+          <option value="archived">Dolda</option>
         </select>
       </label>
 
@@ -1420,7 +1420,7 @@
     const nonFavoriteCount = totalCount - favoriteCount;
     const labels = {
       "": "Alla (" + totalCount + ")",
-      yes: "Endast favoriter (" + favoriteCount + ")",
+      yes: "Favoriter (" + favoriteCount + ")",
       no: "Ej favoriter (" + nonFavoriteCount + ")"
     };
     for (const option of favoriteFilter.options) {
@@ -1442,7 +1442,7 @@
     const labels = {
       all: "Alla (" + totalCount + ")",
       active: "Ej dolda (" + activeCount + ")",
-      archived: "Endast dolda (" + archivedCount + ")"
+      archived: "Dolda (" + archivedCount + ")"
     };
     for (const option of archiveFilter.options) {
       if (labels[option.value]) option.textContent = labels[option.value];
@@ -1662,8 +1662,8 @@
     updateFavoriteFilterCounts();
     updateDocumentIconButtons(key);
     showIconFeedback(key, view, prefs.favorites[key]
-      ? "Favorit på - Gå till filter för att söka fram favoriter"
-      : "Favorit av - Dokumentet är inte längre en favorit", true);
+      ? "Favorit på - Gå till filter för att välja mellan Favoriter och Ej favoriter"
+      : "Favorit av - Gå till filter för att välja mellan Favoriter och Ej favoriter", true);
   }
   function toggleDocumentArchive(key, view) {
     if (prefs.archived[key]) delete prefs.archived[key];
@@ -1672,8 +1672,8 @@
     updateArchiveFilterCounts();
     updateDocumentIconButtons(key);
     showIconFeedback(key, view, prefs.archived[key]
-      ? "Dokument dolt - Gå till arkivfiltret för att visa dolda dokument"
-      : "Dokument visas igen", true);
+      ? "Dold på - Gå till filter för att välja mellan Dolda och Ej dolda"
+      : "Dold av - Gå till filter för att välja mellan Dolda och Ej dolda", true);
   }
   document.addEventListener("click", event => {
     if (event.target?.closest?.(".document-icon-buttons") || !activeIconFeedback) return;
