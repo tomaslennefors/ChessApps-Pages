@@ -2369,6 +2369,7 @@
     mobileDocumentNav.hidden = !active;
     document.body.classList.toggle("mobile-document-nav-active", active);
     if (!active) return;
+    mobileDocumentPosition.disabled = false;
     mobileDocumentCounter.textContent = index + " / " + total;
     mobileDocumentModeStatus.textContent = "Aktuellt läge: " + (mobileIngressMode ? "Scrolla ingresser" : "Bläddra dokument");
     const nextMode = mobileIngressMode ? "Bläddra dokument" : "Scrolla ingresser";
@@ -3046,6 +3047,18 @@
     reloadBtn.disabled = true;
     statusEl.textContent = "Hämtar dokument...";
     listEl.replaceChildren();
+    // Visa mobilens tre knappar redan medan dokument hämtas.
+    // Knapparna aktiveras när första dokumentet har valts.
+    if (window.innerWidth <= 650) {
+      mobileDocumentNav.hidden = false;
+      document.body.classList.add("mobile-document-nav-active");
+      mobileDocumentModeStatus.textContent = "Laddar dokument...";
+      mobileDocumentCounter.textContent = "– / –";
+      mobileDocumentToggleLabel.textContent = "Scrolla ingresser";
+      mobilePreviousDocument.disabled = true;
+      mobileDocumentPosition.disabled = true;
+      mobileNextDocument.disabled = true;
+    }
 
     try {
       const response = await fetch(dataUrl + "?t=" + Date.now(), {cache:"no-store"});
@@ -3068,8 +3081,9 @@
         item.webbadress = String(item.webbadress || item.länk || item.youtube_länk || item.youtube_url || "").trim();
       }
 
-      statusEl.textContent = "Hämtar YouTube-rubriker...";
-      await hydrateYoutubeBasics(allNews);
+      // YouTube-metadata hämtas efter första visningen, så nyheter och
+      // bläddringsknappar inte behöver vänta på externa YouTube-anrop.
+      const loadedNews = allNews;
 
       const faktaTotal = allNews.filter(item => displayType(item) === "IT-Fakta").length;
       const newsTotal = allNews.filter(item => displayType(item) === "IT-Nyhet").length;
@@ -3089,9 +3103,16 @@
 
       const initialItems = getFilteredNews();
       renderNews(initialItems);
+
+      void hydrateYoutubeBasics(loadedNews).then(() => {
+        // Nya YouTube-uppgifter läses automatiskt vid nästa filtrering eller bläddring.
+        // Rita inte om en artikel medan användaren läser den.
+      }).catch(err => console.warn("Kunde inte komplettera YouTube-uppgifter:", err));
     } catch (err) {
       allNews = [];
       statusEl.textContent = "FEL:\n" + (err?.message || String(err));
+      mobileDocumentNav.hidden = true;
+      document.body.classList.remove("mobile-document-nav-active");
     } finally {
       reloadBtn.disabled = false;
     }
