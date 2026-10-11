@@ -3115,13 +3115,30 @@
     mobileIngressMode = false;
     mobileReturnDocumentId = "";
     applyFilters(false);
+    // Samma beteende när en YouTube-video väljs direkt i rubriklistan på mobilen.
+    scrollToMobileYoutubePlayer();
   });
   documentSortMode.addEventListener("change", () => applyFilters(true));
   mobileDocumentPosition.addEventListener("click", toggleMobileDocumentView);
+  function scrollToMobileYoutubePlayer() {
+    // Endast vid mobilbläddring: placera hela videobilden ovanför navigeringsraden.
+    if (window.innerWidth > 650 || mobileDocumentNav.hidden || !listEl.querySelector(".youtube-player")) return false;
+    requestAnimationFrame(() => {
+      const player = listEl.querySelector(".youtube-player");
+      if (!player) return;
+      const navHeight = mobileDocumentNav.getBoundingClientRect().height;
+      const availableHeight = window.innerHeight - navHeight - 20;
+      const rect = player.getBoundingClientRect();
+      // Om videon är högre än den fria skärmytan prioriteras bildens överkant.
+      const topPadding = rect.height <= availableHeight ? 10 : 0;
+      window.scrollTo({top: Math.max(0, window.scrollY + rect.top - topPadding), behavior:"auto"});
+    });
+    return true;
+  }
   function navigateMobileDocument(direction) {
     if (stepExactTitle(direction)) {
-      // Visa början av det nyvalda dokumentet, utan att behöva återvända till rubriklistan.
-      listEl.scrollIntoView({block:"start", behavior:"auto"});
+      // Ny YouTube-video visas i sin helhet; övriga dokument börjar överst som tidigare.
+      if (!scrollToMobileYoutubePlayer()) listEl.scrollIntoView({block:"start", behavior:"auto"});
     }
   }
   mobilePreviousDocument.addEventListener("click", () => navigateMobileDocument(-1));
