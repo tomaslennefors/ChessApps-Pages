@@ -372,6 +372,7 @@
   <div id="fullTitlePanel" class="full-title-filter" title="Dokumentöversikt" aria-label="Dokumentöversikt">
     <div class="small" style="font-weight:650">Visa aktuellt filter</div>
     <div id="status" aria-live="polite">Hämtar dokument...</div>
+    <div id="noFilterResultsNotice" class="save-request-message" role="status" aria-live="polite" hidden>Inga dokument matchar de valda filtren.</div>
     <div class="document-navigation-row">
       <div>
         <label for="documentSortMode">Sortera dokument efter</label>
@@ -576,6 +577,7 @@
   const channelFilter = document.getElementById("channelFilter");
   const webAddressFilter = document.getElementById("webAddressFilter");
   const exactTitleFilter = document.getElementById("exactTitleFilter");
+  const noFilterResultsNotice = document.getElementById("noFilterResultsNotice");
   const mobileDocumentNav = document.getElementById("mobileDocumentNav");
   const mobilePreviousDocument = document.getElementById("mobilePreviousDocument");
   const mobileNextDocument = document.getElementById("mobileNextDocument");
@@ -1970,11 +1972,12 @@
     const sorted = sortNews(items);
     const showSingle = !!exactTitleFilter.value && sorted.length === 1;
     updateMobileDocumentNav(showSingle);
+    // Antalet avser hela den filtrerade rubriklistan, även när ett dokument är valt.
+    const filteredCount = getFilteredNews(true).length;
+    statusEl.textContent = filteredCount + "---" + activeFilterSummary();
+    noFilterResultsNotice.hidden = filteredCount !== 0;
 
-    if (!sorted.length) {
-      statusEl.textContent = "Inga dokument matchar de valda filtren.";
-      return;
-    }
+    if (!sorted.length) return;
 
     for (const item of sorted) {
       const key = itemKey(item);
@@ -1987,6 +1990,19 @@
       article.className = "news" + (archived ? " archived" : "") + (detailedArticle ? " article-detailed" : "");
       if (detailedArticle && Number(prefs.articleHeight) >= 220) {
         article.style.height = Math.min(1600, Number(prefs.articleHeight)) + "px";
+      }
+      // Efter filtrering kan man trycka direkt på första dokumentet
+      // för att öppna det och visa mobilens tre bläddringsknappar.
+      if (window.innerWidth <= 650 && !exactTitleFilter.value && !mobileIngressMode && item === sorted[0]) {
+        article.addEventListener("click", event => {
+          if (event.target?.closest?.("button,a,input,select,textarea,iframe")) return;
+          const id = String(item.id);
+          if (![...exactTitleFilter.options].some(option => option.value === id)) return;
+          exactTitleFilter.value = id;
+          event.stopPropagation();
+          applyFilters(false);
+          listEl.scrollIntoView({block:"start", behavior:"auto"});
+        }, true);
       }
 
       const star = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
@@ -2313,7 +2329,6 @@
 
     const favCount = allNews.filter(x => !!prefs.favorites[itemKey(x)]).length;
     const archCount = allNews.filter(x => !!prefs.archived[itemKey(x)]).length;
-    statusEl.textContent = activeFilterSummary();
   }
 
   function activeFilterSummary() {
@@ -3300,6 +3315,9 @@
   document.addEventListener("pointerdown", event => {
     if (!saveRequestMessage.hidden && event.target !== savePromptBtn && !savePromptBtn.contains(event.target)) {
       saveRequestMessage.hidden = true;
+    }
+    if (!noFilterResultsNotice.hidden && !noFilterResultsNotice.contains(event.target)) {
+      noFilterResultsNotice.hidden = true;
     }
   }, true);
   rulesBtn.addEventListener("click", toggleRules);
