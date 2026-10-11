@@ -2098,17 +2098,6 @@
       const actions = document.createElement("div");
       actions.className = "card-actions";
 
-      const originalUrl = String(item.länk || (isVipUser() ? item.original_länk : "") || "").trim();
-      if (originalUrl && youtube) {
-        const link = document.createElement("a");
-        link.className = "button";
-        link.textContent = youtube ? "Öppna YouTube" : "Läs webb-sidan";
-        link.href = originalUrl;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        actions.append(link);
-      }
-
       const videoUrl = item.youtube_länk || item.youtube_url || "";
       if (videoUrl && videoUrl !== item.länk) {
         const video = document.createElement("a");
