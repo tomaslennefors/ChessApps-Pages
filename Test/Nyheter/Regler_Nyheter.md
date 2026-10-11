@@ -334,6 +334,18 @@ När ett enskilt dokument är valt i **Fullständig rubrik** ska mobilvyn (skär
 - Valet sparas lokalt på enheten och gäller för alla dokument och framtida besök tills användaren själv ändrar valet igen.
 - När metadata döljs ska rubriken och själva dokumenttexten fortfarande visas.
 
+### 6l. Information vid dokumentets tre ikoner
+
+- De tre ikonerna **Dölj/visa**, **Kopiera** och **Favorit** finns i en egen rad ovanför dokumentrubriken, både på mobil och dator. De får inte överlappa rubriken.
+- När användaren klickar eller trycker på en ikon visas en **tydlig informationsruta ovanför ikonerna**, även i jämförelselägets originalkolumn och AI-kolumn.
+- Informationen **ligger kvar tills användaren klickar någon annanstans i appen**. Ett tryck på en annan ikon ersätter meddelandet.
+- När favorit aktiveras visas exakt: **”Favorit på - Gå till filter för att söka fram favoriter”**.
+- När favorit tas bort visas **”Favorit av - Dokumentet är inte längre en favorit”**.
+- Vid kopiering visas **”Kopierat - Dokumenttexten finns i Urklipp”** (eller **”Originaltexten”** i originalvyn).
+- När ett dokument döljs visas **”Dokument dolt - Gå till arkivfiltret för att visa dolda dokument”**. Vid återställning visas **”Dokument visas igen”**.
+- Favorit- och döljmarkeringarna sparas omedelbart, men dokumentet får ligga kvar på skärmen tills användaren klickar utanför ikonraden. Därefter uppdateras filtreringen.
+- Informationsrutan är **inte tidsstyrd** och ska vara tydlig för mobilanvändare.
+
 
 ## 8. Jämförelseläge – statistik och höjdjustering
 
