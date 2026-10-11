@@ -140,6 +140,14 @@
     .archive-icon{position:absolute;top:12px;right:94px;border:0;background:transparent;color:#8c959f;font-size:22px;line-height:1;padding:4px;cursor:pointer}
     .archive-icon.on{color:#d1242f}
     .archive-icon:hover{background:transparent;transform:scale(1.08)}
+    /* Ikonraden är i normalt textflöde så att rubriken aldrig täcks på mobilen. */
+    .document-icon-actions{display:flex;flex-direction:column;align-items:flex-end;gap:3px;width:100%;min-width:0;margin:0 0 9px}
+    .document-icon-feedback{align-self:stretch;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-size:.88rem;font-weight:650;line-height:1.4;overflow-wrap:anywhere}
+    .document-icon-buttons{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:36px}
+    .document-icon-buttons>.star,.document-icon-buttons>.copy-news,.document-icon-buttons>.archive-icon{position:static;top:auto;right:auto;display:inline-flex;align-items:center;justify-content:center;min-width:34px;min-height:34px;margin:0;padding:3px;border:0;background:transparent}
+    .news:has(> .document-icon-actions)>h2,.owner-content-column:has(> .document-icon-actions)>h2{margin-top:0;margin-right:0}
+    .owner-content-column:has(> .document-icon-actions)>h3{margin-top:0}
+    @media(max-width:600px){.news:has(> .document-icon-actions)>h2{margin:0 0 8px}}
     .small{font-size:.9rem;color:var(--muted)}
     .count{font-weight:650}
     .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
@@ -1598,6 +1606,86 @@
     return btn;
   }
 
+  // Den senast tryckta ikonen behåller sin information tills nästa klick i appen.
+  let activeIconFeedback = null;
+  function showIconFeedback(key, view, message, changesFilter = false) {
+    activeIconFeedback = {key, view, message, changesFilter: changesFilter || !!activeIconFeedback?.changesFilter};
+    for (const feedback of listEl.querySelectorAll(".document-icon-feedback")) {
+      const match = feedback.dataset.key === key && feedback.dataset.view === view;
+      feedback.textContent = match ? message : "";
+      feedback.hidden = !match;
+    }
+  }
+  function createDocumentIconActions(key, view, star, copy, archive) {
+    const toolbar = document.createElement("div");
+    toolbar.className = "document-icon-actions";
+    toolbar.dataset.key = key;
+    const feedback = document.createElement("div");
+    feedback.className = "document-icon-feedback";
+    feedback.dataset.key = key;
+    feedback.dataset.view = view;
+    feedback.setAttribute("role", "status");
+    feedback.setAttribute("aria-live", "polite");
+    const match = activeIconFeedback?.key === key && activeIconFeedback?.view === view;
+    feedback.textContent = match ? activeIconFeedback.message : "";
+    feedback.hidden = !match;
+    const buttons = document.createElement("div");
+    buttons.className = "document-icon-buttons";
+    buttons.append(archive, copy, star);
+    toolbar.append(feedback, buttons);
+    return toolbar;
+  }
+  function updateDocumentIconButtons(key) {
+    for (const toolbar of listEl.querySelectorAll(".document-icon-actions")) {
+      if (toolbar.dataset.key !== key) continue;
+      const star = toolbar.querySelector(".star");
+      const archive = toolbar.querySelector(".archive-icon");
+      const favorite = !!prefs.favorites[key];
+      const archived = !!prefs.archived[key];
+      star.textContent = favorite ? "★" : "☆";
+      star.classList.toggle("on", favorite);
+      star.title = favorite ? "Ta bort favorit" : "Markera som favorit";
+      star.setAttribute("aria-label", star.title);
+      star.setAttribute("aria-pressed", String(favorite));
+      archive.classList.toggle("on", archived);
+      archive.title = archived ? "Visa dokument igen" : "Dölj dokument";
+      archive.setAttribute("aria-label", archive.title);
+      archive.setAttribute("aria-pressed", String(archived));
+      const card = toolbar.closest(".news");
+      if (card) card.classList.toggle("archived", archived);
+    }
+  }
+  function toggleDocumentFavorite(key, view) {
+    if (prefs.favorites[key]) delete prefs.favorites[key];
+    else prefs.favorites[key] = true;
+    savePrefs();
+    updateFavoriteFilterCounts();
+    updateDocumentIconButtons(key);
+    showIconFeedback(key, view, prefs.favorites[key]
+      ? "Favorit på - Gå till filter för att söka fram favoriter"
+      : "Favorit av - Dokumentet är inte längre en favorit", true);
+  }
+  function toggleDocumentArchive(key, view) {
+    if (prefs.archived[key]) delete prefs.archived[key];
+    else prefs.archived[key] = true;
+    savePrefs();
+    updateArchiveFilterCounts();
+    updateDocumentIconButtons(key);
+    showIconFeedback(key, view, prefs.archived[key]
+      ? "Dokument dolt - Gå till arkivfiltret för att visa dolda dokument"
+      : "Dokument visas igen", true);
+  }
+  document.addEventListener("click", event => {
+    if (event.target?.closest?.(".document-icon-buttons") || !activeIconFeedback) return;
+    const refresh = activeIconFeedback.changesFilter;
+    activeIconFeedback = null;
+    for (const feedback of listEl.querySelectorAll(".document-icon-feedback")) {
+      feedback.hidden = true;
+      feedback.textContent = "";
+    }
+    if (refresh) applyFilters();
+  });
+
   function textStats(text) {
     const value = String(text || "");
     const letters = (value.match(/\p{L}/gu) || []).length;
@@ -1899,16 +1987,20 @@
       }
 
       const star = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
-        if (prefs.favorites[key]) delete prefs.favorites[key]; else prefs.favorites[key] = true;
-        savePrefs();
-        applyFilters();
+        toggleDocumentFavorite(key, "ai");
       });
       star.title = favorite ? "Ta bort favorit" : "Markera som favorit";
       star.setAttribute("aria-label", star.title);
+      star.setAttribute("aria-pressed", String(favorite));
 
       const copyNewsBtn = makeButton("⧉", "copy-news", async () => {
         const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent);
-        await copyText(text, "Hela dokumentet är kopierat till Urklipp.");
+        try {
+          await copyText(text, "Hela dokumentet är kopierat till Urklipp.");
+          showIconFeedback(key, "ai", "Kopierat - Dokumenttexten finns i Urklipp");
+        } catch {
+          showIconFeedback(key, "ai", "Kopieringen misslyckades");
+        }
       });
       copyNewsBtn.title = "Kopiera hela dokumentet";
       copyNewsBtn.setAttribute("aria-label", "Kopiera hela dokumentet");
@@ -2026,15 +2118,14 @@
       }
 
       const archiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
-        if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
-        savePrefs();
-        applyFilters();
+        toggleDocumentArchive(key, "ai");
       });
       archiveIcon.title = archived ? "Visa dokument igen" : "Dölj dokument";
       archiveIcon.setAttribute("aria-label", archiveIcon.title);
       archiveIcon.setAttribute("aria-pressed", String(archived));
 
-      article.append(star, copyNewsBtn, archiveIcon);
+      const iconActions = createDocumentIconActions(key, "ai", star, copyNewsBtn, archiveIcon);
+      article.append(iconActions);
       if (detailedArticle) article.append(selectionStats);
       article.append(h2);
       if ((ownerMode || isVipUser()) && detailedArticle) article.append(webAddress);
@@ -2063,9 +2154,8 @@
             article.style.maxHeight = "none";
             const heading = document.createElement("h3");
             heading.textContent = "2. AI-text för vuxna";
-            // Flytta ikonerna till samma kolumnnivå som originaltextens ikoner.
-            // Annars positioneras de relativt den inre artikeln, under lägesrubriken.
-            column.append(star, copyNewsBtn, archiveIcon, heading);
+            // Flytta hela ikonraden till kolumnen så att text, ikoner och rubrik inte krockar.
+            column.append(iconActions, heading);
             // Samma DOM-nivå för allt dokumentinnehåll i båda kolumnerna:
             // ingen inre .news-container som ger andra bredder eller marginaler.
             while (article.firstChild) column.append(article.firstChild);
@@ -2120,12 +2210,11 @@
               });
               applyOriginalMetadataVisibility();
               const originalStar = makeButton(favorite ? "★" : "☆", "star" + (favorite ? " on" : ""), () => {
-                if (prefs.favorites[key]) delete prefs.favorites[key]; else prefs.favorites[key] = true;
-                savePrefs();
-                applyFilters();
+                toggleDocumentFavorite(key, "original");
               });
               originalStar.title = favorite ? "Ta bort favorit" : "Markera som favorit";
               originalStar.setAttribute("aria-label", originalStar.title);
+              originalStar.setAttribute("aria-pressed", String(favorite));
               const originalCopy = makeButton("⧉", "copy-news", async () => {
                 const originalText = [
                   resolveOriginalHeading(source).title,
@@ -2135,19 +2224,23 @@
                   item.sammanfattning || "",
                   resolveOriginalHeading(source).body
                 ].filter(Boolean).join("\n\n");
-                await copyText(originalText, "Hela dokumentet är kopierat till Urklipp.");
+                try {
+                  await copyText(originalText, "Hela dokumentet är kopierat till Urklipp.");
+                  showIconFeedback(key, "original", "Kopierat - Originaltexten finns i Urklipp");
+                } catch {
+                  showIconFeedback(key, "original", "Kopieringen misslyckades");
+                }
               });
               originalCopy.title = "Kopiera hela dokumentet";
               originalCopy.setAttribute("aria-label", originalCopy.title);
               const originalArchiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
-                if (prefs.archived[key]) delete prefs.archived[key]; else prefs.archived[key] = true;
-                savePrefs();
-                applyFilters();
+                toggleDocumentArchive(key, "original");
               });
               originalArchiveIcon.title = archived ? "Visa dokument igen" : "Dölj dokument";
               originalArchiveIcon.setAttribute("aria-label", originalArchiveIcon.title);
               originalArchiveIcon.setAttribute("aria-pressed", String(archived));
-              column.append(originalStar, originalCopy, originalArchiveIcon, heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
+              const originalIconActions = createDocumentIconActions(key, "original", originalStar, originalCopy, originalArchiveIcon);
+              column.append(originalIconActions, heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
             }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
