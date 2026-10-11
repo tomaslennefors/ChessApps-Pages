@@ -3043,22 +3043,24 @@
     }
   }
 
+  function showMobileNavAtStartup() {
+    // Visa befintliga knappar direkt, men tillåt inte bläddring före dokumenthämtningen.
+    if (window.innerWidth > 650) return;
+    mobileDocumentNav.hidden = false;
+    document.body.classList.add("mobile-document-nav-active");
+    mobileDocumentModeStatus.textContent = "Laddar dokument...";
+    mobileDocumentCounter.textContent = "– / –";
+    mobileDocumentToggleLabel.textContent = "Scrolla ingresser";
+    mobilePreviousDocument.disabled = true;
+    mobileDocumentPosition.disabled = true;
+    mobileNextDocument.disabled = true;
+  }
+
   async function loadNews() {
     reloadBtn.disabled = true;
     statusEl.textContent = "Hämtar dokument...";
     listEl.replaceChildren();
-    // Visa mobilens tre knappar redan medan dokument hämtas.
-    // Knapparna aktiveras när första dokumentet har valts.
-    if (window.innerWidth <= 650) {
-      mobileDocumentNav.hidden = false;
-      document.body.classList.add("mobile-document-nav-active");
-      mobileDocumentModeStatus.textContent = "Laddar dokument...";
-      mobileDocumentCounter.textContent = "– / –";
-      mobileDocumentToggleLabel.textContent = "Scrolla ingresser";
-      mobilePreviousDocument.disabled = true;
-      mobileDocumentPosition.disabled = true;
-      mobileNextDocument.disabled = true;
-    }
+    showMobileNavAtStartup();
 
     try {
       const response = await fetch(dataUrl + "?t=" + Date.now(), {cache:"no-store"});
@@ -3105,8 +3107,26 @@
       renderNews(initialItems);
 
       void hydrateYoutubeBasics(loadedNews).then(() => {
-        // Nya YouTube-uppgifter läses automatiskt vid nästa filtrering eller bläddring.
-        // Rita inte om en artikel medan användaren läser den.
+        if (allNews !== loadedNews) return;
+        // Komplettera befintliga rubriker utan att rita om sidan eller avbryta läsning.
+        const byId = new Map(loadedNews.map(item => [String(item.id), item]));
+        for (const option of exactTitleFilter.options) {
+          const item = byId.get(option.value);
+          if (item && isYoutube(item)) {
+            option.textContent = displayTitle(item) + (item.version ? " · " + item.version : "");
+          }
+        }
+        const visibleItems = sortNews(getFilteredNews());
+        const cards = [...listEl.querySelectorAll(".news")];
+        if (cards.length === visibleItems.length) {
+          cards.forEach((card, index) => {
+            if (!isYoutube(visibleItems[index])) return;
+            const heading = card.querySelector("h2");
+            if (heading) heading.textContent = displayTitle(visibleItems[index]);
+          });
+        }
+        fillChannelSelect();
+        fillCountedSelect(publisherFilter, "utgivare", "Alla utgivare");
       }).catch(err => console.warn("Kunde inte komplettera YouTube-uppgifter:", err));
     } catch (err) {
       allNews = [];
@@ -3328,6 +3348,7 @@
   renderRequestLists();
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   setPrivacyUi();
+  showMobileNavAtStartup();
   const isOwner = await detectOwnerMode();
   // Ägaren får alltid öppna områden vid start/omladdning.
   // VIP och övriga användare behåller sina sparade inställningar.
