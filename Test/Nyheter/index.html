@@ -105,6 +105,12 @@
     .news.archived{opacity:.72}
     .news h2{font-size:1.22rem;margin:0 92px 8px 0}
     .details{font-size:.92rem;color:var(--muted);margin-bottom:10px}
+    .owner-source-audit{margin:8px 0 12px;padding:8px 10px;border-left:3px solid #8c959f;background:#f6f8fa;border-radius:3px;font-size:.86rem;line-height:1.45;overflow-wrap:anywhere}
+    .owner-source-audit p{margin:2px 0 6px}
+    .owner-source-audit p:last-child{margin-bottom:0}
+    .owner-source-audit ul{margin:3px 0 6px;padding-left:19px}
+    .owner-source-audit li{margin:2px 0}
+    .owner-source-audit a{overflow-wrap:anywhere}
     .summary{white-space:pre-wrap}
     .transcript-info{margin-top:10px;padding:9px 11px;border-left:3px solid var(--line);background:#f6f8fa;font-size:.9rem;white-space:pre-wrap}
     .web-address{font-size:.88rem;color:var(--muted);margin:6px 0 10px;overflow-wrap:anywhere}
@@ -2060,6 +2066,104 @@
     }
   }
 
+  // Bedömningar och källförteckningar hämtas endast ur ägarens originalregister.
+  // Ingen äldre nyhet bedöms som fullständig utan dokumenterad verifiering.
+  function ownerArticleSourceData(item) {
+    if (!ownerAuthenticated || !ownerMode || displayType(item) !== "IT-Nyhet") return null;
+    const source = originalNewsById.get(String(item.id));
+    const validStatuses = ["Fullständig", "Ofullständig", "Misstänkt ofullständig", "Ej verifierad"];
+    const status = validStatuses.includes(source?.fullstandighetsstatus)
+      ? source.fullstandighetsstatus : "Ej verifierad";
+    const allowedRoles = ["huvudkälla", "komplettering", "faktakontroll"];
+    const listedSources = Array.isArray(source?.anvanda_kallor) ? source.anvanda_kallor : [];
+    const sources = listedSources.filter(record =>
+      record && typeof record === "object" &&
+      allowedRoles.includes(record.roll) && String(record.url || "").trim()
+    ).map(record => ({
+      name: String(record.namn || "Källa").trim(),
+      url: String(record.url).trim(),
+      role: record.roll
+    }));
+    const registeredSource = {
+      name: String(source?.kalla || item.källa || "Registrerad källa").trim(),
+      url: String(source?.url || item.original_länk || "").trim()
+    };
+    return {
+      status,
+      sources,
+      registeredSource,
+      completeSources: source?.kallredovisning_komplett === true && sources.length > 0,
+      comment: String(source?.underlagskommentar || "").trim()
+    };
+  }
+
+  function createOwnerSourceAudit(item, detailed) {
+    const info = ownerArticleSourceData(item);
+    if (!info) return null;
+    const section = document.createElement("section");
+    section.className = "owner-source-audit";
+    section.setAttribute("aria-label", "Originalartikelns fullständighet och källor");
+    const title = document.createElement("p");
+    const titleStrong = document.createElement("strong");
+    titleStrong.textContent = "Originalartikel: " + info.status;
+    title.append(titleStrong);
+    section.append(title);
+    if (!detailed) return section;
+
+    const addSourceLink = (container, record) => {
+      let link = null;
+      try {
+        const parsed = new URL(record.url);
+        if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+          link = document.createElement("a");
+          link.href = parsed.href;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = record.name;
+        }
+      } catch {}
+      if (link) container.append(link);
+      else container.append(document.createTextNode(record.name + (record.url ? " (" + record.url + ")" : "")));
+    };
+
+    if (info.sources.length) {
+      const label = document.createElement("p");
+      label.textContent = "Dokumenterade använda källor:";
+      const list = document.createElement("ul");
+      const roles = {huvudkälla:"Huvudkälla", komplettering:"Komplettering", faktakontroll:"Faktakontroll"};
+      for (const entry of info.sources) {
+        const row = document.createElement("li");
+        row.append(document.createTextNode(roles[entry.role] + ": "));
+        addSourceLink(row, entry);
+        list.append(row);
+      }
+      section.append(label, list);
+    } else {
+      const unknown = document.createElement("p");
+      unknown.textContent = "Använda källor: Ännu inte dokumenterade.";
+      section.append(unknown);
+    }
+
+    if (!info.completeSources) {
+      const caution = document.createElement("p");
+      caution.textContent = "Fullständig källredovisning saknas eller är inte verifierad.";
+      section.append(caution);
+    }
+    if (info.registeredSource.url &&
+        !info.sources.some(entry => entry.url === info.registeredSource.url)) {
+      const registered = document.createElement("p");
+      registered.append(document.createTextNode("Registrerad nyhetskälla (användning ej verifierad): "));
+      addSourceLink(registered, info.registeredSource);
+      section.append(registered);
+    }
+    if (info.comment) {
+      const comment = document.createElement("p");
+      comment.textContent = "Bedömningsnotering: " + info.comment;
+      section.append(comment);
+    }
+    return section;
+  }
+
   function renderNews(items) {
     listEl.replaceChildren();
     const sorted = sortNews(items);
@@ -2232,7 +2336,10 @@
       if (detailedArticle) article.append(selectionStats);
       article.append(h2);
       if ((ownerMode || isVipUser()) && detailedArticle) article.append(webAddress);
-      article.append(details, tags, summary);
+      article.append(details, tags);
+      const sourceAudit = createOwnerSourceAudit(item, detailedArticle);
+      if (sourceAudit) article.append(sourceAudit);
+      article.append(summary);
       if (detailedArticle) {
         article.append(body);
       } else if (youtube) {
@@ -2344,7 +2451,10 @@
               originalArchiveIcon.setAttribute("aria-label", originalArchiveIcon.title);
               originalArchiveIcon.setAttribute("aria-pressed", String(archived));
               const originalIconActions = createDocumentIconActions(key, "original", originalStar, originalCopy, originalArchiveIcon);
-              column.append(originalIconActions, heading, originalTitle, originalLinkLine, metadata, originalTags, originalIngress);
+              column.append(originalIconActions, heading, originalTitle, originalLinkLine, metadata, originalTags);
+              const originalAudit = createOwnerSourceAudit(item, true);
+              if (originalAudit) column.append(originalAudit);
+              column.append(originalIngress);
             }
             const textBox = document.createElement("div");
             textBox.className = "article-body";
@@ -2390,7 +2500,12 @@
                 });
                 column.append(fetchButton, feedback);
               }
-            } else column.append(heading, textBox);
+            } else {
+              column.append(heading);
+              const childAudit = createOwnerSourceAudit(item, true);
+              if (childAudit) column.append(childAudit);
+              column.append(textBox);
+            }
           }
           // Statistik och höjdjustering gäller varje kolumn separat.
           if (mode !== "2") {
