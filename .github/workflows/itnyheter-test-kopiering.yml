@@ -137,5 +137,66 @@ jobs:
             assert.ok(textOf(rendered).includes("Faktakontroll"));
           }
           console.log("OK: Ägarstatus, alla fyra statusvärden, källroller, verifieringsstandard och VIP-spärr.");
+          // PC: Skift+Pil ska rulla båda jämförelsekolumnerna var för sig.
+          const scrollStart = inline.indexOf("  function scrollDetailedArticle(");
+          const scrollEnd = inline.indexOf("  function playSelectedYoutube(", scrollStart);
+          assert.ok(scrollStart >= 0 && scrollEnd > scrollStart, "Skift+Pil-funktionen saknas.");
+          const makeColumn = (total, visible) => ({
+            scrollHeight: total, clientHeight: visible, scrollTop: 0,
+            querySelector: () => ({})
+          });
+          const first = makeColumn(300, 150);
+          const second = makeColumn(550, 150);
+          const single = makeColumn(360, 160);
+          const state = {compare: [first, second], single: null};
+          const scrollScope = {
+            listEl: {
+              querySelectorAll: selector => selector === ".owner-content-compare .owner-content-column" ? state.compare : [],
+              querySelector: selector => selector === ".news.article-detailed" ? state.single : null
+            },
+            getComputedStyle: () => ({lineHeight: "24px", fontSize: "16px"})
+          };
+          vm.runInNewContext(inline.slice(scrollStart, scrollEnd), scrollScope);
+          const scroll = scrollScope.scrollDetailedArticle;
+          assert.equal(scroll(1), true);
+          assert.equal(first.scrollTop, 48, "Första kolumnen rullades inte.");
+          assert.equal(second.scrollTop, 48, "Andra kolumnen rullades inte.");
+          for (let i = 0; i < 3; i++) scroll(1);
+          assert.equal(first.scrollTop, 150, "Kort kolumn ska stanna på slutgränsen.");
+          assert.equal(second.scrollTop, 192, "Längre kolumn ska fortsätta efter kortare.");
+          for (let i = 0; i < 20; i++) scroll(1);
+          assert.equal(first.scrollTop, 150, "Kort kolumn får inte passera slutgränsen.");
+          assert.equal(second.scrollTop, 400, "Andra kolumnen ska nå sitt eget slut.");
+          scroll(-1);
+          assert.equal(first.scrollTop, 102, "Första kolumnen ska rulla uppåt igen.");
+          assert.equal(second.scrollTop, 352, "Andra kolumnen ska rulla uppåt igen.");
+          for (let i = 0; i < 20; i++) scroll(-1);
+          assert.equal(first.scrollTop, 0, "Första kolumnen får inte passera början.");
+          assert.equal(second.scrollTop, 0, "Andra kolumnen får inte passera början.");
+          state.compare = [];
+          state.single = single;
+          assert.equal(scroll(1), true, "Enskild artikel ska också kunna rullas.");
+          assert.equal(single.scrollTop, 48);
+          state.single = null;
+          assert.equal(scroll(1), false, "Utan öppet dokument ska inget hända.");
+
+          // Kortkommandot fungerar också när kopiera-knapp eller länk har fokus.
+          const keyStart = inline.indexOf("  function keyboardShortcutAllowed(");
+          const keyEnd = inline.indexOf("  function applyFilters(", keyStart);
+          assert.ok(keyStart >= 0 && keyEnd > keyStart);
+          class TestElement {}
+          const keyScope = {Element: TestElement, exactTitleFilter: {}};
+          vm.runInNewContext(inline.slice(keyStart, keyEnd), keyScope);
+          const button = new TestElement();
+          button.tagName = "BUTTON";
+          button.isContentEditable = false;
+          button.closest = selector => selector.includes(".owner-content-column") ? {} : null;
+          assert.equal(keyScope.keyboardShortcutAllowed({target: button, shiftKey: true, key: "ArrowDown"}), true);
+          assert.equal(keyScope.keyboardShortcutAllowed({target: button, shiftKey: false, key: "ArrowDown"}), false);
+          const input = new TestElement();
+          input.tagName = "INPUT";
+          input.isContentEditable = false;
+          assert.equal(keyScope.keyboardShortcutAllowed({target: input, shiftKey: true, key: "ArrowDown"}), false);
+          console.log("OK: Skift+Pil parallellrullar kolumner, respekterar separata slut/början och fungerar i enskilt dokument.");
           console.log("OK: JavaScript-syntax, IT-Nyhet, IT-Fakta, IT-YouTube, originaltext och Markdown-format.");
           NODE
