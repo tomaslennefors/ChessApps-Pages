@@ -792,8 +792,74 @@
     return [ip,country,region,city,isp,device].join("---");
   }
 
+  async function getVisitorDeviceInfo() {
+    const ua = String(navigator.userAgent || "");
+    let browser = "Okänd", version = "Okänd";
+
+    // Ordningen är viktig: Edge, Opera och Samsung Browser har även Chrome i sin UA.
+    const browserMatchers = [
+      ["Edge", /(?:EdgA|EdgiOS|Edg)\/([\\d.]+)/i],
+      ["Opera", /(?:OPR|OPiOS)\/([\\d.]+)/i],
+      ["Samsung Internet", /SamsungBrowser\/([\\d.]+)/i],
+      ["Firefox", /(?:FxiOS|Firefox)\/([\\d.]+)/i],
+      ["Chrome", /(?:CriOS|Chrome)\/([\\d.]+)/i],
+      ["Safari", /Version\/([\\d.]+).*Safari/i]
+    ];
+    for (const [name, re] of browserMatchers) {
+      const match = ua.match(re);
+      if (match) {
+        browser = name;
+        version = match[1];
+        break;
+      }
+    }
+    // User-Agent Client Hints kan ge en mer exakt Chromium-version än den
+    // reducerade versionssträngen i userAgent. Om API:et saknas används UA.
+    let hints;
+    try {
+      if (navigator.userAgentData?.getHighEntropyValues) {
+        hints = await navigator.userAgentData.getHighEntropyValues(["fullVersionList", "platformVersion"]);
+      }
+    } catch {
+      // Tillgänglighet varierar med webbläsarens sekretessinställningar.
+    }
+    const brands = Array.isArray(hints?.fullVersionList) ? hints.fullVersionList : [];
+    const matchBrand = browser === "Edge" ? /Microsoft Edge/i
+      : browser === "Opera" ? /Opera/i
+      : browser === "Chrome" ? /Google Chrome/i
+      : null;
+    if (matchBrand) {
+      const brand = brands.find(item => matchBrand.test(item.brand || ""));
+      if (brand?.version) version = brand.version;
+    }
+    if (browser === "Okänd" && Array.isArray(navigator.userAgentData?.brands)) {
+      const brand = navigator.userAgentData.brands.find(item => /Google Chrome|Microsoft Edge|Opera/i.test(item.brand || ""));
+      if (brand) {
+        browser = /Edge/i.test(brand.brand) ? "Edge" : /Opera/i.test(brand.brand) ? "Opera" : "Chrome";
+        version = brand.version || "Okänd";
+      }
+    }
+
+    const platform = String(navigator.userAgentData?.platform || "");
+    let os = "Okänt";
+    if (/Windows NT|Windows/i.test(ua) || /Windows/i.test(platform)) os = "Windows";
+    else if (/Android/i.test(ua) || /Android/i.test(platform)) os = "Android";
+    else if (/iPhone|iPad|iPod/i.test(ua) || /iOS/i.test(platform)) os = "iOS/iPadOS";
+    else if (/CrOS/i.test(ua) || /Chrome OS/i.test(platform)) os = "ChromeOS";
+    else if (/Mac OS X|Macintosh/i.test(ua) || /macOS/i.test(platform)) os = "macOS";
+    else if (/Linux/i.test(ua) || /Linux/i.test(platform)) os = "Linux";
+
+    // iPadOS kan rapportera Mac som operativsystem och dator som enhetstyp.
+    const ipadDesktopMode = /Macintosh/i.test(ua)
+      && navigator.platform === "MacIntel" && Number(navigator.maxTouchPoints || 0) > 1;
+    if (ipadDesktopMode) os = "iPadOS";
+    const device = ipadDesktopMode ? "Surfplatta" : detectDeviceType();
+    return [browser, version, os, device].join("---");
+  }
+
   async function appendAppStartLog(identity, token) {
     if (!identity || !token) return false;
+    const deviceInfo = await getVisitorDeviceInfo();
     const otherInfo = await getVisitorOtherInfo();
     await mutateSharedDataFile(userLogDataUrl, token, "Logga start av IT-Nyheter", data => {
       if (!Array.isArray(data.log)) data.log = [];
@@ -802,6 +868,7 @@
         userName:identity.userName,
         userRole:identity.userRole,
         datumtid:localLogTimestamp(),
+        "EnhetsInfo":deviceInfo,
         "Övrigt":otherInfo
       });
     });
