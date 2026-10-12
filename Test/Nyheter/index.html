@@ -883,9 +883,53 @@
     return [browser, version, os, device].join("---");
   }
 
+  async function getVisitorHardwareInfo() {
+    // Bara frivilligt exponerade webbläsaruppgifter; ingen extra tjänst
+    // eller hårdvarufingeravtryckning med WebGL används.
+    const ua = String(navigator.userAgent || "");
+    let hints = {};
+    try {
+      if (navigator.userAgentData?.getHighEntropyValues) {
+        hints = await navigator.userAgentData.getHighEntropyValues(["model", "architecture", "bitness"]) || {};
+      }
+    } catch {
+      // Privat läge och andra webbläsare kan neka uppgifterna.
+    }
+
+    let model = String(hints.model || "").trim();
+    // Androids User-Agent kan ibland uttryckligen ange Samsungs modellkod.
+    // Gissa aldrig modell när uppgiften är reducerad eller saknas.
+    if (!model && /Android/i.test(ua)) {
+      const samsung = ua.match(/(?:^|[;(\s])(SM-[A-Z0-9-]{3,25})(?=[;)\s])/i);
+      if (samsung) model = samsung[1];
+    }
+    model = model ? model.replace(/---/g, "-").slice(0, 80) : "Okänd modell";
+
+    const arch = String(hints.architecture || "").trim().toLowerCase();
+    const bits = String(hints.bitness || "").trim();
+    let architecture = "Okänd arkitektur";
+    if (/^arm(?:64)?$/.test(arch)) architecture = (arch === "arm64" || bits === "64") ? "ARM64" : "ARM";
+    else if (/^(?:x86|x64|amd64)$/.test(arch)) architecture = (bits === "64" || arch !== "x86") ? "x86-64" : "x86";
+    // x64 i User-Agent avslöjar arkitektur, inte Intel/AMD-fabrikatet.
+    else if (/Win64;\s*x64|WOW64|x86_64|amd64/i.test(ua)) architecture = "x86-64";
+    else if (/\baarch64\b|\barm64\b/i.test(ua)) architecture = "ARM64";
+
+    const cores = Number(navigator.hardwareConcurrency);
+    const coreInfo = Number.isInteger(cores) && cores > 0 && cores <= 4096
+      ? cores + " logiska processorer" : "Okänt antal logiska processorer";
+
+    // deviceMemory avser ungefärliga GB, ofta begränsade av webbläsaren.
+    const memory = Number(navigator.deviceMemory);
+    const ramInfo = Number.isFinite(memory) && memory > 0 && memory <= 1024
+      ? "RAM cirka " + memory + " GB" : "RAM okänt";
+
+    return [model, architecture, coreInfo, ramInfo].join("---");
+  }
+
   async function appendAppStartLog(identity, token) {
     if (!identity || !token) return false;
     const deviceInfo = await getVisitorDeviceInfo();
+    const hardwareInfo = await getVisitorHardwareInfo();
     const otherInfo = await getVisitorOtherInfo();
     await mutateSharedDataFile(userLogDataUrl, token, "Logga start av IT-Nyheter", data => {
       if (!Array.isArray(data.log)) data.log = [];
@@ -895,6 +939,7 @@
         userRole:identity.userRole,
         datumtid:localLogTimestamp(),
         "EnhetsInfo":deviceInfo,
+        "HårdvaruInfo":hardwareInfo,
         "Övrigt":otherInfo
       });
     });
