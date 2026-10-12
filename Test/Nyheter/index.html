@@ -841,18 +841,44 @@
     }
 
     const platform = String(navigator.userAgentData?.platform || "");
+    // iPadOS kan rapportera Mac som operativsystem och dator som enhetstyp.
+    const ipadDesktopMode = /Macintosh/i.test(ua)
+      && navigator.platform === "MacIntel" && Number(navigator.maxTouchPoints || 0) > 1;
     let os = "Okänt";
-    if (/Windows NT|Windows/i.test(ua) || /Windows/i.test(platform)) os = "Windows";
+    if (ipadDesktopMode || /iPad/i.test(ua)) os = "iPadOS";
+    else if (/iPhone|iPod/i.test(ua) || /iOS/i.test(platform)) os = "iOS";
+    else if (/Windows NT|Windows/i.test(ua) || /Windows/i.test(platform)) os = "Windows";
     else if (/Android/i.test(ua) || /Android/i.test(platform)) os = "Android";
-    else if (/iPhone|iPad|iPod/i.test(ua) || /iOS/i.test(platform)) os = "iOS/iPadOS";
     else if (/CrOS/i.test(ua) || /Chrome OS/i.test(platform)) os = "ChromeOS";
     else if (/Mac OS X|Macintosh/i.test(ua) || /macOS/i.test(platform)) os = "macOS";
     else if (/Linux/i.test(ua) || /Linux/i.test(platform)) os = "Linux";
 
-    // iPadOS kan rapportera Mac som operativsystem och dator som enhetstyp.
-    const ipadDesktopMode = /Macintosh/i.test(ua)
-      && navigator.platform === "MacIntel" && Number(navigator.maxTouchPoints || 0) > 1;
-    if (ipadDesktopMode) os = "iPadOS";
+    // Versionsnumret i userAgent är ofta fruset (Windows NT 10.0,
+    // Android 10, macOS 10.15.7 och iOS-version i Safari).
+    // Gissa därför aldrig OS-versionen från enbart userAgent.
+    const platformVersion = String(hints?.platformVersion || "").trim();
+    const versionParts = /^\d+(?:\.\d+){0,3}$/.test(platformVersion)
+      ? platformVersion.split(".").map(Number) : [];
+    const major = versionParts[0];
+    if (os === "Windows") {
+      // Windows platformVersion är API-kontraktversion, inte Windows 11:s versionsnummer.
+      if (major >= 13 && major < 100) os = "Windows 11";
+      else if (major >= 1 && major <= 12) os = "Windows 10";
+      else os = "Windows (okänd version)";
+    } else if (os === "Android") {
+      if (major >= 1 && major < 100) os = "Android " + major;
+      else os = "Android (okänd version)";
+    } else if (os === "macOS") {
+      // Chromium kan rapportera faktisk macOS-version via Client Hints.
+      if (major >= 10 && major < 100) {
+        const macVersion = platformVersion.replace(/(?:\.0)+$/, "");
+        os = "macOS " + macVersion;
+      } else os = "macOS (okänd version)";
+    } else if (os === "iOS" || os === "iPadOS" || os === "ChromeOS" || os === "Linux") {
+      // Safari/iOS ger inte en generellt tillförlitlig versionsuppgift;
+      // ChromeOS Client Hints är oftast ett byggnummer, inte OS-version.
+      os += " (okänd version)";
+    }
     const device = ipadDesktopMode ? "Surfplatta" : detectDeviceType();
     return [browser, version, os, device].join("---");
   }
