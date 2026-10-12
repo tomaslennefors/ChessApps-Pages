@@ -291,14 +291,57 @@ jobs:
               expected:"Safari---26.0---iPadOS (okänd version)---Surfplatta"
             });
 
+            // HårdvaruInfo: mät bara vad webbläsaren faktiskt exponerar.
+            uaScope.navigator = {
+              userAgent:cases[1][0],
+              hardwareConcurrency:8,
+              deviceMemory:16,
+              userAgentData:{getHighEntropyValues: async () => ({
+                model:"", architecture:"x86", bitness:"64"
+              })}
+            };
+            assert.equal(await uaScope.getVisitorHardwareInfo(),
+              "Okänd modell---x86-64---8 logiska processorer---RAM cirka 16 GB");
+
+            uaScope.navigator = {
+              userAgent:cases[4][0],
+              hardwareConcurrency:8,
+              deviceMemory:8,
+              userAgentData:{getHighEntropyValues: async () => ({
+                model:"SM-S938B", architecture:"arm", bitness:"64"
+              })}
+            };
+            assert.equal(await uaScope.getVisitorHardwareInfo(),
+              "SM-S938B---ARM64---8 logiska processorer---RAM cirka 8 GB");
+
+            uaScope.navigator = {userAgent:cases[4][0],hardwareConcurrency:4};
+            assert.equal(await uaScope.getVisitorHardwareInfo(),
+              "SM-S938B---Okänd arkitektur---4 logiska processorer---RAM okänt",
+              "Explicit modellkod i Android-UA får användas utan Client Hints.");
+
+            uaScope.navigator = {
+              userAgent:"Mozilla/5.0 (Linux; Android 10; K) Chrome/154.0.0.0 Mobile Safari/537.36",
+              hardwareConcurrency:6,
+              userAgentData:{getHighEntropyValues:async () => {throw new Error("Blocked");}}
+            };
+            assert.equal(await uaScope.getVisitorHardwareInfo(),
+              "Okänd modell---Okänd arkitektur---6 logiska processorer---RAM okänt",
+              "Reducerad UA och nekade hints får inte ge påhittad hårdvara.");
+
+            uaScope.navigator = {userAgent:cases[3][0]};
+            assert.equal(await uaScope.getVisitorHardwareInfo(),
+              "Okänd modell---Okänd arkitektur---Okänt antal logiska processorer---RAM okänt",
+              "iPhone utan hårdvaruuppgifter måste markeras som okänd.");
+
             uaScope.navigator = {userAgent:cases[0][0]};
             await uaScope.appendAppStartLog({userId:"T1",userName:"Test",userRole:"VIP"}, "testtoken");
             const record = uaScope.logged.log[0];
-            assert.deepEqual(Object.keys(record), ["userId","userName","userRole","datumtid","EnhetsInfo","Övrigt"],
-              "EnhetsInfo ska ligga näst sist, före Övrigt.");
+            assert.deepEqual(Object.keys(record), ["userId","userName","userRole","datumtid","EnhetsInfo","HårdvaruInfo","Övrigt"],
+              "HårdvaruInfo ska ligga direkt efter EnhetsInfo och före Övrigt.");
             assert.equal(record.EnhetsInfo, "Edge---154.0.0.0---Windows (okänd version)---Dator");
+            assert.equal(record.HårdvaruInfo, "Okänd modell---x86-64---Okänt antal logiska processorer---RAM okänt");
             assert.equal(record["Övrigt"], "IP---Land---Region---Stad---ISP---Dator");
-            console.log("OK: EnhetsInfo webbläsare/version/operativsystem/enhet, Chrome Client Hints och näst sista loggfält.");
+            console.log("OK: EnhetsInfo och HårdvaruInfo, Androidmodell, CPU-arkitektur, logiska processorer, RAM samt korrekt loggordning.");
           }
           checkDeviceInfo().catch(err => {console.error(err); process.exitCode = 1;});
           console.log("OK: JavaScript-syntax, IT-Nyhet, IT-Fakta, IT-YouTube, originaltext och Markdown-format.");
