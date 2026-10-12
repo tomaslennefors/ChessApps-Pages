@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-12 (automatisk originaltexthämtning och Markdown-kopiering; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-12 (fullständighetsstatus och källredovisning för ägaren; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -451,3 +451,34 @@ Originalfilen `Regler_Nyheter_original.md` behålls oförändrad som historisk r
 - **F5 läser in** redan sparade originaltexter; F5 startar inte själva texthämtningen. Om GitHub Action ännu inte hunnit slutföras måste appen uppdateras senare.
 - Automatisk hämtning görs endast från den registrerade källans webbadress, utan att kringgå betalväggar eller andra spärrar. Att källan är åtkomlig, att hela texten extraheras och att formateringen blir korrekt måste bedömas per nyhet.
 - Första automatiska end-to-end-testet utfördes med tillfälligt dokument-ID **84** och användarens egen GitHub Pages-testfil. GitHub Actions körde klart och sparade exakt testtexten i privat `originaltext`. Testpost 84 togs därefter bort; permanent dokument 82 och 83 lämnades orörda.
+
+## 14. Källstatus och transparens för ägaren (2026-10-12)
+
+**Syfte:** Ägaren ska kunna avgöra hur väl en AI-nyhet är underbyggd. Begränsat eller osäkert artikelunderlag får aldrig döljas.
+
+### Fullständighetsstatus
+
+För varje **IT-Nyhet** finns fältet `fullstandighetsstatus` i privata `Data/Test/Nyheter/nyheter_originaltexter.json`.
+
+- **Fullständig:** Hela originalartikeln har faktiskt kunnat läsas och dess fullständighet har kontrollerats.
+- **Ofullständig:** Det är känt att delar av originalartikeln saknas.
+- **Misstänkt ofullständig:** Texten kan vara avkortad; det har inte gått att avgöra säkert.
+- **Ej verifierad:** Artikeln eller dess fullständighet har inte granskats tillräckligt för en säker klassificering.
+
+Standard för tidigare nyheter är **Ej verifierad**. Att automatisk textutvinning lyckas, att dokumentet har många tecken eller att en webbadress finns räcker **inte** för att ge status `Fullständig`.
+
+### Källredovisning
+
+- Fältet `anvanda_kallor` är en lista med faktiskt **använda källor**. Varje post ska ha `namn`, `url` och `roll` med ett av värdena `huvudkälla`, `komplettering` eller `faktakontroll`. Lista **samtliga** källor som faktiskt användes för AI-bearbetningen, även om det är flera källor om samma händelse.
+- `kallredovisning_komplett` sätts till `true` **först efter** att GPT har kontrollerat att källförteckningen verkligen omfattar samtliga använda källor. I annat fall ska den vara `false`.
+- `underlagskommentar` kan användas för en konkret observation eller begränsning som förklarar bedömningen.
+- Den gamla registrerade källan (`kalla` och `url`) visas för ägaren separat som **registrerad nyhetskälla**, inte som en verifierad lista över använda källor. Tidigare nyheters okända källanvändning får inte rekonstrueras genom gissningar.
+- GPT ska redovisa tydligt om en nyhet bygger på ofullständig eller misstänkt ofullständig artikeltext och berätta när andra källor kompletterat texten.
+
+### Visning och åtkomst
+
+- Status visas i varje IT-Nyhets dokumentkort när **verifierad ägare** har aktiverat **Privat visning**. I detaljläget visas dessutom använda källor med källroller och klickbara webbadresser, eventuell osäkerhet och registrerad nyhetskälla.
+- Status och källredovisning visas i både **1. Originaltext** och **2. AI-text för vuxna** och i övriga aktiverade jämförelsekolumner. De ska inte visas för VIP eller när privat visning är avstängd.
+- Uppgifterna lagras i det privata originalregistret, som bara ska läsas av ägarens appflöde. De ska **inte** läggas i den publika `nyheter.json` eller VIP:s inlästa nyhetsmetadata.
+- Äldre originalregisterposter initieras till `Ej verifierad`, en tom `anvanda_kallor` och `kallredovisning_komplett: false`. Befintliga originaltexter och AI-texter ändras inte av denna märkning.
+- En framtida nyhetsproduktion ska fylla i dessa fält **utifrån faktiskt läst material och verifierad källanvändning**; inga positiva slutsatser utan kontroll.
