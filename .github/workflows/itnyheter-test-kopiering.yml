@@ -79,5 +79,63 @@ jobs:
           assert.ok(videoCopy.includes("<https://www.youtube.com/"), "YouTube-adressen saknas.");
 
           assert.ok(html.includes("const originalText = formatCopyMarkdown("), "Originaltextens kopiering använder inte Markdown.");
+          const startAudit = inline.indexOf("  function ownerArticleSourceData(");
+          const endAudit = inline.indexOf("  function renderNews(", startAudit);
+          assert.ok(startAudit >= 0 && endAudit > startAudit, "Ägarens kontrollfunktion saknas.");
+          const auditScope = {
+            ownerMode: true,
+            ownerAuthenticated: true,
+            originalNewsById: new Map(),
+            displayType: item => item.typ,
+            URL,
+            document: {
+              createElement: tag => ({
+                tag, children: [], attrs: {}, textContent: "", href: "",
+                append(...children) {this.children.push(...children);},
+                setAttribute(name, value) {this.attrs[name] = value;}
+              }),
+              createTextNode: value => ({textContent: value})
+            }
+          };
+          vm.runInNewContext(inline.slice(startAudit, endAudit), auditScope);
+          const {ownerArticleSourceData, createOwnerSourceAudit} = auditScope;
+          const item = {id: 500, typ: "IT-Nyhet", original_länk: "https://example.org/nyhet"};
+          const textOf = node => typeof node === "string" ? node : [
+            node?.textContent || "", ...(node?.children || []).map(textOf)
+          ].join(" ");
+          let info = ownerArticleSourceData(item);
+          assert.equal(info.status, "Ej verifierad", "Äldre nyheter får inte gissad status.");
+          assert.equal(info.completeSources, false, "Okänd källförteckning får inte anses fullständig.");
+          assert.ok(textOf(createOwnerSourceAudit(item, true)).includes("Använda källor: Ännu inte dokumenterade."));
+          assert.ok(textOf(createOwnerSourceAudit(item, false)).includes("Originalartikel: Ej verifierad"));
+          auditScope.ownerMode = false;
+          assert.equal(createOwnerSourceAudit(item, true), null, "Publik/VIP får inte se ägarstatus.");
+          auditScope.ownerMode = true;
+          auditScope.ownerAuthenticated = false;
+          assert.equal(createOwnerSourceAudit(item, true), null, "Ej verifierad ägare får inte se ägarstatus.");
+          auditScope.ownerAuthenticated = true;
+          assert.equal(createOwnerSourceAudit({id: 501, typ: "IT-Fakta"}, true), null, "Status för originalartikel ska inte appliceras på IT-Fakta.");
+          for (const status of ["Fullständig", "Ofullständig", "Misstänkt ofullständig", "Ej verifierad"]) {
+            auditScope.originalNewsById.set("500", {
+              fullstandighetsstatus: status,
+              kalla: "Testkälla",
+              url: "https://example.org/nyhet",
+              anvanda_kallor: [
+                {namn: "Huvudkälla", roll: "huvudkälla", url: "https://example.org/nyhet"},
+                {namn: "Faktakontroll", roll: "faktakontroll", url: "https://example.org/kontroll"}
+              ],
+              kallredovisning_komplett: true,
+              underlagskommentar: "Manuellt granskat"
+            });
+            info = ownerArticleSourceData(item);
+            assert.equal(info.status, status);
+            assert.equal(info.sources.length, 2);
+            assert.equal(info.completeSources, true);
+            const rendered = createOwnerSourceAudit(item, true);
+            assert.ok(textOf(rendered).includes("Originalartikel: " + status));
+            assert.ok(textOf(rendered).includes("Huvudkälla"));
+            assert.ok(textOf(rendered).includes("Faktakontroll"));
+          }
+          console.log("OK: Ägarstatus, alla fyra statusvärden, källroller, verifieringsstandard och VIP-spärr.");
           console.log("OK: JavaScript-syntax, IT-Nyhet, IT-Fakta, IT-YouTube, originaltext och Markdown-format.");
           NODE
