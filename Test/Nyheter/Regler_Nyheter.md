@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-12 (fullständighetsstatus och källredovisning för ägaren; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-12 (Skift+Pil i jämförelsevy; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -283,12 +283,16 @@ Vanliga knappar som annars saknar egen specialfärg ska ha **blå bakgrund med v
 
 
 
-### 6f. Tangentbordsscrollning i detaljerad dokument
+### 6f. Tangentbordsscrollning i detaljerat dokument (PC)
 
-När en detaljerad dokument är öppen gäller:
+När ett detaljerat dokument är öppet gäller:
 - **Pil upp / Pil ned** byter fortfarande mellan dokument.
-- **Shift + Pil upp / Shift + Pil ned** scrollar inne i den öppna dokumentet.
-- Varje tryck på Shift + pil ska flytta texten ungefär **två textrader** uppåt eller nedåt, beräknat från dokumenttextens faktiska radavstånd.
+- **Skift + Pil upp / Skift + Pil ned** rullar inne i det öppna dokumentet cirka **två textrader** per tangenttryckning.
+- I **jämförelseläge** ska samma tangenttryckning rulla **båda (eller samtliga) aktiva dokumentkolumner parallellt** med samma steg, utan att sidans huvuddokumentruta används.
+- **Varje kolumn har egna gränser:** när en kortare kolumn når början eller slutet stannar bara den kolumnen; övriga fortsätter tills även de når respektive gräns. Detta gäller både uppåt och nedåt.
+- Kortkommandot ska även fungera efter att kopieringsknappen eller en länk inne i dokumentet fått fokus. Formulärfält ska inte störas.
+- Mobilens bläddringsknappar, scrollning, ikoner, layout och dokumentbyte med vanliga pilar ska vara oförändrade.
+- Automatiskt kodtest av enkelvy, jämförelsevy och separata scrollgränser ingår i `.github/workflows/itnyheter-test-kopiering.yml`.
 
 
 
