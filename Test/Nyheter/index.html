@@ -1969,9 +1969,31 @@
     return blocks.join("\n\n") + "\n";
   }
 
+  // Äldre IT-Fakta saknar Markdown-markeringar runt rubrikerna.
+  // Konvertera bara uppenbara rubriker, och enbart i texten som kopieras.
+  function markdownForLegacyFacts(body) {
+    const text = String(body || "").replace(/\r\n?/g, "\n");
+    if (/^#{1,6}\s+/m.test(text)) return text;
+    const sections = text.split(/\n{2,}/);
+    return sections.map((section, index) => {
+      const lines = section.split("\n");
+      const heading = lines[0].trim();
+      if (!heading || heading.length > 85 || /[.!?]$/.test(heading) || /^[-*+]\s/.test(heading)) return section;
+      if (lines.length > 1 && lines.slice(1).join(" ").trim().length >= 50) {
+        return "## " + heading + "\n\n" + lines.slice(1).join("\n");
+      }
+      if (lines.length === 1 && index + 1 < sections.length &&
+          sections[index + 1].trim().length >= 110 && !sections[index + 1].includes("\n")) {
+        return "## " + heading;
+      }
+      return section;
+    }).join("\n\n");
+  }
+
   function copyNewsText(item, youtube, detailedArticle, detailsText, transcriptText, url = "") {
     const categories = Array.isArray(item.kategorier) ? item.kategorier : [];
-    const body = String(item.läsvy || item.lasvy || "").trim();
+    const rawBody = String(item.läsvy || item.lasvy || "").trim();
+    const body = displayType(item) === "IT-Fakta" ? markdownForLegacyFacts(rawBody) : rawBody;
     const ingress = String(item.sammanfattning || "").trim();
     return formatCopyMarkdown(
       displayTitle(item), detailsText, categories, url, ingress,
@@ -2084,7 +2106,9 @@
       star.setAttribute("aria-pressed", String(favorite));
 
       const copyNewsBtn = makeButton("⧉", "copy-news", async () => {
-        const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent, webAddress.querySelector("a")?.getAttribute("href") || "");
+        const url = webAddress.querySelector("a")?.getAttribute("href") ||
+          ((ownerMode || isVipUser()) ? (item.original_länk || item.länk || item.webbadress || "") : "");
+        const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent, url);
         try {
           await copyText(text, "Hela dokumentet är kopierat till Urklipp.");
           showIconFeedback(key, "ai", "Kopierat - Dokumenttexten finns i Urklipp");
