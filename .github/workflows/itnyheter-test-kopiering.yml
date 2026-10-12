@@ -202,12 +202,11 @@ jobs:
           const deviceStart = inline.indexOf("  async function getVisitorDeviceInfo(");
           const deviceEnd = inline.indexOf("  async function syncPublicIdentityToData(", deviceStart);
           assert.ok(deviceStart >= 0 && deviceEnd > deviceStart, "Funktion för EnhetsInfo/logg saknas.");
+          const detectDeviceStart = inline.indexOf("  function detectDeviceType(");
+          const detectDeviceEnd = inline.indexOf("  async function getVisitorOtherInfo(", detectDeviceStart);
+          assert.ok(detectDeviceStart >= 0 && detectDeviceEnd > detectDeviceStart);
           const uaScope = {
             navigator: {},
-            detectDeviceType() {
-              const ua = this?.navigator?.userAgent || uaScope.navigator.userAgent || "";
-              return /iPad|Tablet/i.test(ua) ? "Surfplatta" : /Mobi|iPhone|Android/i.test(ua) ? "Mobil" : "Dator";
-            },
             getVisitorOtherInfo: async () => "IP---Land---Region---Stad---ISP---Dator",
             localLogTimestamp: () => "2026-10-12 22:40:00",
             mutateSharedDataFile: async (url, token, message, mutation) => {
@@ -216,7 +215,7 @@ jobs:
             },
             userLogDataUrl: "logfile"
           };
-          vm.runInNewContext(inline.slice(deviceStart, deviceEnd), uaScope);
+          vm.runInNewContext(inline.slice(detectDeviceStart, detectDeviceEnd) + "\n" + inline.slice(deviceStart, deviceEnd), uaScope);
           async function checkDeviceInfo() {
             const cases = [
               ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0", "Edge---154.0.0.0---Windows---Dator"],
