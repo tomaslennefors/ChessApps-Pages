@@ -1645,7 +1645,24 @@
       "typ": "IT-Nyhet",
       "hämtdatum": "2026-10-08",
       "original_länk": "https://www.aftonbladet.se/nyheter/a/31JOkv/ukraina-skjuter-ned-ryska-dronare-med-ai"
+    },
+    {
+      "id": 82,
+      "datum": "2026-10",
+      "titel": "N: OpenAI släpper 722 matematiska manuskript från en modell ingen kan använda",
+      "språk": "Svenska",
+      "kategorier": [
+        "Artificiell intelligens",
+        "OpenAI",
+        "AI-forskning",
+        "Matematik"
+      ],
+      "sammanfattning": "OpenAI publicerade den 6 oktober 2026 en stor samling matematiska forskningsmanuskript från en ännu inte tillgänglig intern AI-modell. Artikeln från Weights & Wire rapporterade 722 manuskript i 372 grupper av besläktade resultat. OpenAI:s uppdaterade katalog innehåller nu 719 manuskript i 372 grupper. En del resultat har kontrollerats formellt i Lean, men många återstår att granska. OpenAI uppger att modellen prövades på omkring 4 000 forskningsproblem och att ett genomsnittligt resultat krävde beräkningar motsvarande ungefär tre timmars ChatGPT Pro-tänkande. Forskare har samtidigt efterfrågat större insyn i modeller, uppgifter och verifieringsmetoder.",
+      "typ": "IT-Nyhet",
+      "hämtdatum": "2026-10-12",
+      "original_länk": "https://weightsandwire.com/sv/article/2026-10-07/openai-slaepper-722-matematiska-manuskript-fraan-en-modell-ingen-kan-anvaenda-or-ai-oeversikt",
+      "läsvy": "## Vad har OpenAI publicerat?\n\nDen 6 oktober 2026 öppnade OpenAI ett GitHub-arkiv med matematisk forskning framtagen av en intern AI-modell. Weights & Wire rapporterade den 7 oktober om 722 manuskript, ordnade i 372 resultatfamiljer. En familj kan innehålla flera närliggande bevis, följdsatser och alternativa metoder.\n\n**Uppdatering:** OpenAI:s aktuella katalog anger 719 manuskript i samma 372 familjer. Antalet manuskript ska inte förväxlas med antalet bevisade och oberoende godkända forskningsproblem.\n\n## Hur kan datorn kontrollera bevisen?\n\nMånga resultat har fått formella bevis skrivna i **Lean**. Där kan en dator kontrollera att varje logiskt steg följer av giltiga regler och tidigare satser. OpenAI uppger att ungefär 42 procent av huvudresultaten är formaliserade. Resultat utan ett sådant bevis kan fortfarande innehålla fel.\n\n## Hur arbetade modellen?\n\nOpenAI uppger att modellen fick prova ungefär 4 000 öppna forskningsproblem inom matematiken. I genomsnitt användes beräkningsresurser motsvarande omkring tre timmars tänkande med ChatGPT Pro per publicerat resultat. Modellen är ännu inte offentligt tillgänglig.\n\n## Varför är forskarna försiktiga?\n\nAtt Lean kontrollerar ett bevis säger att den formaliserade slutsatsen följer av antagandena. Det säger inte automatiskt om resultatet är nytt, viktigt eller hur väl den ursprungliga forskningsfrågan har besvarats. En oberoende rådgivande grupp har bland annat efterfrågat tydligare redovisning av modell, instruktioner, beräkningskostnader och hur många försök som misslyckades.\n\n## Fördjupning\n\n- [OpenAI:s egen beskrivning](https://openai.com/index/sharing-ai-progress-in-mathematics/)\n- [Forskningsarkivet med manuskript och Lean-bevis](https://github.com/openai/math)\n\nKälla för nyheten: Weights & Wire, 7 oktober 2026."
     }
   ],
-  "senast_uppdaterad": "2026-10-08"
+  "senast_uppdaterad": "2026-10-12"
 }
