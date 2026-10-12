@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-12 (Markdown-kopiering, automatisk originaltexthämtning; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-12 (automatisk originaltexthämtning och Markdown-kopiering; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -438,3 +438,16 @@ Originalfilen `Regler_Nyheter_original.md` behålls oförändrad som historisk r
 - Äldre IT-Fakta utan explicita Markdown-rubriker får tydliga mellanrubriker i kopian när en enkel rubrikstruktur kan identifieras. Den lagrade nyhetstexten ändras inte.
 - **Enbart Urklippets innehåll ändras**. Skärmlayout, dokumentknappar, ikonernas ordning och placering får inte påverkas.
 - Automatisk kontroll av JavaScript-syntax och flera Markdown-typer finns i `.github/workflows/itnyheter-test-kopiering.yml`.
+
+
+## 13. Automatisk hämtning utan knapptryckning (2026-10-12)
+
+- När GPT registrerar en **ny IT-Nyhet**, ska en motsvarande originalregisterpost skapas i det privata `Data/Test/Nyheter/nyheter_originaltexter.json` med korrekt dokument-ID, originalrubrik, webbadress och ett tomt `originaltext`.
+- En ny post i denna privata JSON-fil startar automatiskt GitHub Actions-arbetsflödet `.github/workflows/itnyheter-originaltext.yml` i repositoryt **Data**. Varken GPT eller ägaren behöver trycka på en separat knapp för att utföra hämtningen.
+- Arbetsflödet jämför originalregistret vid GitHub-pushens föregående och aktuella commit och behandlar **bara nytillkomna dokument-ID**. Befintliga poster hämtas inte om. Om `originaltext` redan innehåller text skrivs det aldrig över.
+- Hämtningen använder `Test/Nyheter/hamta_originaltext.py`, sparar resultatet i samma privata originalregister och loggar lyckade/misslyckade försök i `Test/Nyheter/Originaltext_AutomatiskStatus.json`.
+- Ett enskilt misslyckat försök ska inte hindra de andra nytillkomna dokumenten från att behandlas.
+- Den tidigare manuella knappen kan finnas som reservväg i originaltextvyn för dokument som fortfarande saknar originaltext. Den visas bara i verifierat ägarläge och bara när dess villkor är uppfyllda. Ordinarie arbetsflöde kräver inte denna knapp.
+- **F5 läser in** redan sparade originaltexter; F5 startar inte själva texthämtningen. Om GitHub Action ännu inte hunnit slutföras måste appen uppdateras senare.
+- Automatisk hämtning görs endast från den registrerade källans webbadress, utan att kringgå betalväggar eller andra spärrar. Att källan är åtkomlig, att hela texten extraheras och att formateringen blir korrekt måste bedömas per nyhet.
+- Första automatiska end-to-end-testet utfördes med tillfälligt dokument-ID **84** och användarens egen GitHub Pages-testfil. GitHub Actions körde klart och sparade exakt testtexten i privat `originaltext`. Testpost 84 togs därefter bort; permanent dokument 82 och 83 lämnades orörda.
