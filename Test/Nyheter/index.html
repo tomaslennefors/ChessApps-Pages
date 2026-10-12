@@ -2667,19 +2667,27 @@
   }
 
   function scrollDetailedArticle(direction) {
-    const article = listEl.querySelector(".news.article-detailed");
-    if (!article) return false;
+    // I jämförelseläge är det kolumnerna – inte den gamla .news-rutan –
+    // som har egna rullningsytor. Rulla alla med samma tangenttryckning.
+    const columns = [...listEl.querySelectorAll(".owner-content-compare .owner-content-column")];
+    const targets = columns.length ? columns : [listEl.querySelector(".news.article-detailed")].filter(Boolean);
+    if (!targets.length) return false;
 
-    const sample = article.querySelector(".article-body, .article-ingress") || article;
+    const sample = targets[0].querySelector(".article-body, .article-ingress") || targets[0];
     const computed = getComputedStyle(sample);
     let lineHeight = parseFloat(computed.lineHeight);
-    if (!Number.isFinite(lineHeight)) {
+    if (!Number.isFinite(lineHeight) || lineHeight <= 0) {
       const fontSize = parseFloat(computed.fontSize) || 16;
       lineHeight = fontSize * 1.6;
     }
 
-    const distance = lineHeight * 2;
-    article.scrollBy({top: direction * distance, behavior:"smooth"});
+    const distance = direction * lineHeight * 2;
+    for (const target of targets) {
+      // Oberoende gränser: en kort text stannar när den tar slut,
+      // medan övriga kolumner fortsätter i samma riktning.
+      const maxScroll = Math.max(0, target.scrollHeight - target.clientHeight);
+      target.scrollTop = Math.max(0, Math.min(maxScroll, target.scrollTop + distance));
+    }
     return true;
   }
 
@@ -2708,7 +2716,13 @@
     if (target.isContentEditable) return false;
 
     const tag = target.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || tag === "A") return false;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return false;
+    // Även efter klick på kopieraikonen eller en länk i dokumentet ska
+    // Skift+Pil kunna rulla texten utan att fokus först behöver flyttas.
+    if (tag === "BUTTON" || tag === "A") {
+      return !!(event.shiftKey && (event.key === "ArrowUp" || event.key === "ArrowDown")
+        && target.closest(".owner-content-column, .news.article-detailed"));
+    }
     return true;
   }
 
