@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-12 (tillägg om automatisk hämtning av originaltext; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-12 (Markdown-kopiering, automatisk originaltexthämtning; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -429,3 +429,12 @@ Originalfilen `Regler_Nyheter_original.md` behålls oförändrad som historisk r
 - Behörighetsbegränsning: Den nuvarande delade VIP-tokenen har bred skrivrätt i `Data`, vilket inte är samma sak som tekniskt strikt ägarisolering. Detta är en känd begränsning i den befintliga säkerhetsmodellen och får inte beskrivas som fullständig åtkomstkontroll.
 - En installerad funktion är inte liktydig med verifierad funktion. GitHub Actions-körningen och det sparade resultatet ska testas och rapporteras separat.
 
+## 12. Kopiering till Markdown (2026-10-12)
+
+- Dokumentens befintliga kopieraikoner kopierar dokumentet som **Markdown** så att texten kan klistras in i en `.md`-fil och läsas i Markdown Viewer.
+- För **1. Originaltext** används originaltextens lagrade Markdown direkt, efter den befintliga kontrollen att huvudrubriken inte dubbleras.
+- För **2. AI-text för vuxna**, **IT-Fakta** och **IT-YouTube** bevaras lagrade Markdown-koder för rubriker (`#`, `##`, `###`), fetstil, listor och länkar i kopian.
+- Kopian innehåller huvudrubrik, metadata, kategorier, källadress där den är åtkomlig, särskilt markerad ingress samt brödtext. YouTube-dokumentens tillgängliga transkriptinformation tas med.
+- Äldre IT-Fakta utan explicita Markdown-rubriker får tydliga mellanrubriker i kopian när en enkel rubrikstruktur kan identifieras. Den lagrade nyhetstexten ändras inte.
+- **Enbart Urklippets innehåll ändras**. Skärmlayout, dokumentknappar, ikonernas ordning och placering får inte påverkas.
+- Automatisk kontroll av JavaScript-syntax och flera Markdown-typer finns i `.github/workflows/itnyheter-test-kopiering.yml`.
