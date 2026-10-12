@@ -198,5 +198,60 @@ jobs:
           input.isContentEditable = false;
           assert.equal(keyScope.keyboardShortcutAllowed({target: input, shiftKey: true, key: "ArrowDown"}), false);
           console.log("OK: Skift+Pil parallellrullar kolumner, respekterar separata slut/början och fungerar i enskilt dokument.");
+          // Läs ut själva enhetsdetektionen och loggpostbyggandet utan någon nätverksåtkomst.
+          const deviceStart = inline.indexOf("  async function getVisitorDeviceInfo(");
+          const deviceEnd = inline.indexOf("  async function syncPublicIdentityToData(", deviceStart);
+          assert.ok(deviceStart >= 0 && deviceEnd > deviceStart, "Funktion för EnhetsInfo/logg saknas.");
+          const uaScope = {
+            navigator: {},
+            detectDeviceType() {
+              const ua = this?.navigator?.userAgent || uaScope.navigator.userAgent || "";
+              return /iPad|Tablet/i.test(ua) ? "Surfplatta" : /Mobi|iPhone|Android/i.test(ua) ? "Mobil" : "Dator";
+            },
+            getVisitorOtherInfo: async () => "IP---Land---Region---Stad---ISP---Dator",
+            localLogTimestamp: () => "2026-10-12 22:40:00",
+            mutateSharedDataFile: async (url, token, message, mutation) => {
+              uaScope.logged = {log:[]};
+              mutation(uaScope.logged);
+            },
+            userLogDataUrl: "logfile"
+          };
+          vm.runInNewContext(inline.slice(deviceStart, deviceEnd), uaScope);
+          async function checkDeviceInfo() {
+            const cases = [
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0", "Edge---154.0.0.0---Windows---Dator"],
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/154.0.0.0 Safari/537.36", "Chrome---154.0.0.0---Windows---Dator"],
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0", "Firefox---144.0---Windows---Dator"],
+              ["Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1", "Safari---18.0---iOS/iPadOS---Mobil"],
+              ["Mozilla/5.0 (Linux; Android 16; SM-S938B) AppleWebKit/537.36 SamsungBrowser/27.0 Chrome/123.0.0.0 Mobile Safari/537.36", "Samsung Internet---27.0---Android---Mobil"],
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/123.0.0.0 Safari/537.36 OPR/111.0.0.0", "Opera---111.0.0.0---Windows---Dator"]
+            ];
+            for (const [ua, expected] of cases) {
+              uaScope.navigator = {userAgent:ua};
+              const value = await uaScope.getVisitorDeviceInfo();
+              assert.equal(value, expected, "Felaktig webbläsare, version, OS eller enhetstyp: " + ua);
+            }
+            uaScope.navigator = {
+              userAgent:cases[1][0],
+              userAgentData: {
+                platform:"Windows",
+                getHighEntropyValues:async () => ({
+                  fullVersionList:[{brand:"Google Chrome",version:"154.0.7823.12"}]
+                })
+              }
+            };
+            assert.equal(await uaScope.getVisitorDeviceInfo(), "Chrome---154.0.7823.12---Windows---Dator",
+              "Exakt Chrome-version ska läsas via Client Hints när tillgänglig.");
+
+            uaScope.navigator = {userAgent:cases[0][0]};
+            await uaScope.appendAppStartLog({userId:"T1",userName:"Test",userRole:"VIP"}, "testtoken");
+            const record = uaScope.logged.log[0];
+            assert.deepEqual(Object.keys(record), ["userId","userName","userRole","datumtid","EnhetsInfo","Övrigt"],
+              "EnhetsInfo ska ligga näst sist, före Övrigt.");
+            assert.equal(record.EnhetsInfo, "Edge---154.0.0.0---Windows---Dator");
+            assert.equal(record["Övrigt"], "IP---Land---Region---Stad---ISP---Dator");
+            console.log("OK: EnhetsInfo webbläsare/version/operativsystem/enhet, Chrome Client Hints och näst sista loggfält.");
+          }
+          checkDeviceInfo().catch(err => {console.error(err); process.exitCode = 1;});
           console.log("OK: JavaScript-syntax, IT-Nyhet, IT-Fakta, IT-YouTube, originaltext och Markdown-format.");
           NODE
