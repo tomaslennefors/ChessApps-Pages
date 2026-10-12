@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-12 (Skift+Pil i jämförelsevy; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-12 (EnhetsInfo i användarlogg; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -77,6 +77,15 @@ GPT ska **välja relevant och värdefullt innehåll**, förklara svåra samband 
 - Exempel på godkänd inloggning: `VIP-TomasL-Edge`.
 - Appen får inte införa ytterligare teckenbegränsningar utan Tomas godkännande. Alla inloggningsregler ska finnas i detta dokument.
 - VIP-namnet identifierar användaren men innebär ingen säker lösenordsautentisering.
+
+### Användarlogg – enhetsinformation (2026-10-12)
+
+- Vid ny appstart sparas en ny uppgift **EnhetsInfo** i privata `Data/Test/Nyheter/UserLog.json`.
+- Fältet ska ligga **näst sist** i varje ny loggpost, omedelbart **före Övrigt**.
+- Formatet är `"EnhetsInfo": "Webbläsare---Version---Operativsystem---Enhetstyp"`, där orden ersätts med uppmätta värden, exempelvis `"Edge---154.0.0.0---Windows---Dator"`.
+- Känns något av värdena inte igen, anges **Okänd/Okänt**, aldrig en påhittad uppgift. Webbläsaruppgifter kommer från klientens User-Agent och i förekommande fall User-Agent Client Hints. Exakt version eller operativsystemsversion är inte alltid tillgänglig.
+- Den befintliga posten **Övrigt** och alla tidigare loggposter ska lämnas oförändrade.
+- Automatisk kontroll av webbläsare, operativsystem, enhetstyp och fältordning finns i `.github/workflows/itnyheter-test-kopiering.yml`.
 
 ## 4. Behörigheter – en ägare och VIP
 
