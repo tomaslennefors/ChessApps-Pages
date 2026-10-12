@@ -798,12 +798,12 @@
 
     // Ordningen är viktig: Edge, Opera och Samsung Browser har även Chrome i sin UA.
     const browserMatchers = [
-      ["Edge", /(?:EdgA|EdgiOS|Edg)\/([\\d.]+)/i],
-      ["Opera", /(?:OPR|OPiOS)\/([\\d.]+)/i],
-      ["Samsung Internet", /SamsungBrowser\/([\\d.]+)/i],
-      ["Firefox", /(?:FxiOS|Firefox)\/([\\d.]+)/i],
-      ["Chrome", /(?:CriOS|Chrome)\/([\\d.]+)/i],
-      ["Safari", /Version\/([\\d.]+).*Safari/i]
+      ["Edge", /(?:EdgA|EdgiOS|Edg)\/([\d.]+)/i],
+      ["Opera", /(?:OPR|OPiOS)\/([\d.]+)/i],
+      ["Samsung Internet", /SamsungBrowser\/([\d.]+)/i],
+      ["Firefox", /(?:FxiOS|Firefox)\/([\d.]+)/i],
+      ["Chrome", /(?:CriOS|Chrome)\/([\d.]+)/i],
+      ["Safari", /Version\/([\d.]+).*Safari/i]
     ];
     for (const [name, re] of browserMatchers) {
       const match = ua.match(re);
