@@ -145,6 +145,8 @@
     .article-resize-handle:hover::after{opacity:1}
     .archive-icon{position:absolute;top:12px;right:94px;border:0;background:transparent;color:#8c959f;font-size:22px;line-height:1;padding:4px;cursor:pointer}
     .archive-icon.on{color:#d1242f}
+    button.delete-document-btn{background:#b42318;border-color:#b42318;color:#fff;font-weight:700}
+    button.delete-document-btn:hover{background:#921b12;border-color:#921b12}
     .archive-icon:hover{background:transparent;transform:scale(1.08)}
     /* Ikonraden är i normalt textflöde så att rubriken aldrig täcks på mobilen. */
     .document-icon-actions{display:flex;flex-direction:column;align-items:flex-end;gap:3px;width:100%;min-width:0;margin:0 0 9px}
@@ -461,6 +463,8 @@
   updateDocumentsVersion();
 
   const dataUrl = "./nyheter.json";
+  const publicNewsDataUrl = "https://api.github.com/repos/tomaslennefors/ChessApps-Pages/contents/Test/Nyheter/nyheter.json";
+  const liveNewsDataUrl = "https://tomaslennefors.github.io/ChessApps-Pages/Test/Nyheter/nyheter.json";
   const rulesUrl = "./Regler_Nyheter.md";
   const contextDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/ITNyheter_PUBLIC_VIP_Sammanhang.md";
   const storageKey = "ITNyheter_Settings_V2";
@@ -559,6 +563,12 @@
   });
   fullTitlePanel.addEventListener("pointerleave", () => fullTitlePanel.classList.remove("tooltip-hover"));
   const statusEl = document.getElementById("status");
+  const permanentDeleteNotice = document.createElement("div");
+  permanentDeleteNotice.className = "save-request-message";
+  permanentDeleteNotice.setAttribute("role", "status");
+  permanentDeleteNotice.setAttribute("aria-live", "polite");
+  permanentDeleteNotice.hidden = true;
+  statusEl.insertAdjacentElement("afterend", permanentDeleteNotice);
   const listEl = document.getElementById("list");
   const reloadBtn = document.getElementById("reloadBtn");
   const clearBtn = document.getElementById("clearBtn");
@@ -1908,6 +1918,188 @@
     if (refresh) applyFilters();
   });
 
+
+  // Radering i centrala JSON-register. Detta är INTE detsamma som lokal Dölj.
+  let permanentDeleteInProgress = false;
+
+  function removeArticleById(data, arrayName, id, required = false) {
+    if (!data || !Array.isArray(data[arrayName])) {
+      throw new Error("Ogiltigt dokumentregister: " + arrayName);
+    }
+    const count = data[arrayName].filter(x => String(x.id) === String(id)).length;
+    if (required && count !== 1) {
+      throw new Error("Förväntade ett dokument med ID " + id + ", hittade " + count + ".");
+    }
+    return {
+      count,
+      data: {...data, [arrayName]: data[arrayName].filter(x => String(x.id) !== String(id))}
+    };
+  }
+
+  async function readDeletionRegister(url) {
+    const response = await fetch(url + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      headers:githubHeaders(ownerToken), cache:"no-store"
+    });
+    if (!response.ok) throw new Error("Läsning från GitHub misslyckades (HTTP " + response.status + ").");
+    const file = await response.json();
+    if (!file.sha || !file.content) throw new Error("GitHub-filen saknar SHA eller innehåll.");
+    return {sha:file.sha, data:JSON.parse(decodeBase64Utf8(file.content))};
+  }
+
+  async function writeDeletionRegister(url, file, data, id) {
+    const response = await fetch(url, {
+      method:"PUT",
+      headers:{...githubHeaders(ownerToken), "Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:"IT-Nyheter: radera permanent dokument ID " + id,
+        branch:requestBranch, sha:file.sha,
+        content:encodeBase64Utf8(JSON.stringify(data, null, 2) + "\n")
+      })
+    });
+    if (!response.ok) {
+      throw new Error("Skrivning till GitHub misslyckades (HTTP " + response.status
+        + "). Ägartokenen behöver Contents: Read and write till aktuellt repository.");
+    }
+    const confirmation = await response.json();
+    if (!confirmation?.commit?.sha) throw new Error("GitHub har inte bekräftat någon commit.");
+    return confirmation.commit.sha;
+  }
+
+  function showPermanentDeleteStatus(message) {
+    permanentDeleteNotice.textContent = message;
+    permanentDeleteNotice.hidden = false;
+  }
+
+  async function verifyPublishedDocumentDeletion(id, suffix) {
+    for (let attempt = 0; attempt < 15; attempt++) {
+      try {
+        const response = await fetch(liveNewsDataUrl + "?delete_verify=" + Date.now() + "_" + attempt, {
+          cache:"no-store"
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data.nyheter) && !data.nyheter.some(x => String(x.id) === id)) {
+            showPermanentDeleteStatus("Dokument ID " + id + " är permanent borttaget ur de aktuella registren. "
+              + "Publiceringen på GitHub Pages har verifierats." + suffix);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("GitHub Pages-verifiering kunde inte utföras:", err);
+      }
+      if (attempt < 14) await new Promise(resolve => setTimeout(resolve, 6000));
+    }
+    showPermanentDeleteStatus("Dokument ID " + id + " är borttaget ur GitHub, men Pages-publiceringen "
+      + "har ännu inte kunnat verifieras." + suffix);
+  }
+
+  async function permanentlyDeleteHiddenDocument(item) {
+    const id = String(item?.id ?? "");
+    const key = itemKey(item);
+    if (!id || !ownerAuthenticated || !ownerMode || !ownerToken || !prefs.archived[key]) return;
+    if (permanentDeleteInProgress) return;
+    if (!window.confirm("Radera dokument ID " + id + " för samtliga användare?\n\n"
+      + displayTitle(item) + "\n\n"
+      + "Dokumentet tas bort från GitHubs aktuella dokumentregister. "
+      + "Åtgärden går inte att ångra i appen. Äldre Git-commits finns kvar.")) return;
+
+    permanentDeleteInProgress = true;
+    let publicCommitted = false;
+    showPermanentDeleteStatus("Kontrollerar behörighet och dokumentregister...");
+    for (const button of listEl.querySelectorAll(".delete-document-btn")) button.disabled = true;
+    try {
+      if (!ownerAuthenticated || !ownerMode || !prefs.archived[key]) {
+        throw new Error("Ägarläget är inte aktivt eller dokumentet är inte längre dolt.");
+      }
+
+      const profileResponse = await fetch("https://api.github.com/user", {
+        headers:githubHeaders(ownerToken), cache:"no-store"
+      });
+      if (!profileResponse.ok) throw new Error("GitHub-ägaren kunde inte verifieras (HTTP " + profileResponse.status + ").");
+      const profile = await profileResponse.json();
+      if (String(profile.login || "").toLowerCase() !== "tomaslennefors") {
+        throw new Error("GitHub-tokenen tillhör inte kontot som äger dokumentarkivet.");
+      }
+
+      // Kontrollera alla filer och deras aktuella SHA före första ändringen.
+      const publicFile = await readDeletionRegister(publicNewsDataUrl);
+      const publicRemoval = removeArticleById(publicFile.data, "nyheter", id, true);
+      const privateFiles = [
+        {name:"privat metadata", url:privateNewsDataUrl},
+        {name:"privat originaltext", url:originalNewsDataUrl}
+      ];
+      for (const entry of privateFiles) {
+        entry.file = await readDeletionRegister(entry.url);
+        entry.removal = removeArticleById(entry.file.data, "artiklar", id);
+      }
+
+      showPermanentDeleteStatus("Raderar dokumentet i GitHub...");
+      await writeDeletionRegister(publicNewsDataUrl, publicFile, publicRemoval.data, id);
+      publicCommitted = true;
+
+      const publishedFile = await readDeletionRegister(publicNewsDataUrl);
+      if (publishedFile.data.nyheter.some(x => String(x.id) === id)) {
+        throw new Error("GitHub-committen har skrivits, men raderingen kunde inte verifieras i main.");
+      }
+
+      const privateErrors = [];
+      for (const entry of privateFiles) {
+        if (entry.removal.count === 0) continue;
+        try {
+          await writeDeletionRegister(entry.url, entry.file, entry.removal.data, id);
+        } catch (err) {
+          privateErrors.push(entry.name + ": " + (err?.message || String(err)));
+        }
+      }
+
+      // Uppdatera bara denna webbläsares vy efter en bekräftad publik GitHub-commit.
+      allNews = allNews.filter(x => String(x.id) !== id);
+      privateNewsById.delete(id);
+      originalNewsById.delete(id);
+      delete prefs.archived[key];
+      delete prefs.favorites[key];
+      savePrefs();
+      captureControls();
+      buildFilterOptions();
+      restoreControls();
+      exactTitleFilter.value = exactTitleFilter.options[1]?.value || "";
+      updateExactTitleOptions();
+      const typeCount = type => allNews.filter(x => displayType(x) === type).length;
+      metaEl.textContent = "Totalt antal dokument: " + allNews.length
+        + " -- IT-Fakta: " + typeCount("IT-Fakta")
+        + " -- IT-Nyheter: " + typeCount("IT-Nyhet")
+        + " -- IT-YouTube: " + typeCount("IT-YouTube");
+      applyFilters(false);
+
+      const suffix = privateErrors.length
+        ? " OBS: dessa privata register kunde inte rensas: " + privateErrors.join("; ")
+        : " Tillhörande poster i privata register är också borttagna.";
+      showPermanentDeleteStatus("Dokument ID " + id + " är raderat i GitHub. "
+        + "Väntar på bekräftad Pages-publicering." + suffix);
+      void verifyPublishedDocumentDeletion(id, suffix);
+    } catch (err) {
+      showPermanentDeleteStatus(
+        publicCommitted
+          ? "Dokument ID " + id + " kan vara raderat från det publika GitHub-registret, "
+            + "men hela åtgärden kunde inte verifieras. Kontrollera GitHub innan ett nytt försök. "
+            + (err?.message || String(err))
+          : "Inget publikt dokument har raderats. " + (err?.message || String(err))
+      );
+    } finally {
+      permanentDeleteInProgress = false;
+      for (const button of listEl.querySelectorAll(".delete-document-btn")) button.disabled = false;
+    }
+  }
+
+  function createPermanentDeleteButton(item) {
+    if (!ownerAuthenticated || !ownerMode || !prefs.archived[itemKey(item)]) return null;
+    const button = makeButton("Radera permanent", "delete-document-btn", () => {
+      void permanentlyDeleteHiddenDocument(item);
+    });
+    button.title = "Radera det dolda dokumentet ur GitHub för alla användare";
+    return button;
+  }
+
   function textStats(text) {
     const value = String(text || "");
     const letters = (value.match(/\p{L}/gu) || []).length;
@@ -2462,6 +2654,9 @@
         actions.append(video);
       }
 
+      const permanentDeleteButton = createPermanentDeleteButton(item);
+      if (permanentDeleteButton) actions.append(permanentDeleteButton);
+
       const archiveIcon = makeButton("◉", "archive-icon" + (archived ? " on" : ""), () => {
         toggleDocumentArchive(key, "ai");
       });
@@ -2614,6 +2809,8 @@
             } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
             if (mode === "1") {
               column.append(textBox);
+              const originalDeleteButton = createPermanentDeleteButton(item);
+              if (originalDeleteButton) column.append(originalDeleteButton);
               if (!String(value).trim() && source?.url && source?.dokumenttyp === "IT-Nyhet" && ownerAuthenticated && ownerMode) {
                 const fetchButton = document.createElement("button");
                 fetchButton.type = "button";
