@@ -468,6 +468,8 @@
   const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
   const privateNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_privata.json";
   const originalNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_originaltexter.json";
+  const originalFetchRequestUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Originaltext_Begaran.json";
+  const originalFetchStatusUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Originaltext_Status.json";
   const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
   const requestBranch = "main";
   const filterSchemaVersion = 5;
@@ -1121,6 +1123,54 @@
     const data = JSON.parse(decodeBase64Utf8(file.content || ""));
     originalNewsById = new Map((data.artiklar || []).map(item => [String(item.id),item]));
   }
+  // Endast verifierad ägare får beställa hämtning. Käll-URL hämtas i GitHub Action
+  // från originalregistret utifrån dokument-ID; inga godtyckliga URL:er skickas här.
+  async function requestOriginalTextForDocument(id) {
+    if (!ownerAuthenticated || !ownerMode || !ownerToken) {
+      throw new Error("Originaltext kan bara hämtas i verifierat ägarläge.");
+    }
+    const fileUrl = originalFetchRequestUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now();
+    const prior = await fetch(fileUrl, {headers: githubHeaders(ownerToken), cache: "no-store"});
+    if (!prior.ok && prior.status !== 404) throw new Error("Beställningsfilen kunde inte läsas (HTTP " + prior.status + ").");
+    const sha = prior.ok ? (await prior.json()).sha : null;
+    const begard = new Date().toISOString();
+    const content = JSON.stringify({id: Number(id), begard}, null, 2) + "\n";
+    const payload = {
+      message: "IT-Nyheter: hämta originaltext för dokument " + id,
+      content: encodeBase64Utf8(content),
+      branch: requestBranch
+    };
+    if (sha) payload.sha = sha;
+    const write = await fetch(originalFetchRequestUrl, {
+      method: "PUT",
+      headers: {...githubHeaders(ownerToken), "Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+    if (!write.ok) throw new Error("Beställningen kunde inte sparas i Data (HTTP " + write.status + ").");
+    return begard;
+  }
+
+  async function waitForOriginalTextResult(id, begard) {
+    for (let attempt = 0; attempt < 50; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 6000));
+      const response = await fetch(originalFetchStatusUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+        headers: githubHeaders(ownerToken), cache: "no-store"
+      });
+      if (response.status === 404) continue;
+      if (!response.ok) throw new Error("Hämtningens status kunde inte läsas (HTTP " + response.status + ").");
+      const file = await response.json();
+      const result = JSON.parse(decodeBase64Utf8(file.content || ""));
+      if (String(result.id) !== String(id) || result.begard !== begard) continue;
+      if (result.status === "fel") throw new Error(result.meddelande || "Webbplatsen kunde inte läsas.");
+      if (result.status === "klar" || result.status === "finns_redan") {
+        await loadOriginalNews();
+        refreshViewAfterPrivacyChange();
+        return result;
+      }
+    }
+    throw new Error("Ingen bekräftelse inom fem minuter. Kontrollera GitHub Actions och försök vid behov igen.");
+  }
+
   function applyPrivateNewsMetadata() {
     if (!hasEnhancedNewsAccess() || !privateNewsById.size) return;
     for (const item of allNews) {
@@ -2293,7 +2343,30 @@
             } else textBox.textContent = "Ingen text av denna typ är lagrad för dokumentet.";
             if (mode === "1") {
               column.append(textBox);
-
+              if (!String(value).trim() && source?.url && source?.dokumenttyp === "IT-Nyhet" && ownerAuthenticated && ownerMode) {
+                const fetchButton = document.createElement("button");
+                fetchButton.type = "button";
+                fetchButton.className = "primary";
+                fetchButton.style.marginTop = "10px";
+                fetchButton.textContent = "Hämta originaltext";
+                fetchButton.title = "Hämta artikeltexten till privata Data utan GPT.";
+                const feedback = document.createElement("div");
+                feedback.className = "small";
+                feedback.setAttribute("aria-live", "polite");
+                fetchButton.addEventListener("click", async () => {
+                  fetchButton.disabled = true;
+                  feedback.textContent = "Skickar hämtningsbegäran till privata Data...";
+                  try {
+                    const begard = await requestOriginalTextForDocument(item.id);
+                    feedback.textContent = "GitHub Actions hämtar artikeln. Väntar på resultat...";
+                    await waitForOriginalTextResult(item.id, begard);
+                  } catch (err) {
+                    feedback.textContent = "Hämtningen misslyckades: " + (err?.message || String(err));
+                    fetchButton.disabled = false;
+                  }
+                });
+                column.append(fetchButton, feedback);
+              }
             } else column.append(heading, textBox);
           }
           // Statistik och höjdjustering gäller varje kolumn separat.
