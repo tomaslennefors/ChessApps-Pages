@@ -1,0 +1,83 @@
+name: IT-Nyheter - testa Markdown-kopiering
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Test/Nyheter/index.html"
+      - ".github/workflows/itnyheter-test-kopiering.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-markdown-copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kontrollera JavaScript och Markdown-kopiering
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const vm = require("node:vm");
+          const assert = require("node:assert/strict");
+
+          const html = fs.readFileSync("Test/Nyheter/index.html", "utf8");
+          const inline = html.match(/<script[^>]*>([\s\S]*?)<\/script>/i)?.[1];
+          assert.ok(inline, "Kunde inte hitta appens JavaScript.");
+          new vm.Script(inline, {filename: "Test/Nyheter/index.html"});
+
+          const start = inline.indexOf("  function formatCopyMarkdown(");
+          const end = inline.indexOf("  function attachArticleResize(", start);
+          assert.ok(start >= 0 && end > start, "Kopieringsfunktionerna hittades inte.");
+          const scope = {
+            displayTitle: item => item.titel,
+            displayType: item => item.typ
+          };
+          vm.runInNewContext(inline.slice(start, end), scope);
+          const {formatCopyMarkdown, markdownForLegacyFacts, copyNewsText} = scope;
+          const md = formatCopyMarkdown(
+            "N: Rubrik",
+            "ID: 82 · Dokumenttyp: IT-Nyhet",
+            ["AI", "Matematik"],
+            "https://example.org/article",
+            "En kort ingress.",
+            "## Mellanrubrik\n\n**Fetstil** och [länk](https://example.org/kalla).\n\n- Punkt 1\n- Punkt 2"
+          );
+          assert.ok(md.startsWith("# N: Rubrik\n"), "Huvudrubriken saknas.");
+          assert.ok(md.includes("- ID: 82\n- Dokumenttyp: IT-Nyhet"), "Metadata saknas.");
+          assert.ok(md.includes("Kategorier: AI, Matematik"), "Kategorier saknas.");
+          assert.ok(md.includes("<https://example.org/article>"), "Källänken saknas.");
+          assert.ok(md.includes("## Ingress\n\n**En kort ingress.**"), "Ingressens formatering saknas.");
+          assert.ok(md.includes("## Mellanrubrik\n\n**Fetstil**"), "Mellanrubrik/fetstil har förlorats.");
+          assert.ok(md.includes("[länk](https://example.org/kalla)"), "Markdownlänken saknas.");
+          assert.ok(md.includes("- Punkt 1\n- Punkt 2"), "Listan har förlorats.");
+          assert.ok(!inline.includes("function plainArticleText("), "Äldre kopieringsfunktion finns kvar.");
+
+          const publicData = JSON.parse(fs.readFileSync("Test/Nyheter/nyheter.json", "utf8"));
+          const docs = publicData.nyheter;
+          const news = docs.find(x => x.id === 82);
+          assert.ok(news, "Testnyheten saknas.");
+          const newsCopy = copyNewsText(news, false, true, "ID: 82", "", news.original_länk);
+          assert.ok(newsCopy.includes("## Vad har OpenAI publicerat?"), "Nyhetens rubriker saknas.");
+          assert.ok(newsCopy.includes("**Uppdatering:**"), "Befintlig fetstil har förlorats.");
+
+          const fact = docs.find(x => x.id === 46);
+          assert.ok(fact, "Äldre IT-Fakta saknas.");
+          const factCopy = copyNewsText(fact, false, true, "ID: 46", "", "");
+          assert.ok(factCopy.includes("## AI generellt"), "Äldre faktarubriker konverterades inte.");
+          assert.ok(factCopy.includes("## Olika datamodeller"), "Ytterligare faktarubrik saknas.");
+          assert.ok(markdownForLegacyFacts("## Redan i Markdown\n\n**Text**").startsWith("## Redan i Markdown"), "Markdown som redan finns ska bevaras.");
+
+          const video = docs.find(x => x.typ === "IT-YouTube");
+          assert.ok(video, "YouTube-dokument saknas.");
+          const videoCopy = copyNewsText(video, true, false, "Dokumenttyp: IT-YouTube", "Transkriberingsspråk: Svenska\nTranskriptämnen: AI", video.webbadress);
+          assert.ok(videoCopy.startsWith("# Y: "), "YouTube-rubriken saknas.");
+          assert.ok(videoCopy.includes("## Transkriptinformation\n\n- Transkriberingsspråk: Svenska"), "Transkriptformatering saknas.");
+          assert.ok(videoCopy.includes("<https://www.youtube.com/"), "YouTube-adressen saknas.");
+
+          assert.ok(html.includes("const originalText = formatCopyMarkdown("), "Originaltextens kopiering använder inte Markdown.");
+          console.log("OK: JavaScript-syntax, IT-Nyhet, IT-Fakta, IT-YouTube, originaltext och Markdown-format.");
+          NODE
