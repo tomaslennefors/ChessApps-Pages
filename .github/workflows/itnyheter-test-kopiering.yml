@@ -218,12 +218,12 @@ jobs:
           vm.runInNewContext(inline.slice(detectDeviceStart, detectDeviceEnd) + "\n" + inline.slice(deviceStart, deviceEnd), uaScope);
           async function checkDeviceInfo() {
             const cases = [
-              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0", "Edge---154.0.0.0---Windows---Dator"],
-              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/154.0.0.0 Safari/537.36", "Chrome---154.0.0.0---Windows---Dator"],
-              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0", "Firefox---144.0---Windows---Dator"],
-              ["Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1", "Safari---18.0---iOS/iPadOS---Mobil"],
-              ["Mozilla/5.0 (Linux; Android 16; SM-S938B) AppleWebKit/537.36 SamsungBrowser/27.0 Chrome/123.0.0.0 Mobile Safari/537.36", "Samsung Internet---27.0---Android---Mobil"],
-              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/123.0.0.0 Safari/537.36 OPR/111.0.0.0", "Opera---111.0.0.0---Windows---Dator"]
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0", "Edge---154.0.0.0---Windows (okänd version)---Dator"],
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/154.0.0.0 Safari/537.36", "Chrome---154.0.0.0---Windows (okänd version)---Dator"],
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0", "Firefox---144.0---Windows (okänd version)---Dator"],
+              ["Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1", "Safari---18.0---iOS (okänd version)---Mobil"],
+              ["Mozilla/5.0 (Linux; Android 16; SM-S938B) AppleWebKit/537.36 SamsungBrowser/27.0 Chrome/123.0.0.0 Mobile Safari/537.36", "Samsung Internet---27.0---Android (okänd version)---Mobil"],
+              ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/123.0.0.0 Safari/537.36 OPR/111.0.0.0", "Opera---111.0.0.0---Windows (okänd version)---Dator"]
             ];
             for (const [ua, expected] of cases) {
               uaScope.navigator = {userAgent:ua};
@@ -239,15 +239,64 @@ jobs:
                 })
               }
             };
-            assert.equal(await uaScope.getVisitorDeviceInfo(), "Chrome---154.0.7823.12---Windows---Dator",
+            assert.equal(await uaScope.getVisitorDeviceInfo(), "Chrome---154.0.7823.12---Windows (okänd version)---Dator",
               "Exakt Chrome-version ska läsas via Client Hints när tillgänglig.");
+
+            async function checkOsVersion({ua, platform, platformVersion, expected, userAgentPlatform, maxTouchPoints}) {
+              uaScope.navigator = {
+                userAgent:ua,
+                platform:userAgentPlatform || "",
+                maxTouchPoints:maxTouchPoints || 0,
+                ...(platform ? {userAgentData:{
+                  platform,
+                  getHighEntropyValues:async () => ({platformVersion})
+                }} : {})
+              };
+              assert.equal(await uaScope.getVisitorDeviceInfo(), expected,
+                "Felaktig OS-version vid " + platform + " / " + platformVersion);
+            }
+            await checkOsVersion({
+              ua:cases[0][0], platform:"Windows", platformVersion:"15.0.0",
+              expected:"Edge---154.0.0.0---Windows 11---Dator"
+            });
+            await checkOsVersion({
+              ua:cases[1][0], platform:"Windows", platformVersion:"10.0.0",
+              expected:"Chrome---154.0.0.0---Windows 10---Dator"
+            });
+            await checkOsVersion({
+              ua:cases[1][0], platform:"Windows", platformVersion:"0.0.0",
+              expected:"Chrome---154.0.0.0---Windows (okänd version)---Dator"
+            });
+            await checkOsVersion({
+              ua:"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 Chrome/154.0.0.0 Mobile Safari/537.36",
+              platform:"Android", platformVersion:"16.0.0",
+              expected:"Chrome---154.0.0.0---Android 16---Mobil"
+            });
+            await checkOsVersion({
+              ua:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/154.0.0.0 Safari/537.36",
+              platform:"macOS", platformVersion:"15.1.0",
+              expected:"Chrome---154.0.0.0---macOS 15.1---Dator"
+            });
+            await checkOsVersion({
+              ua:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15",
+              expected:"Safari---18.0---macOS (okänd version)---Dator"
+            });
+            await checkOsVersion({
+              ua:"Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 Version/26.0 Mobile/15E148 Safari/604.1",
+              expected:"Safari---26.0---iOS (okänd version)---Mobil"
+            });
+            await checkOsVersion({
+              ua:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/26.0 Safari/605.1.15",
+              userAgentPlatform:"MacIntel", maxTouchPoints:5,
+              expected:"Safari---26.0---iPadOS (okänd version)---Surfplatta"
+            });
 
             uaScope.navigator = {userAgent:cases[0][0]};
             await uaScope.appendAppStartLog({userId:"T1",userName:"Test",userRole:"VIP"}, "testtoken");
             const record = uaScope.logged.log[0];
             assert.deepEqual(Object.keys(record), ["userId","userName","userRole","datumtid","EnhetsInfo","Övrigt"],
               "EnhetsInfo ska ligga näst sist, före Övrigt.");
-            assert.equal(record.EnhetsInfo, "Edge---154.0.0.0---Windows---Dator");
+            assert.equal(record.EnhetsInfo, "Edge---154.0.0.0---Windows (okänd version)---Dator");
             assert.equal(record["Övrigt"], "IP---Land---Region---Stad---ISP---Dator");
             console.log("OK: EnhetsInfo webbläsare/version/operativsystem/enhet, Chrome Client Hints och näst sista loggfält.");
           }
