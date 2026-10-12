@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-10 21:09 (syfte och metod för kunskapsutveckling; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-12 (tillägg om automatisk hämtning av originaltext; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -414,3 +414,18 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 - **Dokumentversioner:** För IT-Fakta skapas en ny post och ett nytt versionsnummer när innehållet ändras. Äldre versioner bevaras tills ägaren väljer att arkivera dem.
 
 Originalfilen `Regler_Nyheter_original.md` behålls oförändrad som historisk referens. Tidigare regler om PUBLIC, omskrivna originalrubriker och separata originalknappar ska inte återföras.
+
+## 11. Automatisk hämtning av originaltext – första versionen (2026-10-12)
+
+- Ägaren kan i vyn **1. Originaltext** trycka på **Hämta originaltext** när en IT-Nyhet har en källadress men saknar sparad originaltext.
+- Knappen är endast åtkomlig i verifierat ägarläge. VIP får inte se eller använda den.
+- Appen lägger en beställning med dokument-ID och begärandetid i privata `Data/Test/Nyheter/Originaltext_Begaran.json` via ägarens befintliga GitHub-token.
+- Ett `push`-utlöst GitHub Actions-arbetsflöde i **Data** kör `Test/Nyheter/hamta_originaltext.py`. Skriptet hämtar den kanoniska webbadressen från det privata originaltextregistret, kontrollerar HTTPS-adressen, laddar ned sidans HTML och försöker extrahera artikeltexten med Trafilatura.
+- Den extraherade texten sparas enbart i **Data/Test/Nyheter/nyheter_originaltexter.json**, i rätt posts `originaltext`. AI-artikelns publika JSON-fil uppdateras inte av hämtningen.
+- Redan ifylld originaltext får aldrig skrivas över automatiskt.
+- Resultatet, inklusive eventuella fel, sparas i privata `Originaltext_Status.json`. Appen inväntar status och läser automatiskt in privat originalregister efter lyckad hämtning.
+- Ingen GPT-modell används i hämtningen. HTML-extraktionen är heuristisk: den kan bli ofullständig eller misslyckas vid åtkomstspärrar, betalväggar, JavaScript-rendering och andra hinder. Funktionen kringgår inga spärrar.
+- Endast **IT-Nyhet** stöds i första versionen. Bara dokument med befintlig originalregisterpost kan beställas.
+- Behörighetsbegränsning: Den nuvarande delade VIP-tokenen har bred skrivrätt i `Data`, vilket inte är samma sak som tekniskt strikt ägarisolering. Detta är en känd begränsning i den befintliga säkerhetsmodellen och får inte beskrivas som fullständig åtkomstkontroll.
+- En installerad funktion är inte liktydig med verifierad funktion. GitHub Actions-körningen och det sparade resultatet ska testas och rapporteras separat.
+
