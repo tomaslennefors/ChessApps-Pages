@@ -1951,35 +1951,33 @@
     }
   }
 
-  function plainArticleText(text) {
-    return String(text || "")
-      .split("\n")
-      .map(line => line.startsWith("### ") ? line.slice(4) : (line.startsWith("## ") ? line.slice(3) : line))
-      .join("\n")
-      .split("**").join("")
-      .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, "$1 ($2)");
+  function formatCopyMarkdown(title, detailsText, categories, url, ingress, body, transcriptText = "") {
+    const blocks = ["# " + String(title || "Dokument").trim()];
+    const metadata = String(detailsText || "").split(/\s+·\s+/).map(x => x.trim()).filter(Boolean);
+    if (Array.isArray(categories) && categories.length) {
+      metadata.push("Kategorier: " + categories.filter(Boolean).join(", "));
+    }
+    if (metadata.length) blocks.push("## Dokumentinformation\n\n" + metadata.map(x => "- " + x).join("\n"));
+    const link = String(url || "").trim();
+    if (/^https?:\/\//i.test(link)) blocks.push("**Webbadress:** <" + link.replace(/>/g, "%3E").replace(/</g, "%3C") + ">");
+    const introduction = String(ingress || "").trim();
+    if (introduction) blocks.push("## Ingress\n\n" + (introduction.includes("**") ? introduction : "**" + introduction + "**"));
+    const articleBody = String(body || "").trim();
+    if (articleBody) blocks.push("## Dokumenttext\n\n" + articleBody);
+    const transcript = String(transcriptText || "").trim();
+    if (transcript) blocks.push("## Transkriptinformation\n\n" + transcript.split(/\r?\n/).map(x => "- " + x).join("\n"));
+    return blocks.join("\n\n") + "\n";
   }
 
-  function copyNewsText(item, youtube, detailedArticle, detailsText, transcriptText) {
-    const parts = [displayTitle(item)];
-    if (detailsText) parts.push(detailsText);
-
-    const categories = Array.isArray(item.kategorier) ? item.kategorier.filter(Boolean) : [];
-    if (categories.length) parts.push("Kategorier: " + categories.join(", "));
-
-    if (item.sammanfattning) parts.push(String(item.sammanfattning));
-    if (!youtube) {
-      const body = String(item.läsvy || item.lasvy || "").trim();
-      if (body && body !== String(item.sammanfattning || "").trim()) parts.push(plainArticleText(body));
-    }
-
-    if (youtube && transcriptText) parts.push(transcriptText);
-    if (youtube) {
-      const url = String(item.webbadress || item.länk || item.youtube_länk || item.youtube_url || "").trim();
-      if (url) parts.push(url);
-    }
-
-    return parts.filter(Boolean).join("\n\n");
+  function copyNewsText(item, youtube, detailedArticle, detailsText, transcriptText, url = "") {
+    const categories = Array.isArray(item.kategorier) ? item.kategorier : [];
+    const body = String(item.läsvy || item.lasvy || "").trim();
+    const ingress = String(item.sammanfattning || "").trim();
+    return formatCopyMarkdown(
+      displayTitle(item), detailsText, categories, url, ingress,
+      body && body !== ingress ? body : "",
+      youtube ? transcriptText : ""
+    );
   }
 
   function attachArticleResize(handle, article) {
@@ -2086,7 +2084,7 @@
       star.setAttribute("aria-pressed", String(favorite));
 
       const copyNewsBtn = makeButton("⧉", "copy-news", async () => {
-        const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent);
+        const text = copyNewsText(item, youtube, detailedArticle, details.textContent, transcriptInfo.textContent, webAddress.querySelector("a")?.getAttribute("href") || "");
         try {
           await copyText(text, "Hela dokumentet är kopierat till Urklipp.");
           showIconFeedback(key, "ai", "Kopierat - Dokumenttexten finns i Urklipp");
@@ -2297,14 +2295,15 @@
               originalStar.setAttribute("aria-label", originalStar.title);
               originalStar.setAttribute("aria-pressed", String(favorite));
               const originalCopy = makeButton("⧉", "copy-news", async () => {
-                const originalText = [
-                  resolveOriginalHeading(source).title,
+                const original = resolveOriginalHeading(source);
+                const originalText = formatCopyMarkdown(
+                  original.title,
                   metadata.textContent,
-                  (Array.isArray(source?.kategorier) ? source.kategorier : item.kategorier || []).join(", "),
-                  "Webbadress: " + (source?.url || ""),
+                  Array.isArray(source?.kategorier) ? source.kategorier : (item.kategorier || []),
+                  source?.url || "",
                   item.sammanfattning || "",
-                  resolveOriginalHeading(source).body
-                ].filter(Boolean).join("\n\n");
+                  original.body
+                );
                 try {
                   await copyText(originalText, "Hela dokumentet är kopierat till Urklipp.");
                   showIconFeedback(key, "original", "Kopierat - Originaltexten finns i Urklipp");
