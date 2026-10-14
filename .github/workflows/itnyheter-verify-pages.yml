@@ -1,10 +1,11 @@
-name: IT-Nyheter - verifiera publicerad kopieringskod
+name: IT-Nyheter - verifiera publicerad app och begrepp
 
 on:
   push:
     branches: [main]
     paths:
       - "Test/Nyheter/index.html"
+      - "Test/Nyheter/Begrepp.json"
       - ".github/workflows/itnyheter-verify-pages.yml"
   workflow_dispatch:
 
@@ -19,7 +20,7 @@ jobs:
       - name: Hämta exakt commit
         uses: actions/checkout@v4
 
-      - name: Jämför publicerad HTML med rätt commit
+      - name: Jämför publicerad HTML och begreppsfil med rätt commit
         env:
           VERIFY_SHA: ${{ github.sha }}
         run: |
@@ -30,27 +31,35 @@ jobs:
           from pathlib import Path
           from urllib.request import Request, urlopen
 
-          source = Path("Test/Nyheter/index.html").read_bytes()
-          expected_hash = hashlib.sha256(source).hexdigest()
-          url = ("https://tomaslennefors.github.io/ChessApps-Pages/Test/Nyheter/index.html"
-                 "?verify_commit=" + os.environ["VERIFY_SHA"])
+          paths = ["Test/Nyheter/index.html", "Test/Nyheter/Begrepp.json"]
+          originals = {p: Path(p).read_bytes() for p in paths}
+          base_url = "https://tomaslennefors.github.io/ChessApps-Pages/"
           for attempt in range(36):
+              differences = []
               try:
-                  request = Request(url, headers={
-                      "User-Agent": "ITNyheter-Pages-Verification/1.0",
-                      "Cache-Control": "no-cache",
-                  })
-                  with urlopen(request, timeout=20) as response:
-                      live = response.read(len(source) + 4096)
-                  actual_hash = hashlib.sha256(live).hexdigest()
-                  if source == live:
-                      print("VERIFIERAT: Publicerad HTML är byte-för-byte identisk med commit", os.environ["VERIFY_SHA"])
-                      print("SHA256:", expected_hash)
+                  for path, source in originals.items():
+                      url = base_url + path + "?verify_commit=" + os.environ["VERIFY_SHA"]
+                      request = Request(url, headers={
+                          "User-Agent": "ITNyheter-Pages-Verification/1.0",
+                          "Cache-Control": "no-cache",
+                      })
+                      with urlopen(request, timeout=20) as response:
+                          live = response.read(len(source) + 4096)
+                      if source != live:
+                          differences.append(
+                              path + ": live SHA256 " + hashlib.sha256(live).hexdigest()
+                              + ", förväntat " + hashlib.sha256(source).hexdigest()
+                          )
+                  if not differences:
+                      print("VERIFIERAT: Både HTML och Begrepp.json är byte-för-byte")
+                      print("identiska med commit", os.environ["VERIFY_SHA"])
+                      for path, source in originals.items():
+                          print(path, "SHA256:", hashlib.sha256(source).hexdigest())
                       raise SystemExit(0)
-                  print("Försök", attempt + 1, ": Live-SHA256", actual_hash, "förväntad", expected_hash)
+                  print("Försök", attempt + 1, ": ", "; ".join(differences))
               except Exception as error:
                   print("Försök", attempt + 1, ":", error)
               if attempt < 35:
                   time.sleep(10)
-          raise SystemExit("Kunde inte verifiera att rätt HTML-fil publicerats inom 6 minuter.")
+          raise SystemExit("Kunde inte verifiera både HTML och Begrepp.json inom 6 minuter.")
           PY
