@@ -210,6 +210,17 @@
       .mobile-document-position .mobile-document-action{font-size:.75rem;font-weight:650;line-height:1.2}
       .mobile-document-position[aria-pressed="true"]{background:#0550ae;border-color:#0550ae}
     }
+
+    /* Klickbara förklaringar i AI-text. Originaldata ändras inte. */
+    .glossary-term{display:inline;border:0;background:transparent;color:#0550ae;font:inherit;font-weight:inherit;padding:0;margin:0;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:help}
+    .glossary-term:hover{text-decoration-style:solid}
+    .glossary-term:focus-visible{outline:2px solid #0969da;outline-offset:3px;border-radius:2px}
+    .glossary-popup{position:fixed;z-index:10020;box-sizing:border-box;max-height:calc(100dvh - 24px);overflow-y:auto;border:1px solid #8c959f;border-radius:10px;background:#fff;color:#1f2328;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.22);line-height:1.5}
+    .glossary-popup[hidden]{display:none}
+    .glossary-popup-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .glossary-popup-heading{font-size:1.08rem;font-weight:750}
+    .glossary-popup-close{appearance:none;background:#f0f4f8;border:1px solid #8c959f;color:#24292f;border-radius:6px;cursor:pointer;font-size:1.2rem;line-height:1;padding:5px 10px}
+    .glossary-popup-text{margin:10px 0 0;white-space:pre-wrap;font-size:.96rem}
   </style>
 </head>
 <body>
@@ -486,6 +497,7 @@
   updateDocumentsVersion();
 
   const dataUrl = "./nyheter.json";
+  const glossaryUrl = "./Begrepp.json";
   const publicNewsDataUrl = "https://api.github.com/repos/tomaslennefors/ChessApps-Pages/contents/Test/Nyheter/nyheter.json";
   const liveNewsDataUrl = "https://tomaslennefors.github.io/ChessApps-Pages/Test/Nyheter/nyheter.json";
   const rulesUrl = "./Regler_Nyheter.md";
@@ -2193,41 +2205,166 @@
     return label + ": " + stats.words + " ord · " + stats.letters + " bokstäver";
   }
 
+
+  // Begreppsregister: påverkar visningen men inte sparad text eller Markdown-kopiering.
+  let glossaryById = new Map();
+  let glossaryByPhrase = new Map();
+  let glossaryPattern = null;
+  let glossaryActiveButton = null;
+  const glossaryPhraseKey = value => String(value || "").toLocaleLowerCase("sv-SE");
+  const escapeGlossaryRegExp = value => [...value].map(ch => ".+*?^$()[]{}|\\".includes(ch) ? "\\" + ch : ch).join("");
+
+  async function loadGlossary() {
+    try {
+      const response = await fetch(glossaryUrl + "?t=" + Date.now(), {cache:"no-store"});
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const data = await response.json();
+      if (!Array.isArray(data.begrepp)) throw new Error("Ogiltigt begreppsregister");
+      const ids = new Map();
+      const phrases = new Map();
+      for (const entry of data.begrepp) {
+        if (!entry || typeof entry.id !== "string" || typeof entry.term !== "string" ||
+            typeof entry.forklaring !== "string" || !entry.forklaring.trim()) continue;
+        ids.set(entry.id, entry);
+        for (const variant of [entry.term, ...(Array.isArray(entry.alternativ) ? entry.alternativ : [])]) {
+          if (typeof variant !== "string" || !variant.trim()) continue;
+          const key = glossaryPhraseKey(variant.trim());
+          if (!phrases.has(key)) phrases.set(key, entry.id);
+        }
+      }
+      glossaryById = ids;
+      glossaryByPhrase = phrases;
+      const candidates = [...phrases.keys()].sort((a,b) => b.length - a.length || a.localeCompare(b,"sv"));
+      glossaryPattern = candidates.length ? new RegExp(candidates.map(escapeGlossaryRegExp).join("|"), "giu") : null;
+    } catch (error) {
+      // Nyheterna ska fungera även när ordlistan inte går att läsa.
+      glossaryById = new Map(); glossaryByPhrase = new Map(); glossaryPattern = null;
+      console.warn("Kunde inte läsa Begrepp.json:", error);
+    }
+  }
+
+  function appendGlossaryText(container, value) {
+    const str = String(value ?? "");
+    if (!glossaryPattern) { container.append(document.createTextNode(str)); return; }
+    let previousEnd = 0;
+    for (const match of str.matchAll(glossaryPattern)) {
+      const start = match.index, end = start + match[0].length;
+      const preceding = start ? str[start - 1] : "";
+      const following = end < str.length ? str[end] : "";
+      // Hela ord, inte delar av längre ord.
+      if (/[\p{L}\p{N}_]/u.test(preceding) || /[\p{L}\p{N}_]/u.test(following)) continue;
+      const id = glossaryByPhrase.get(glossaryPhraseKey(match[0]));
+      if (!glossaryById.has(id)) continue;
+      if (start > previousEnd) container.append(document.createTextNode(str.slice(previousEnd,start)));
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "glossary-term";
+      button.textContent = match[0]; button.dataset.glossaryId = id;
+      button.setAttribute("aria-label", "Förklara begreppet " + match[0]);
+      button.setAttribute("aria-haspopup","dialog");
+      button.setAttribute("aria-expanded","false");
+      button.title = "Visa begreppsförklaring";
+      container.append(button);
+      previousEnd = end;
+    }
+    if (previousEnd < str.length) container.append(document.createTextNode(str.slice(previousEnd)));
+  }
+
+  // En enda popup används av alla begrepp och skapas utan osäker HTML-injektion.
+  const glossaryPopup = document.createElement("aside");
+  glossaryPopup.className = "glossary-popup";
+  glossaryPopup.hidden = true;
+  glossaryPopup.setAttribute("role", "dialog");
+  glossaryPopup.setAttribute("aria-modal", "false");
+  glossaryPopup.setAttribute("aria-labelledby", "glossaryPopupHeading");
+  glossaryPopup.setAttribute("aria-describedby", "glossaryPopupDescription");
+  const glossaryHeader = document.createElement("div");
+  glossaryHeader.className = "glossary-popup-header";
+  const glossaryHeading = document.createElement("strong");
+  glossaryHeading.id = "glossaryPopupHeading";
+  glossaryHeading.className = "glossary-popup-heading";
+  const glossaryCloseButton = document.createElement("button");
+  glossaryCloseButton.type = "button";
+  glossaryCloseButton.className = "glossary-popup-close";
+  glossaryCloseButton.textContent = "×";
+  glossaryCloseButton.setAttribute("aria-label", "Stäng begreppsförklaringen");
+  glossaryHeader.append(glossaryHeading,glossaryCloseButton);
+  const glossaryDescription = document.createElement("p");
+  glossaryDescription.id = "glossaryPopupDescription";
+  glossaryDescription.className = "glossary-popup-text";
+  glossaryPopup.append(glossaryHeader,glossaryDescription);
+  document.body.append(glossaryPopup);
+
+  function closeGlossary(restoreFocus = false) {
+    glossaryPopup.hidden = true;
+    if (glossaryActiveButton) {
+      glossaryActiveButton.setAttribute("aria-expanded","false");
+      if (restoreFocus && glossaryActiveButton.isConnected) glossaryActiveButton.focus();
+    }
+    glossaryActiveButton = null;
+  }
+
+  function openGlossary(button) {
+    const entry = glossaryById.get(button.dataset.glossaryId);
+    if (!entry) return;
+    if (glossaryActiveButton === button && !glossaryPopup.hidden) { closeGlossary(); return; }
+    if (glossaryActiveButton) glossaryActiveButton.setAttribute("aria-expanded","false");
+    glossaryActiveButton = button;
+    button.setAttribute("aria-expanded","true");
+    glossaryHeading.textContent = entry.term;
+    glossaryDescription.textContent = entry.forklaring;
+    glossaryPopup.style.width = Math.min(360, Math.max(200,window.innerWidth - 24)) + "px";
+    glossaryPopup.style.visibility = "hidden";
+    glossaryPopup.hidden = false;
+    const anchor = button.getBoundingClientRect();
+    const popup = glossaryPopup.getBoundingClientRect();
+    let top = anchor.bottom + 9;
+    if (top + popup.height > window.innerHeight - 12) top = anchor.top - popup.height - 9;
+    top = Math.max(12, Math.min(top,window.innerHeight - popup.height - 12));
+    const left = Math.max(12,Math.min(anchor.left,window.innerWidth - popup.width - 12));
+    glossaryPopup.style.top = top + "px";
+    glossaryPopup.style.left = left + "px";
+    glossaryPopup.style.visibility = "visible";
+  }
+  glossaryCloseButton.addEventListener("click", () => closeGlossary(true));
+  document.addEventListener("click", event => {
+    const button = event.target?.closest?.("button.glossary-term");
+    if (button) { openGlossary(button); return; }
+    if (!glossaryPopup.hidden && !glossaryPopup.contains(event.target)) closeGlossary();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !glossaryPopup.hidden) {
+      event.preventDefault(); closeGlossary(true);
+    }
+  });
+  window.addEventListener("resize",() => { if (!glossaryPopup.hidden) closeGlossary(); });
+  window.addEventListener("scroll",() => { if (!glossaryPopup.hidden) closeGlossary(); },true);
+
   function appendBoldText(container, text) {
     const value = String(text || "");
     const tokenPattern = /(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g;
     let lastIndex = 0;
     let match;
-
     while ((match = tokenPattern.exec(value)) !== null) {
-      if (match.index > lastIndex) {
-        container.append(document.createTextNode(value.slice(lastIndex, match.index)));
-      }
-
+      if (match.index > lastIndex) appendGlossaryText(container,value.slice(lastIndex,match.index));
       const token = match[0];
       if (token.startsWith("**")) {
         const strong = document.createElement("strong");
-        strong.textContent = token.slice(2, -2);
+        appendGlossaryText(strong,token.slice(2,-2));
         container.append(strong);
       } else {
         const parts = token.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
         if (parts) {
           const link = document.createElement("a");
-          link.textContent = parts[1];
-          link.href = parts[2];
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
+          link.textContent = parts[1]; link.href = parts[2];
+          link.target = "_blank"; link.rel = "noopener noreferrer";
           container.append(link);
         } else {
-          container.append(document.createTextNode(token));
+          appendGlossaryText(container,token);
         }
       }
       lastIndex = tokenPattern.lastIndex;
     }
-
-    if (lastIndex < value.length) {
-      container.append(document.createTextNode(value.slice(lastIndex)));
-    }
+    if (lastIndex < value.length) appendGlossaryText(container,value.slice(lastIndex));
   }
 
   // Markdown från originaltext-registret renderas som HTML-element, aldrig som osäker innerHTML.
@@ -2683,7 +2820,7 @@
 
       const summary = document.createElement("div");
       summary.className = detailedArticle ? "article-ingress" : "summary";
-      summary.textContent = item.sammanfattning || "";
+      appendGlossaryText(summary, item.sammanfattning || "");
       applyMetadataVisibility();
 
       const body = document.createElement("div");
@@ -3742,6 +3879,7 @@
     showMobileNavAtStartup();
 
     try {
+      await loadGlossary();
       const response = await fetch(dataUrl + "?t=" + Date.now(), {cache:"no-store"});
       if (!response.ok) throw new Error("Kunde inte läsa nyheter.json. HTTP " + response.status);
       const data = await response.json();
