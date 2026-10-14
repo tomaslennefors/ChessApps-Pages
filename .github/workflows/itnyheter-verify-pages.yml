@@ -1,13 +1,9 @@
 name: IT-Nyheter - verifiera publicerad app, begrepp och nyheter
 
+# Historisk kontroll av live-innehåll.
+# Automatisk kontroll är avstängd enligt Tomas önskemål 2026-10-14.
+# Endast manuell start via GitHub Actions är möjlig.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "Test/Nyheter/index.html"
-      - "Test/Nyheter/Begrepp.json"
-      - "Test/Nyheter/nyheter.json"
-      - ".github/workflows/itnyheter-verify-pages.yml"
   workflow_dispatch:
 
 permissions:
