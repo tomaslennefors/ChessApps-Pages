@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "senast_uppdaterad": "2026-10-14",
+  "senast_uppdaterad": "2026-10-15",
   "beskrivning": "Gemensamma begreppsförklaringar för IT-Nyheter. Ändra förklaringar i denna fil; inga nyhetstexter behöver ändras.",
   "begrepp": [
     {
@@ -93,6 +93,60 @@
       "term": "Maskininlärning",
       "alternativ": [],
       "forklaring": "En metod där datorprogram lär sig mönster från data i stället för att få varje regel skriven för hand."
+    },
+    {
+      "id": "superintelligens",
+      "term": "Superintelligens",
+      "alternativ": [
+        "superintelligent AI",
+        "superintelligenta AI-system",
+        "superintelligensen"
+      ],
+      "forklaring": "En tänkt AI som överträffar människans intellektuella förmåga på mycket många områden. Det är inte visat att dagens AI-system har sådan förmåga."
+    },
+    {
+      "id": "existentiell-risk",
+      "term": "Existentiell risk",
+      "alternativ": [
+        "existentiella risker",
+        "utrotningsrisk",
+        "utrotningsrisken"
+      ],
+      "forklaring": "En risk som kan leda till mänsklighetens utrotning eller permanent skada mänsklighetens långsiktiga framtid. Att en sådan risk diskuteras betyder inte att den är bevisad eller att sannolikheten är känd."
+    },
+    {
+      "id": "ai-agent",
+      "term": "AI-agent",
+      "alternativ": [
+        "AI-agenter",
+        "AI-agenten",
+        "AI-agenterna"
+      ],
+      "forklaring": "Ett AI-system som kan planera och utföra flera åtgärder med hjälp av digitala verktyg. Hur självständigt det kan agera beror bland annat på dess behörigheter och säkerhetsbegränsningar."
+    },
+    {
+      "id": "exponentiell-utveckling",
+      "term": "Exponentiell utveckling",
+      "alternativ": [
+        "exponentiellt"
+      ],
+      "forklaring": "En utveckling där något ökar med ungefär samma procentuella takt under lika långa perioder, vilket kan ge allt större ökningar över tid. Takten behöver inte fortsätta för alltid."
+    },
+    {
+      "id": "oberoende-granskning",
+      "term": "Oberoende granskning",
+      "alternativ": [
+        "oberoende granskningen"
+      ],
+      "forklaring": "När personer eller organisationer som står utanför utvecklaren granskar ett systems säkerhet, prestanda och risker med egna metoder."
+    },
+    {
+      "id": "ai-sakerhet",
+      "term": "AI-säkerhet",
+      "alternativ": [
+        "AI-säkerheten"
+      ],
+      "forklaring": "Arbete med att förebygga att AI orsakar skada, till exempel genom tester, begränsningar, säkerhetsrutiner och kontroll av hur systemen används."
     }
   ]
 }
