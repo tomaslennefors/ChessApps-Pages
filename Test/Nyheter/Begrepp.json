@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "senast_uppdaterad": "2026-10-14",
+  "beskrivning": "Gemensamma begreppsförklaringar för IT-Nyheter. Ändra förklaringar i denna fil; inga nyhetstexter behöver ändras.",
+  "begrepp": [
+    {
+      "id": "lean",
+      "term": "Lean",
+      "alternativ": [
+        "Lean 4"
+      ],
+      "forklaring": "Lean är ett programmeringsspråk och en bevisassistent. Det används för att skriva matematiska påståenden och bevis så noggrant att en dator kan kontrollera de logiska stegen."
+    },
+    {
+      "id": "formellt-bevis",
+      "term": "Formellt bevis",
+      "alternativ": [
+        "formella bevis",
+        "formellt bevis",
+        "formella bevisen"
+      ],
+      "forklaring": "Ett matematiskt bevis som skrivits i ett exakt, datorläsbart språk. En bevisassistent kan kontrollera att varje logiskt steg följer givna regler och antaganden."
+    },
+    {
+      "id": "bevisassistent",
+      "term": "Bevisassistent",
+      "alternativ": [
+        "bevisassistenter"
+      ],
+      "forklaring": "Ett datorprogram som hjälper till att skriva och kontrollera matematiska bevis. Lean är ett exempel."
+    },
+    {
+      "id": "riemannhypotesen",
+      "term": "Riemannhypotesen",
+      "alternativ": [],
+      "forklaring": "En berömd ännu olöst hypotes om hur nollställena till Riemanns zetafunktion är placerade. Den hänger nära samman med hur primtal är fördelade."
+    },
+    {
+      "id": "navier-stokes",
+      "term": "Navier–Stokes ekvationer",
+      "alternativ": [
+        "Navier-Stokes",
+        "Navier–Stokes",
+        "Navier-Stokes ekvationer",
+        "Navier–Stokes-ekvationerna"
+      ],
+      "forklaring": "Ekvationer som beskriver hur vätskor och gaser rör sig. Ett berömt öppet matematiskt problem gäller om vissa tredimensionella lösningar alltid förblir regelbundna."
+    },
+    {
+      "id": "ai-modell",
+      "term": "AI-modell",
+      "alternativ": [
+        "AI-modeller",
+        "AI-modellen",
+        "AI-modellens"
+      ],
+      "forklaring": "Ett tränat datorsystem som kan upptäcka mönster och utföra uppgifter, exempelvis analysera text eller lösa problem. Modeller skiljer sig i förmåga och användningsområde."
+    },
+    {
+      "id": "resonemangsmodell",
+      "term": "Resonemangsmodell",
+      "alternativ": [
+        "resonemangsmodeller"
+      ],
+      "forklaring": "En AI-modell anpassad för mer omfattande problemlösning, till exempel matematik eller programmering. Den kan lägga mer beräkningsarbete på att bearbeta en fråga."
+    },
+    {
+      "id": "github",
+      "term": "GitHub",
+      "alternativ": [],
+      "forklaring": "En webbtjänst för att lagra, versionshantera och samarbeta kring kod och andra filer. Ändringar kan spåras och tidigare versioner återställas."
+    },
+    {
+      "id": "api",
+      "term": "API",
+      "alternativ": [
+        "API:er",
+        "API:et"
+      ],
+      "forklaring": "Ett programmeringsgränssnitt som låter olika program utbyta information eller använda varandras funktioner enligt bestämda regler."
+    },
+    {
+      "id": "token",
+      "term": "Token",
+      "alternativ": [
+        "tokenen",
+        "tokens"
+      ],
+      "forklaring": "Ordet kan betyda olika saker. I AI är en token en liten del av text som en språkmodell behandlar. I GitHub kan en åtkomsttoken vara en hemlig nyckel som ger behörigheter."
+    },
+    {
+      "id": "maskininlarning",
+      "term": "Maskininlärning",
+      "alternativ": [],
+      "forklaring": "En metod där datorprogram lär sig mönster från data i stället för att få varje regel skriven för hand."
+    }
+  ]
+}
