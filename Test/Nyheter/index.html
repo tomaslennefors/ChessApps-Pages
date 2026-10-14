@@ -196,6 +196,11 @@
     .glossary-popup-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
     .glossary-popup-heading{font-size:1.08rem;font-weight:750}
     .glossary-popup-close{appearance:none;background:#f0f4f8;border:1px solid #8c959f;color:#24292f;border-radius:6px;cursor:pointer;font-size:1.2rem;line-height:1;padding:5px 10px}
+    .glossary-popup-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .glossary-popup-copy{appearance:none;background:transparent;border:0;color:#8c959f;font-size:23px;line-height:1;padding:4px;min-width:34px;min-height:34px;cursor:pointer}
+    .glossary-popup-copy:hover{background:transparent;transform:scale(1.08)}
+    .glossary-popup-copy:focus-visible{outline:2px solid #0969da;outline-offset:2px}
+    .glossary-popup-feedback{margin-top:8px}
     .glossary-popup-text{margin:10px 0 0;white-space:pre-wrap;font-size:.96rem}
   </style>
 </head>
@@ -2130,11 +2135,24 @@
   glossaryCloseButton.className = "glossary-popup-close";
   glossaryCloseButton.textContent = "×";
   glossaryCloseButton.setAttribute("aria-label", "Stäng begreppsförklaringen");
-  glossaryHeader.append(glossaryHeading,glossaryCloseButton);
+  const glossaryCopyButton = document.createElement("button");
+  glossaryCopyButton.type = "button";
+  glossaryCopyButton.className = "glossary-popup-copy";
+  glossaryCopyButton.textContent = "⧉";
+  glossaryCopyButton.title = "Kopiera begreppsförklaringen";
+  glossaryCopyButton.setAttribute("aria-label", glossaryCopyButton.title);
+  const glossaryActions = document.createElement("div");
+  glossaryActions.className = "glossary-popup-actions";
+  glossaryActions.append(glossaryCopyButton, glossaryCloseButton);
+  glossaryHeader.append(glossaryHeading, glossaryActions);
+  const glossaryCopyFeedback = document.createElement("div");
+  glossaryCopyFeedback.className = "document-icon-feedback glossary-popup-feedback";
+  glossaryCopyFeedback.setAttribute("role", "status");
+  glossaryCopyFeedback.hidden = true;
   const glossaryDescription = document.createElement("p");
   glossaryDescription.id = "glossaryPopupDescription";
   glossaryDescription.className = "glossary-popup-text";
-  glossaryPopup.append(glossaryHeader,glossaryDescription);
+  glossaryPopup.append(glossaryHeader,glossaryCopyFeedback,glossaryDescription);
   document.body.append(glossaryPopup);
 
   function closeGlossary(restoreFocus = false) {
@@ -2155,6 +2173,8 @@
     button.setAttribute("aria-expanded","true");
     glossaryHeading.textContent = entry.term;
     glossaryDescription.textContent = entry.forklaring;
+    glossaryCopyFeedback.hidden = true;
+    glossaryCopyFeedback.textContent = "";
     glossaryPopup.style.width = Math.min(360, Math.max(200,window.innerWidth - 24)) + "px";
     glossaryPopup.style.visibility = "hidden";
     glossaryPopup.hidden = false;
@@ -2168,6 +2188,17 @@
     glossaryPopup.style.left = left + "px";
     glossaryPopup.style.visibility = "visible";
   }
+  glossaryCopyButton.addEventListener("click", async () => {
+    if (glossaryPopup.hidden) return;
+    const text = glossaryHeading.textContent + "\n\n" + glossaryDescription.textContent;
+    try {
+      await copyText(text, "Begreppsförklaringen är kopierad till Urklipp.");
+      glossaryCopyFeedback.textContent = "Kopierat - Begreppsförklaringen finns i Urklipp";
+    } catch {
+      glossaryCopyFeedback.textContent = "Kopieringen misslyckades";
+    }
+    glossaryCopyFeedback.hidden = false;
+  });
   glossaryCloseButton.addEventListener("click", () => closeGlossary(true));
   document.addEventListener("click", event => {
     const button = event.target?.closest?.("button.glossary-term");
