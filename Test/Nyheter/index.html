@@ -2604,7 +2604,7 @@
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
       const detailedArticle = showSingle && !youtube;
-      // Varje begrepp markeras högst en gång inom samma dokument, även mellan ingress och brödtext.
+      // Varje begrepp markeras högst en gång i brödtexten. Ingressen lämnas alltid utan begreppslänkar.
       const seenGlossaryTerms = new Set();
 
       const article = document.createElement("article");
@@ -2696,7 +2696,7 @@
 
       const summary = document.createElement("div");
       summary.className = detailedArticle ? "article-ingress" : "summary";
-      appendGlossaryText(summary, item.sammanfattning || "", seenGlossaryTerms);
+      summary.textContent = item.sammanfattning || "";
       applyMetadataVisibility();
 
       const body = document.createElement("div");
@@ -2889,7 +2889,7 @@
             const value = mode === "1"
               ? resolveOriginalHeading(source).body
               : item.ai_barn || item.ai_10aring || item.barntext || "";
-            if (String(value).trim()) { if (mode === "1") renderOriginalMarkdown(textBox, value); else renderStructuredArticleBody(textBox, value, seenGlossaryTerms); }
+            if (String(value).trim()) { if (mode === "1") renderOriginalMarkdown(textBox, value); else renderStructuredArticleBody(textBox, value, new Set()); }
             else if (mode === "1") {
               textBox.textContent = "Originaltext saknas i det privata registret. ";
               if (source?.url) {
