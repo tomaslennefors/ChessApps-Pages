@@ -4,7 +4,7 @@
 
 ## Ingress
 
-**OpenAI:s nya AI-modell undersökte omkring 4 000 matematiska problem och presenterade hundratals bevis. Flera datorgranskades med Lean, men upptäckta fel väckte frågor om resultatens tillförlitlighet.**
+**OpenAI:s AI-modell undersökte omkring 4 000 matematiska problem och publicerade hundratals bevis. Forskarna ser stora möjligheter, men upptäckta fel väcker viktiga frågor om bevisens tillförlitlighet.**
 
 ## Det viktigaste med nyheten
 
