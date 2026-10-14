@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-12 (HårdvaruInfo direkt efter EnhetsInfo i användarlogg; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-14 (begreppsförklaringar och Begrepp.json; tidigare regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -500,3 +500,14 @@ Standard för tidigare nyheter är **Ej verifierad**. Att automatisk textutvinni
 - Uppgifterna lagras i det privata originalregistret, som bara ska läsas av ägarens appflöde. De ska **inte** läggas i den publika `nyheter.json` eller VIP:s inlästa nyhetsmetadata.
 - Äldre originalregisterposter initieras till `Ej verifierad`, en tom `anvanda_kallor` och `kallredovisning_komplett: false`. Befintliga originaltexter och AI-texter ändras inte av denna märkning.
 - En framtida nyhetsproduktion ska fylla i dessa fält **utifrån faktiskt läst material och verifierad källanvändning**; inga positiva slutsatser utan kontroll.
+
+## 15. Begreppsförklaringar (2026-10-14)
+
+- IT-Nyheter läser ett gemensamt offentligt begreppsregister från `ChessApps-Pages/Test/Nyheter/Begrepp.json` vid appstart och vid omladdning (F5).
+- Format: `{"version":1,"senast_uppdaterad":"ÅÅÅÅ-MM-DD","begrepp":[{"id":"lean","term":"Lean","alternativ":["Lean 4"],"forklaring":"Kort begriplig förklaring."}]}`. Varje `id` ska vara unikt. `alternativ` används för olika stavningar och böjningar.
+- Begrepp som finns i registret markeras automatiskt i AI-textens ingress, mellanrubriker, stycken och listor utan att den lagrade texten ändras. Endast hela ord eller hela registrerade uttryck ska markeras. Vanliga Markdown-länkar ska förbli vanliga länkar.
+- Markeringen är understruken och går att öppna med tryck/klick och tangentbord. En liten förklaringsruta visas utan att lämna nyheten. Den stängs med kryss, Escape eller tryck utanför.
+- Originaltextens innehåll och visning ska inte skrivas om av begreppsfunktionen. Markdown-kopiering ska kopiera samma rena Markdown som tidigare, utan popuprutor eller specialkoder.
+- Begreppsregistret är publikt: spara aldrig hemliga nycklar, tokenvärden eller privat information där. Texten ska sättas säkert som text, inte som HTML.
+- Om ordlistan är otillgänglig eller felaktig ska nyhetsvisningen fortsätta fungera utan begreppsmarkeringar.
+- Tomas kan i chatten begära att GPT lägger till, ändrar eller tar bort begreppsförklaringar. GPT uppdaterar då `Begrepp.json` och kontrollerar publiceringen; nyhetstexterna behöver inte ändras.
