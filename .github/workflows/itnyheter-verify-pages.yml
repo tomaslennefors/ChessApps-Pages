@@ -1,4 +1,4 @@
-name: IT-Nyheter - verifiera publicerad app och begrepp
+name: IT-Nyheter - verifiera publicerad app, begrepp och nyheter
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
     paths:
       - "Test/Nyheter/index.html"
       - "Test/Nyheter/Begrepp.json"
+      - "Test/Nyheter/nyheter.json"
       - ".github/workflows/itnyheter-verify-pages.yml"
   workflow_dispatch:
 
@@ -20,7 +21,7 @@ jobs:
       - name: Hämta exakt commit
         uses: actions/checkout@v4
 
-      - name: Jämför publicerad HTML och begreppsfil med rätt commit
+      - name: Jämför publicerad HTML, begreppsfil och nyhetsdata med rätt commit
         env:
           VERIFY_SHA: ${{ github.sha }}
         run: |
@@ -31,7 +32,7 @@ jobs:
           from pathlib import Path
           from urllib.request import Request, urlopen
 
-          paths = ["Test/Nyheter/index.html", "Test/Nyheter/Begrepp.json"]
+          paths = ["Test/Nyheter/index.html", "Test/Nyheter/Begrepp.json", "Test/Nyheter/nyheter.json"]
           originals = {p: Path(p).read_bytes() for p in paths}
           base_url = "https://tomaslennefors.github.io/ChessApps-Pages/"
           for attempt in range(36):
@@ -51,7 +52,7 @@ jobs:
                               + ", förväntat " + hashlib.sha256(source).hexdigest()
                           )
                   if not differences:
-                      print("VERIFIERAT: Både HTML och Begrepp.json är byte-för-byte")
+                      print("VERIFIERAT: HTML, Begrepp.json och nyheter.json är byte-för-byte")
                       print("identiska med commit", os.environ["VERIFY_SHA"])
                       for path, source in originals.items():
                           print(path, "SHA256:", hashlib.sha256(source).hexdigest())
@@ -61,5 +62,5 @@ jobs:
                   print("Försök", attempt + 1, ":", error)
               if attempt < 35:
                   time.sleep(10)
-          raise SystemExit("Kunde inte verifiera både HTML och Begrepp.json inom 6 minuter.")
+          raise SystemExit("Kunde inte verifiera HTML, Begrepp.json och nyheter.json inom 6 minuter.")
           PY
