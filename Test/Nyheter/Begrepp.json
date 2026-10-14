@@ -54,7 +54,7 @@
         "AI-modellen",
         "AI-modellens"
       ],
-      "forklaring": "En AI-modell är en AI-produkt, som ligger till grund artificiell intelligens och som tränas genom maskininlärning och används genom mönsterigenkänning. Exempel på AI-modell är GPT-6 från OpenAI."
+      "forklaring": "En modern AI-modell är en statistisk modell som bygger på artificiell intelligens (AI). Den tränas genom maskininlärning för att känna igen mönster. Ett exempel är GPT-6 från OpenAI, som används i AI-produkten."
     },
     {
       "id": "resonemangsmodell",
