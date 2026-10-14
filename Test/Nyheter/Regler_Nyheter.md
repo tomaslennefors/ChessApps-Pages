@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-14 (ingress cirka 25 ord; begrepp markeras en gång per dokument; övriga regler bevarade)
+Senast uppdaterad: 2026-10-14 (HämtaNyheter borttaget; Privat visning, Regler, Sammanhang och Användarlogg behållna)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -96,14 +96,15 @@ GPT ska **välja relevant och värdefullt innehåll**, förklara svåra samband 
 
 ### Placering av ägarens kontroller
 
-- **Privat visning** och de tre knapparna **Regler**, **Sammanhang** och **Användarlogg** ska ligga **inne i området HämtaNyheter**, inte ovanför området i rubrikdelen.
-- Dessa kontroller ska vara åtkomliga för den verifierade ägaren. När Privat visning stängs av måste kryssrutan fortfarande kunna nås så att privat visning kan slås på igen.
-- VIP ska inte se dessa kontroller eller området HämtaNyheter.
+- **Privat visning** och de tre knapparna **Regler**, **Sammanhang** och **Användarlogg** ligger tillsammans mellan rubrikområdet och filtren.
+- Området har ingen rubrik HämtaNyheter och ingen egen splitterline.
+- Dessa kontroller är bara tillgängliga för den verifierade ägaren. Kryssrutan är åtkomlig även när Privat visning är avstängd. Knapparna och öppnade dokument döljs då tills privat visning slås på igen.
+- VIP ska inte se dessa ägarkontroller.
 
 ### 4a. Ägaren
 
 - Har tillgång till **originaltext**, **AI-text för vuxna** och tillgängliga övriga textlägen.
-- Har tillgång till hela området **HämtaNyheter**, inklusive dess splitterline.
+- Har tillgång till **Privat visning**, **Regler**, **Sammanhang** och **Användarlogg**.
 - Får se originalrubrik, källinformation, datum, kategorier och klickbar länk till originalwebbplatsen.
 - Vid appstart, F5 och annan omladdning ska **ägarens filtervillkor bevaras**.
 - Vid appstart och omladdning ska **alla områden som styrs av splitterlines vara öppna**.
@@ -114,7 +115,7 @@ GPT ska **välja relevant och värdefullt innehåll**, förklara svåra samband 
 - Får **inte läsa originaltexten inne i appen**.
 - Får **läsa originalrubriken**, AI-ingressen och AI-brödtexten.
 - Får **se och klicka på webbadressen till källans webbplats**.
-- Får **inte se området HämtaNyheter**. Hela området och dess splitterline ska vara dolda.
+- Får **inte se Privat visning eller knapparna Regler, Sammanhang och Användarlogg**.
 - Vid **varje appstart eller omladdning** ska **alla filter vara rensade**.
 - Vid **varje appstart eller omladdning** ska tillgängliga **splitterlines vara stängda**.
 - VIP:s tillgång till källans webbsida innebär inte att originaltexten får visas i appens egen originaltextvy.
@@ -177,58 +178,13 @@ Exempel på IT-Fakta:
 - När **flera dokument** visas räcker ingressen i respektive dokumentkort.
 - Dokumentens typ och prefix ska vara konsekventa.
 
-## 6. HämtaNyheter och arbetsflöde
+## 6. Kvarvarande ägarkontroller
 
-### Arbetsflöde
+Området **HämtaNyheter** har tagits bort på Tomas begäran. Endast **Privat visning** och knapparna **Regler**, **Sammanhang** och **Användarlogg** finns kvar, med befintlig ägarbehörighet.
 
-Tomas skriver sina önskemål i klartext i appens privata del **HämtaNyheter**.
+Appen innehåller inte längre önskemålsrutor, nya länkförslag, Spara önskemål, behandlingsstatus, fritext-historik, YouTube-länklista, övrig länklista, sparmeddelanden eller områdets splitterline. Även deras händelsehantering och synkronisering har tagits bort.
 
-Önskemålen sparas i repositoryt **Data**, i:
-`Data/Test/Nyheter/HamtaNyheter.json`
-
-GPT läser önskemålen därifrån och hämtar eller bearbetar relevanta dokument.
-
-De AI-bearbetade dokumenten sparas i repositoryt **ChessApps-Pages**, i:
-`Test/Nyheter/nyheter.json`
-
-Appen läser sedan in dokumenten från den publika JSON-filen.
-
-Privat metadata och originaltexter sparas separat i **Data**. Originaltexterna får bara visas för den verifierade ägaren. VIP får läsa originalrubrik, metadata och länken till källans webbplats, men inte originaltexten.
-
-### 3a. Status för aktuellt önskemål
-
-Det aktuella önskemålet i `Data/Test/Nyheter/HamtaNyheter.json` ska ha en behandlingsstatus.
-
-Två statusvärden används:
-- **Nytt önskemål** – önskemålet får behandlas av GPT.
-- **Färdigbehandlat** – önskemålet får inte behandlas igen.
-
-I appens privata del **HämtaNyheter** finns en kryssruta för status:
-- tom kryssruta betyder **Nytt önskemål**,
-- ikryssad ruta betyder **Färdigbehandlat**.
-
-När GPT får kommandot **HämtaNyheter** i chatten ska GPT alltid läsa statusen först. GPT får bara hämta eller bearbeta dokument från det aktuella önskemålet om status är **Nytt önskemål**.
-
-När hela önskemålet har genomförts utan fel ska GPT uppdatera `HamtaNyheter.json` och sätta status till **Färdigbehandlat**. Appens kryssruta ska då visas ikryssad efter att den privata datan har lästs in på nytt.
-
-Om Tomas vill köra exakt samma önskemål igen ska han först ta bort krysset. Då sparas statusen **Nytt önskemål** i Data och önskemålet får behandlas igen.
-
-Om Tomas ändrar själva önskemålet och sparar den ändrade texten eller lägger till nya länkar ska det ändrade önskemålet få status **Nytt önskemål**. Att bara trycka på **Spara önskemål** utan att ändra det färdigbehandlade önskemålet ska inte återaktivera det.
-
-### 3b. Fritextrutan ägs av Tomas
-
-Texten i **Önskemål i fritext** får bara ändras av Tomas.
-
-Appen och GPT får aldrig ändra texten i själva textrutan.
-
-När appen eller GPT behöver bearbeta, kontrollera, trimma, dela upp, omformatera eller på annat sätt förändra texten ska en **kopia** av texten användas. Originaltexten i textrutan ska alltid lämnas orörd.
-
-Texten i textrutan ska bevaras lokalt medan Tomas skriver. Vid **F5** ska exakt samma text visas igen; **Uppdatera filtrering** ska inte ladda om sidan eller ändra texten, även om Tomas ännu inte har tryckt **Spara önskemål**.
-
-**Spara önskemål** betyder att texten skickas till den privata Data-filen. Det är inte samma sak som att appen får ändra innehållet i textrutan.
-
-Önskemål-rutan ska använda webbläsarens inbyggda storleksändring via draghandtaget nere till höger. Rutan ska kunna minskas till ungefär en textrad och förstoras efter behov. Kontrollerna under rutan ska ligga i normalt dokumentflöde och därför följa med när rutan görs högre eller lägre.
-
+Den befintliga filen `Data/Test/Nyheter/HamtaNyheter.json` bevaras, men appen läser eller skriver den inte längre. Tidigare lokalt sparade uppgifter lämnas utan aktiv hantering. Detta påverkar inte dokumentregistren, originaltextshämtningen eller användarloggningen.
 
 ## 7. Appens övriga funktioner
 
@@ -407,17 +363,15 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 
 
 
-### 9c. Meddelanden efter Spara önskemål
+### 9c. Uppdatera filtrering
 
-- Efter lyckad sparning visas **Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.**
-- Meddelandet försvinner när användaren klickar eller trycker någon annanstans i appen.
 - Den gamla regeln att **Uppdatera filtrering** ska fungera som **F5** är upphävd och får inte återinföras. Knappen filtrerar utan att ladda om appen.
 
 ### 9d. Säker lagring och användargränssnitt
 
 - Dokumentfilen finns tillsammans med appen på GitHub Pages.
 - Filter, sortering, favoriter och arkivering lagras lokalt; VIP:s filter återställs enligt avsnitt 4.
-- HämtaNyheter får bara visas för verifierad ägare och får inte visas för VIP.
+- Privat visning och de tre ägarknapparna får bara visas för verifierad ägare och får inte visas för VIP.
 - Tekniska upplysningar om lagring ska stå i regeldokumentet, inte som förklarande text under dokumenten i appen.
 
 ## 10. Ytterligare detaljer som bevarats vid genomgång av originalfilen
@@ -426,8 +380,6 @@ Den senast valda höjden sparas lokalt i den aktuella webbläsaren.
 - **Statistikrutans placering:** Den ska visas ovanför dokumentrubriken eller i respektive jämförelsekolumn och följa med vid rullning.
 - **Höjdreglaget:** Den detaljerade dokumentrutan ska kunna göras både högre och lägre. Reglaget ska fungera på dator, mobil och surfplatta och den valda höjden sparas lokalt.
 - **Ägarens inloggning:** Ägarfunktioner kräver verifierad GitHub-token med åtkomst till privata Data-repot. VIP ska inte få originaltext enbart genom att manipulera visningen.
-- **Sparmeddelandet:** Efter lyckad sparning av önskemål visas påminnelsen om Uppdatera filtrering. Meddelandet försvinner vid nästa klick eller tryck någon annanstans i appen.
-- **Fritexten:** Endast ägaren får ändra önskemålstexten. GPT och appen ska arbeta med en kopia och får inte skriva om originalet i textrutan.
 - **Ordval:** Använd **Dokument**, **Dokumenttyp**, **IT-Nyhet**, **IT-Fakta** och **IT-YouTube**. Äldre beteckningar som **IT-Dokument** ska inte återinföras.
 - **Dokumentversioner:** För IT-Fakta skapas en ny post och ett nytt versionsnummer när innehållet ändras. Äldre versioner bevaras tills ägaren väljer att arkivera dem.
 

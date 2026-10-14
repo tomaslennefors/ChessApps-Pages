@@ -78,26 +78,19 @@
     .label-row{display:flex;align-items:center;gap:7px;font-weight:650;font-size:.92rem}
     .filter-grid>label.filter-active,.full-title-box>label.filter-active{color:#fff;background:#cf222e;border-radius:7px;box-shadow:0 0 0 5px #cf222e}
     label.filter-active>input:not(.sortno),label.filter-active>select{border-color:#cf222e;background:#ffebe9;color:var(--text);box-shadow:0 0 0 2px rgba(207,34,46,.18)}\n    select.filter-active{border-color:#cf222e;background:#ffebe9;color:var(--text);box-shadow:0 0 0 2px rgba(207,34,46,.18)}
-    .save-request-message{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
+    .status-notice{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
     .owner-write-token-dialog{width:min(94vw,520px);max-width:94vw;padding:20px;border:1px solid #8c959f;border-radius:12px;background:#fff;color:var(--text);box-shadow:0 12px 36px rgba(31,35,40,.26)}
     .owner-write-token-dialog::backdrop{background:rgba(0,0,0,.48)}
     .owner-write-token-dialog h3{margin:0 0 10px}
     .owner-write-token-dialog p{margin:8px 0 12px}
     .owner-write-token-dialog input{margin-bottom:10px}
     .owner-write-token-dialog .actions button{flex:1 1 160px}
-    .request-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#f6f8fa}
-    .request-status label{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;cursor:pointer}
-    .request-status input{width:auto;margin:0}
-    .request-status[data-completed="true"]{background:#dafbe1;border-color:#4ac26b}
-    .request-status[data-completed="false"]{background:#fff8c5;border-color:#d4a72c}
     .sortno{width:48px!important;margin:0!important;padding:4px 6px!important;text-align:center}
     .sorthint{font-size:.78rem;color:var(--muted);font-weight:400}
     label{font-weight:600;font-size:.92rem;display:block}
     input,select,textarea,button{font:inherit}
     input,select,textarea{width:100%;padding:8px;margin-top:5px;border:1px solid #8c959f;border-radius:7px;background:#fff}
     textarea{min-height:110px;resize:vertical;line-height:1.45}
-    #requestFreeText{min-height:2.6em;resize:vertical}
-    #requestLinks{min-height:0;resize:vertical}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     button,a.button{padding:9px 13px;border:1px solid var(--blue);border-radius:7px;background:var(--blue);cursor:pointer;color:#fff;text-decoration:none}
     button:hover,a.button:hover{filter:brightness(.92)}
@@ -164,15 +157,10 @@
     @media(max-width:600px){.news:has(> .document-icon-actions)>h2{margin:0 0 8px}}
     .small{font-size:.9rem;color:var(--muted)}
     .count{font-weight:650}
-    .prompt-note{margin:8px 0 0;color:var(--muted);font-size:.88rem}
-    .save-explanation{margin-top:10px;padding:10px 12px;background:#f6f8fa;border:1px solid var(--line);border-radius:8px}
     .section-splitter{position:relative;width:100%;height:25px;margin:2px 0 10px;padding:0;border:0;background:transparent;cursor:pointer}
     .section-splitter::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px solid var(--line)}
     .section-splitter span{position:relative;display:inline-block;padding:1px 10px;background:var(--bg);color:var(--muted);font-size:.82rem}
     .section-splitter:hover{background:transparent}
-    .saved-listboxes{display:grid;gap:9px;margin-top:16px}
-    .saved-listboxes label{margin:0}
-    .saved-listboxes select{margin-top:4px}
     .full-title-filter{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:10px 0 12px}
     .full-title-filter{position:relative}
     .full-title-filter::after{content:"Dokumentöversikt";position:absolute;top:6px;right:12px;padding:5px 9px;background:#24292f;color:#fff;border-radius:5px;font-size:.8rem;font-weight:400;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none;opacity:0;visibility:hidden;transition:opacity .12s;z-index:10}
@@ -185,18 +173,6 @@
     @media(max-width:650px){.document-navigation-row{grid-template-columns:minmax(0,1fr)}}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;background:#fff;font-size:.8rem;margin-left:5px}
     [hidden]{display:none!important}
-    .request-history{margin-top:16px}
-    .request-history h3{margin:0 0 8px;font-size:1rem}
-    .request-item{border-top:1px solid var(--line);padding:8px 0;cursor:pointer}
-    .request-item:first-child{border-top:0}
-    .request-item:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:7px}
-    .request-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
-    .request-date{font-size:.82rem;color:var(--muted);white-space:nowrap}
-    .request-preview{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
-    .request-text{display:none;white-space:pre-wrap;background:#f6f8fa;border:1px solid var(--line);border-radius:7px;padding:12px;font-size:.95rem;line-height:1.5;margin-top:9px;min-height:150px;max-height:420px;overflow:auto;cursor:text}
-    .request-item.expanded .request-text{display:block}
-    .request-item.expanded .request-preview{font-weight:650}
-    @media(max-width:600px){.request-head{grid-template-columns:1fr auto}.request-date{grid-column:1}.request-preview{grid-column:1 / -1;grid-row:2}.request-head button{grid-column:2;grid-row:1}}
     @media(max-width:600px){body{margin-top:16px}.news{padding:15px}.news h2{margin:35px 0 8px}}
     /* Mobil: dokumentbläddring som stannar längst ned på skärmen. */
     .mobile-document-nav{display:none}
@@ -232,66 +208,20 @@
 
   <button id="rubrikSplitter" class="section-splitter" type="button" aria-expanded="true"><span>▲ Dölj RubrikOmråde</span></button>
 
-  <section id="ownerPanel" class="panel" hidden>
-    <h2>HämtaNyheter</h2>
-  <div id="privateViewControl" class="private-view-control" hidden>
-    <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
-  </div>
-
-  <div id="rulesArea" class="rules-area" hidden>
-    <button id="rulesBtn" type="button">Regler</button>
-    <button id="contextBtn" type="button">Sammanhang</button>
-    <button id="userLogBtn" type="button">Användarlogg</button>
-    <div id="rulesText" class="markdown-doc" hidden aria-label="Regler för IT-Nyheter"></div>
-    <div id="contextText" class="markdown-doc" hidden aria-label="Sammanhang för IT-Nyheter"></div>
-    <pre id="userLogText" class="markdown-doc" hidden aria-label="Användarlogg" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
-  </div>
-
-
-    <label>
-      Önskemål i fritext
-      <textarea id="requestFreeText" placeholder="Skriv vad GPT ska leta efter nästa gång..."></textarea>
-    </label>
-
-    <label style="margin-top:12px">
-      Nya länkförslag
-      <textarea id="requestLinks" placeholder="En ny webbadress per rad. Sparade länkar ligger i listboxarna nedan."></textarea>
-    </label>
-
-    <div class="actions">
-      <button id="savePromptBtn" class="primary" type="button">Spara önskemål</button>
-    </div>
-    <div id="saveRequestMessage" class="save-request-message" hidden aria-live="polite">Önskemålen är hämtade.</div>
-
-    <div id="requestStatusBox" class="request-status" data-completed="false">
-      <strong>Status:</strong>
-      <label>
-        <input id="requestCompletedCheckbox" type="checkbox">
-        <span id="requestStatusText">Nytt önskemål</span>
-      </label>
+  <section id="ownerPanel" class="panel" hidden aria-label="Ägarfunktioner">
+    <div id="privateViewControl" class="private-view-control" hidden>
+      <label><input id="privateViewCheckbox" type="checkbox"> Privat visning</label>
     </div>
 
-    <div class="save-explanation small">
-      <strong>När du trycker på Spara önskemål:</strong>
-      fritexten sparas som aktuellt önskemål och läggs i fritext-historiken; nya länkar delas automatiskt upp i YouTube-länkar och övriga länkar, dubbletter tas bort och tidigare länkar behålls; allt sparas lokalt i denna webbläsare och i den privata filen <code>Data/Test/Nyheter/HamtaNyheter.json</code>; slutligen kopieras det aktuella önskemålet (fritext + alla sparade länkar) till Urklipp. Rutan Nya länkförslag töms efter en lyckad sparning. Ett ändrat önskemål får status <strong>Nytt önskemål</strong>. Ett redan färdigbehandlat oförändrat önskemål körs inte på nytt förrän krysset Färdigbehandlat tas bort.
-    </div>
-
-    <div class="saved-listboxes">
-      <label>
-        Fritext-historik
-        <select id="freeTextHistorySelect" aria-label="Fritext-historik"></select>
-      </label>
-      <label>
-        YouTube-länkar
-        <select id="youtubeLinksSelect" aria-label="Sparade YouTube-länkar"></select>
-      </label>
-      <label>
-        Övriga länkar
-        <select id="otherLinksSelect" aria-label="Sparade övriga länkar"></select>
-      </label>
+    <div id="rulesArea" class="rules-area" hidden>
+      <button id="rulesBtn" type="button">Regler</button>
+      <button id="contextBtn" type="button">Sammanhang</button>
+      <button id="userLogBtn" type="button">Användarlogg</button>
+      <div id="rulesText" class="markdown-doc" hidden aria-label="Regler för IT-Nyheter"></div>
+      <div id="contextText" class="markdown-doc" hidden aria-label="Sammanhang för IT-Nyheter"></div>
+      <pre id="userLogText" class="markdown-doc" hidden aria-label="Användarlogg" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
     </div>
   </section>
-  <button id="ownerSplitter" class="section-splitter" type="button" hidden aria-expanded="true"><span>▲ Dölj HämtaNyheter</span></button>
 
   <div id="filterPanel" class="filters">
     <h2>Filter</h2>
@@ -397,7 +327,7 @@
   <div id="fullTitlePanel" class="full-title-filter" title="Dokumentöversikt" aria-label="Dokumentöversikt">
     <div class="small" style="font-weight:650">Visa aktuellt filter</div>
     <div id="status" aria-live="polite">Hämtar dokument...</div>
-    <div id="noFilterResultsNotice" class="save-request-message" role="status" aria-live="polite" hidden>Inga dokument matchar de valda filtren.</div>
+    <div id="noFilterResultsNotice" class="status-notice" role="status" aria-live="polite" hidden>Inga dokument matchar de valda filtren.</div>
     <div class="document-navigation-row">
       <div>
         <label for="documentSortMode">Sortera dokument efter</label>
@@ -513,13 +443,11 @@
   const ownerRepoUrl = "https://api.github.com/repos/tomaslennefors/Data";
   const usersDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Users.json";
   const userLogDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/UserLog.json";
-  const requestDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/HamtaNyheter.json";
   const privateNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_privata.json";
   const originalNewsDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/nyheter_originaltexter.json";
   const originalFetchRequestUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Originaltext_Begaran.json";
   const originalFetchStatusUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/Originaltext_Status.json";
-  const requestDataPath = "Test/Nyheter/HamtaNyheter.json";
-  const requestBranch = "main";
+  const dataBranch = "main";
   const filterSchemaVersion = 5;
   const metadataHiddenKey = "ITNyheter_MetadataHidden";
 
@@ -602,7 +530,7 @@
   fullTitlePanel.addEventListener("pointerleave", () => fullTitlePanel.classList.remove("tooltip-hover"));
   const statusEl = document.getElementById("status");
   const permanentDeleteNotice = document.createElement("div");
-  permanentDeleteNotice.className = "save-request-message";
+  permanentDeleteNotice.className = "status-notice";
   permanentDeleteNotice.setAttribute("role", "status");
   permanentDeleteNotice.setAttribute("aria-live", "polite");
   permanentDeleteNotice.hidden = true;
@@ -611,19 +539,8 @@
   const reloadBtn = document.getElementById("reloadBtn");
   const clearBtn = document.getElementById("clearBtn");
   const ownerPanel = document.getElementById("ownerPanel");
-  const ownerSplitter = document.getElementById("ownerSplitter");
   const filterPanel = document.getElementById("filterPanel");
   const filterSplitter = document.getElementById("filterSplitter");
-  const savePromptBtn = document.getElementById("savePromptBtn");
-  const saveRequestMessage = document.getElementById("saveRequestMessage");
-  const requestStatusBox = document.getElementById("requestStatusBox");
-  const requestCompletedCheckbox = document.getElementById("requestCompletedCheckbox");
-  const requestStatusText = document.getElementById("requestStatusText");
-  const requestFreeText = document.getElementById("requestFreeText");
-  const requestLinks = document.getElementById("requestLinks");
-  const freeTextHistorySelect = document.getElementById("freeTextHistorySelect");
-  const youtubeLinksSelect = document.getElementById("youtubeLinksSelect");
-  const otherLinksSelect = document.getElementById("otherLinksSelect");
   const idNumberFilter = document.getElementById("idNumberFilter");
   const dateStartFilter = document.getElementById("dateStartFilter");
   const dateEndFilter = document.getElementById("dateEndFilter");
@@ -700,36 +617,13 @@
   let publicIdentity = null;
   let privateNewsById = new Map();
   let originalNewsById = new Map();
-  let requestCompleted = false;
-  let requestStatusChangedAt = "";
   let prefs = loadPrefs();
   // Ägaren behåller sina sparade filter mellan sidstarter.
   // VIP och publika användare börjar med återställda filter.
   // Favorit- och döljmarkeringar för dokument behålls.
   prefs.rubrikCollapsed = true;
-  prefs.ownerCollapsed = true;
   prefs.filterCollapsed = true;
   prefs.documentOverviewCollapsed = true;
-
-  function splitLegacyRequest(value) {
-    const lines = String(value || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-    return {
-      text: lines.filter(x => !/^https?:\/\//i.test(x)).join("\n"),
-      links: lines.filter(x => /^https?:\/\//i.test(x))
-    };
-  }
-
-  function uniqueLinks(values) {
-    const out = [];
-    const seen = new Set();
-    for (const value of values || []) {
-      const url = String(value || "").trim();
-      if (!url || seen.has(url)) continue;
-      seen.add(url);
-      out.push(url);
-    }
-    return out;
-  }
 
   function generateUserId() {
     if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
@@ -779,7 +673,7 @@
 
   async function mutateSharedDataFile(url, token, message, mutate) {
     for (let attempt = 0; attempt < 2; attempt++) {
-      const getResponse = await fetch(url + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      const getResponse = await fetch(url + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {
         headers: githubHeaders(token),
         cache:"no-store"
       });
@@ -796,7 +690,7 @@
           message,
           content:encodeBase64Utf8(JSON.stringify(data,null,2) + "\n"),
           sha:file.sha,
-          branch:requestBranch
+          branch:dataBranch
         })
       });
 
@@ -1102,37 +996,6 @@
   function loadPrefs() {
     try {
       const p = JSON.parse(localStorage.getItem(storageKey) || "{}");
-      const legacyRequests = Array.isArray(p.fetchRequests) ? p.fetchRequests : [];
-      const legacyDraft = typeof p.fetchMoreDraft === "string" ? p.fetchMoreDraft : (typeof p.fetchMoreText === "string" ? p.fetchMoreText : "");
-
-      let freeHistory = Array.isArray(p.freeTextHistory)
-        ? p.freeTextHistory.filter(x => x && typeof x.text === "string" && x.text.trim()).map(x => ({
-            text:x.text,
-            savedAt:typeof x.savedAt === "string" ? x.savedAt : ""
-          }))
-        : [];
-
-      let savedLinks = Array.isArray(p.savedRequestLinks) ? uniqueLinks(p.savedRequestLinks) : [];
-
-      if (!freeHistory.length || !savedLinks.length) {
-        for (const legacy of legacyRequests) {
-          const split = splitLegacyRequest(legacy?.text || "");
-          if (split.text && !freeHistory.some(x => x.text === split.text)) {
-            freeHistory.push({text:split.text, savedAt:typeof legacy?.savedAt === "string" ? legacy.savedAt : ""});
-          }
-          savedLinks = uniqueLinks([...savedLinks, ...split.links]);
-        }
-        const splitDraft = splitLegacyRequest(legacyDraft);
-        if (splitDraft.text && !freeHistory.some(x => x.text === splitDraft.text)) {
-          freeHistory.push({text:splitDraft.text, savedAt:""});
-        }
-        savedLinks = uniqueLinks([...savedLinks, ...splitDraft.links]);
-      }
-
-      freeHistory.sort((a,b) => String(a.savedAt).localeCompare(String(b.savedAt)));
-      const latestFree = freeHistory.length ? freeHistory[freeHistory.length - 1] : null;
-      const draftSplit = splitLegacyRequest(legacyDraft);
-
       const filters = p.filterSchemaVersion === filterSchemaVersion && p.filters && typeof p.filters === "object"
         ? {...p.filters}
         : {};
@@ -1141,41 +1004,27 @@
       }
 
       return {
+        ...p,
         favorites: p.favorites && typeof p.favorites === "object" ? p.favorites : {},
         archived: p.archived && typeof p.archived === "object" ? p.archived : {},
         filters,
         archiveDefaultVersion: 1,
         sort: p.sort && typeof p.sort === "object" ? p.sort : {},
-        freeTextHistory: freeHistory,
-        savedRequestLinks: savedLinks,
-        currentFreeText: typeof p.currentFreeText === "string" ? p.currentFreeText : (draftSplit.text || latestFree?.text || ""),
-        currentFreeTextSavedAt: typeof p.currentFreeTextSavedAt === "string" ? p.currentFreeTextSavedAt : (latestFree?.savedAt || ""),
-        linkDraft: p.requestUiVersion === 2 && typeof p.linkDraft === "string" ? p.linkDraft : "",
         rubrikCollapsed: !!p.rubrikCollapsed,
         documentOverviewCollapsed: !!p.documentOverviewCollapsed,
-        ownerCollapsed: !!p.ownerCollapsed,
         filterCollapsed: !!p.filterCollapsed,
         privateView: p.privateView !== false,
         articleHeight: Number.isFinite(Number(p.articleHeight)) ? Number(p.articleHeight) : 0
       };
     } catch {
-      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, freeTextHistory:[], savedRequestLinks:[], currentFreeText:"", currentFreeTextSavedAt:"", linkDraft:"", rubrikCollapsed:false, documentOverviewCollapsed:false, ownerCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
+      return {favorites:{}, archived:{}, filters:{archive:"active"}, archiveDefaultVersion:1, sort:{}, rubrikCollapsed:false, documentOverviewCollapsed:false, filterCollapsed:false, privateView:true, articleHeight:0};
     }
   }
 
   function savePrefs() {
     prefs.filterSchemaVersion = filterSchemaVersion;
     prefs.archiveDefaultVersion = 1;
-    prefs.requestUiVersion = 2;
     localStorage.setItem(storageKey, JSON.stringify(prefs));
-  }
-
-  function isYoutubeUrl(value) {
-    return /^https?:\/\/(?:www\.)?(?:youtube\.com\/|youtu\.be\/)/i.test(String(value || "").trim());
-  }
-
-  function alphabeticLinks(values) {
-    return uniqueLinks(values).sort((a,b) => a.localeCompare(b, "sv", {sensitivity:"base"}));
   }
 
   function setSectionCollapsed(panel, splitter, collapsed, label) {
@@ -1259,7 +1108,6 @@
       privateViewControl.hidden = true;
       rulesArea.hidden = true;
       ownerPanel.hidden = true;
-      ownerSplitter.hidden = true;
       return;
     }
 
@@ -1275,10 +1123,8 @@
     }
     privateViewCheckbox.checked = ownerMode;
 
-    // Ägarens reglage ligger i HämtaNyheter och måste gå att nå även
-    // när Privat visning tillfälligt är avstängd.
-    ownerSplitter.hidden = false;
-    setSectionCollapsed(ownerPanel, ownerSplitter, ownerMode ? prefs.ownerCollapsed : false, "HämtaNyheter");
+    // Kryssrutan är åtkomlig även när Privat visning är avstängd.
+    ownerPanel.hidden = false;
     if (!ownerMode) sourceFilter.value = "";
   }
 
@@ -1293,7 +1139,7 @@
 
   async function readPrivateNewsMetadata(token = ownerToken) {
     if (!token) return new Map();
-    const response = await fetch(privateNewsDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+    const response = await fetch(privateNewsDataUrl + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {
       headers: githubHeaders(token),
       cache:"no-store"
     });
@@ -1309,7 +1155,7 @@
 
   async function loadOriginalNews(token = ownerToken) {
     if (!token || !ownerAuthenticated) return;
-    const response = await fetch(originalNewsDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {headers:githubHeaders(token),cache:"no-store"});
+    const response = await fetch(originalNewsDataUrl + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {headers:githubHeaders(token),cache:"no-store"});
     if (!response.ok) throw new Error("Kunde inte läsa originalregistret. HTTP " + response.status);
     const file = await response.json();
     const data = JSON.parse(decodeBase64Utf8(file.content || ""));
@@ -1321,7 +1167,7 @@
     if (!ownerAuthenticated || !ownerMode || !ownerToken) {
       throw new Error("Originaltext kan bara hämtas i verifierat ägarläge.");
     }
-    const fileUrl = originalFetchRequestUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now();
+    const fileUrl = originalFetchRequestUrl + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now();
     const prior = await fetch(fileUrl, {headers: githubHeaders(ownerToken), cache: "no-store"});
     if (!prior.ok && prior.status !== 404) throw new Error("Beställningsfilen kunde inte läsas (HTTP " + prior.status + ").");
     const sha = prior.ok ? (await prior.json()).sha : null;
@@ -1330,7 +1176,7 @@
     const payload = {
       message: "IT-Nyheter: hämta originaltext för dokument " + id,
       content: encodeBase64Utf8(content),
-      branch: requestBranch
+      branch: dataBranch
     };
     if (sha) payload.sha = sha;
     const write = await fetch(originalFetchRequestUrl, {
@@ -1345,7 +1191,7 @@
   async function waitForOriginalTextResult(id, begard) {
     for (let attempt = 0; attempt < 50; attempt++) {
       await new Promise(resolve => setTimeout(resolve, 6000));
-      const response = await fetch(originalFetchStatusUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      const response = await fetch(originalFetchStatusUrl + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {
         headers: githubHeaders(ownerToken), cache: "no-store"
       });
       if (response.status === 404) continue;
@@ -1740,8 +1586,6 @@
     archiveFilter.value = f.archive || "active";
     const savedType = f.type || "";
     typeFilter.value = savedType === "IT-Nyheter" ? "IT-Nyhet" : savedType;
-    requestFreeText.value = prefs.currentFreeText || "";
-    requestLinks.value = prefs.linkDraft || "";
     updateFavoriteFilterCounts();
     updateArchiveFilterCounts();
     updateContentTypeFilterCounts();
@@ -1768,8 +1612,6 @@
       archive: archiveFilter.value,
       type: typeFilter.value
     };
-    prefs.currentFreeText = requestFreeText.value;
-    prefs.linkDraft = requestLinks.value;
     savePrefs();
   }
 
@@ -1975,7 +1817,7 @@
   }
 
   async function readDeletionRegister(url) {
-    const response = await fetch(url + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+    const response = await fetch(url + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {
       headers:githubHeaders(ownerToken), cache:"no-store"
     });
     if (!response.ok) throw new Error("Läsning från GitHub misslyckades (HTTP " + response.status + ").");
@@ -1990,7 +1832,7 @@
       headers:{...githubHeaders(token), "Content-Type":"application/json"},
       body:JSON.stringify({
         message:"IT-Nyheter: radera permanent dokument ID " + id,
-        branch:requestBranch, sha:file.sha,
+        branch:dataBranch, sha:file.sha,
         content:encodeBase64Utf8(JSON.stringify(data, null, 2) + "\n")
       })
     });
@@ -3357,258 +3199,8 @@
     };
   }
 
-  function freeTextRecord(x) {
-    if (!x || typeof x.text !== "string" || !x.text.trim()) return null;
-    return {text:x.text, savedAt:typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")};
-  }
-
-  function uniqueFreeTextHistory(records) {
-    const out = []; const seen = new Set();
-    for (const raw of records || []) {
-      const x = freeTextRecord(raw);
-      if (!x || seen.has(x.text)) continue;
-      seen.add(x.text); out.push(x);
-    }
-    return out.sort((a,b) => String(a.savedAt).localeCompare(String(b.savedAt)));
-  }
-
-  function linkRecord(x) {
-    if (typeof x === "string") return x.trim() ? {url:x.trim(), savedAt:""} : null;
-    if (!x || typeof x.url !== "string" || !x.url.trim()) return null;
-    return {url:x.url.trim(), savedAt:typeof x.savedAt === "string" ? x.savedAt : (typeof x.sparad === "string" ? x.sparad : "")};
-  }
-
-  function uniqueLinkHistory(records) {
-    const out = []; const seen = new Set();
-    for (const raw of records || []) {
-      const x = linkRecord(raw);
-      if (!x || seen.has(x.url)) continue;
-      seen.add(x.url); out.push(x);
-    }
-    return out;
-  }
-
-  function parseLinkBox(value) {
-    const lines = String(value || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-    const invalid = lines.filter(x => !/^https?:\/\//i.test(x));
-    if (invalid.length) throw new Error("Ogiltig webbadress: " + invalid[0]);
-    return uniqueLinks(lines);
-  }
-
-  function combinedRequestText(freeText, links) {
-    const exactFreeText = String(freeText ?? "");
-    return [exactFreeText.trim() ? exactFreeText : "", ...uniqueLinks(links)].filter(Boolean).join("\n");
-  }
-
-  function setRequestStatusUi(completed, changedAt = "") {
-    requestCompleted = !!completed;
-    requestStatusChangedAt = String(changedAt || "");
-    requestCompletedCheckbox.checked = requestCompleted;
-    requestStatusText.textContent = requestCompleted ? "Färdigbehandlat" : "Nytt önskemål";
-    requestStatusBox.dataset.completed = requestCompleted ? "true" : "false";
-    requestStatusBox.title = requestStatusChangedAt
-      ? "Status ändrad: " + requestStatusChangedAt
-      : "";
-  }
-
-  async function readRequestsFromData() {
-    if (!ownerToken) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:"", completed:false, statusChangedAt:""};
-    const response = await fetch(requestDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {headers: githubHeaders(ownerToken), cache:"no-store"});
-    if (response.status === 404) return {sha:null, freeHistory:[], linkHistory:[], currentFreeText:"", currentLinks:[], currentSavedAt:"", completed:false, statusChangedAt:""};
-    if (!response.ok) throw new Error("Kunde inte läsa HämtaNyheter från Data. HTTP " + response.status);
-
-    const file = await response.json();
-    const parsed = JSON.parse(decodeBase64Utf8(file.content || ""));
-    const completed = parsed.aktuell?.fardigbehandlat === true || parsed.aktuell?.status === "fardigbehandlat";
-    const statusChangedAt = String(parsed.aktuell?.status_andrad || "");
-    let currentFreeText = "", currentLinks = [], currentSavedAt = parsed.aktuell?.sparad || "";
-    let freeHistoryRecords = [], linkHistoryRecords = [];
-
-    if (typeof parsed.aktuell?.fritext === "string" || Array.isArray(parsed.aktuell?.lankar) || Array.isArray(parsed.aktuell?.youtube_lankar) || Array.isArray(parsed.aktuell?.ovriga_lankar)) {
-      currentFreeText = typeof parsed.aktuell?.fritext === "string" ? parsed.aktuell.fritext : "";
-      currentLinks = uniqueLinks([
-        ...(Array.isArray(parsed.aktuell?.lankar) ? parsed.aktuell.lankar : []),
-        ...(Array.isArray(parsed.aktuell?.youtube_lankar) ? parsed.aktuell.youtube_lankar : []),
-        ...(Array.isArray(parsed.aktuell?.ovriga_lankar) ? parsed.aktuell.ovriga_lankar : [])
-      ]);
-      freeHistoryRecords = Array.isArray(parsed.historik_fritext) ? parsed.historik_fritext : [];
-      if (Array.isArray(parsed.youtube_lankar) || Array.isArray(parsed.ovriga_lankar)) {
-        linkHistoryRecords = [
-          ...(Array.isArray(parsed.youtube_lankar) ? parsed.youtube_lankar : []),
-          ...(Array.isArray(parsed.ovriga_lankar) ? parsed.ovriga_lankar : [])
-        ];
-      } else {
-        linkHistoryRecords = Array.isArray(parsed.historik_lankar) ? parsed.historik_lankar : [];
-      }
-    } else {
-      const legacyCurrent = splitLegacyRequest(parsed.aktuell?.text || "");
-      currentFreeText = legacyCurrent.text; currentLinks = legacyCurrent.links;
-      for (const rec of (Array.isArray(parsed.historik) ? parsed.historik : [])) {
-        const split = splitLegacyRequest(rec?.text || "");
-        if (split.text) freeHistoryRecords.push({text:split.text, sparad:rec?.sparad || ""});
-        for (const url of split.links) linkHistoryRecords.push({url, sparad:rec?.sparad || ""});
-      }
-    }
-    if (currentFreeText) freeHistoryRecords.push({text:currentFreeText, savedAt:currentSavedAt});
-    for (const url of currentLinks) linkHistoryRecords.push({url, savedAt:currentSavedAt});
-    return {sha:file.sha||null, freeHistory:uniqueFreeTextHistory(freeHistoryRecords), linkHistory:uniqueLinkHistory(linkHistoryRecords), currentFreeText, currentLinks, currentSavedAt, completed, statusChangedAt};
-  }
-
-  async function writeRequestsToData(currentFreeText, currentSavedAt, freeHistoryRecords, linkHistoryRecords, knownSha = null, completed = false, statusChangedAt = "") {
-    if (!ownerToken) throw new Error("Ägarens GitHub-token saknas.");
-    const cleanFreeHistory = uniqueFreeTextHistory(freeHistoryRecords);
-    const cleanLinkHistory = uniqueLinkHistory(linkHistoryRecords);
-    const links = cleanLinkHistory.map(x => x.url);
-    const youtubeRecords = cleanLinkHistory.filter(x => isYoutubeUrl(x.url)).sort((a,b) => a.url.localeCompare(b.url, "sv", {sensitivity:"base"}));
-    const otherRecords = cleanLinkHistory.filter(x => !isYoutubeUrl(x.url)).sort((a,b) => a.url.localeCompare(b.url, "sv", {sensitivity:"base"}));
-    const youtubeLinks = youtubeRecords.map(x => x.url);
-    const otherLinks = otherRecords.map(x => x.url);
-    const body = {
-      aktuell:{
-        fritext:String(currentFreeText ?? ""),
-        youtube_lankar:youtubeLinks,
-        ovriga_lankar:otherLinks,
-        lankar:[...youtubeLinks, ...otherLinks],
-        text:combinedRequestText(currentFreeText,[...youtubeLinks, ...otherLinks]),
-        sparad:currentSavedAt,
-        status:completed ? "fardigbehandlat" : "nytt_onskemal",
-        fardigbehandlat:!!completed,
-        status_andrad:String(statusChangedAt || new Date().toISOString())
-      },
-      historik_fritext:cleanFreeHistory.map(x => ({text:x.text,sparad:x.savedAt})),
-      youtube_lankar:youtubeRecords.map(x => ({url:x.url,sparad:x.savedAt})),
-      ovriga_lankar:otherRecords.map(x => ({url:x.url,sparad:x.savedAt})),
-      historik_lankar:cleanLinkHistory.map(x => ({url:x.url,sparad:x.savedAt}))
-    };
-    const payload={message:"Uppdatera HämtaNyheter",content:encodeBase64Utf8(JSON.stringify(body,null,2)+"\n"),branch:requestBranch};
-    if(knownSha) payload.sha=knownSha;
-    const response=await fetch(requestDataUrl,{method:"PUT",headers:{...githubHeaders(ownerToken),"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    if(!response.ok) throw new Error("Kunde inte spara HämtaNyheter i Data. HTTP "+response.status);
-    return response.json();
-  }
-
-  async function syncRequestsWithData() {
-    if (!ownerToken) return;
-    const remote=await readRequestsFromData();
-    const localFree=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
-    const localLinks=uniqueLinkHistory((prefs.savedRequestLinks||[]).map(url=>({url,savedAt:""})));
-    const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...localFree]);
-    const mergedLinks=uniqueLinkHistory([...remote.linkHistory,...localLinks]);
-
-    // Textrutan ägs av användaren. Synkronisering arbetar bara med en kopia
-    // och får aldrig skriva innehåll från Data tillbaka till textrutan.
-    const requestTextCopy = requestFreeText.value;
-    const requestSavedAtCopy = prefs.currentFreeTextSavedAt || remote.currentSavedAt || "";
-
-    prefs.freeTextHistory=mergedFree;
-    prefs.savedRequestLinks=uniqueLinks(mergedLinks.map(x=>x.url));
-    requestLinks.value=prefs.linkDraft || "";
-    setRequestStatusUi(remote.completed, remote.statusChangedAt);
-    savePrefs(); renderRequestLists();
-
-    const remoteLinks=uniqueLinks(remote.linkHistory.map(x=>x.url));
-    if((remote.freeHistory.length!==mergedFree.length || remoteLinks.length!==prefs.savedRequestLinks.length) && (requestTextCopy || prefs.savedRequestLinks.length)){
-      await writeRequestsToData(
-        remote.currentFreeText,
-        remote.currentSavedAt || requestSavedAtCopy,
-        mergedFree,
-        mergedLinks,
-        remote.sha,
-        remote.completed,
-        remote.statusChangedAt
-      );
-    }
-  }
-
-  function optionPreview(text, max = 120) {
-    const oneLine = String(text || "").replace(/\s+/g, " ").trim();
-    return oneLine.length > max ? oneLine.slice(0, max - 1) + "…" : oneLine;
-  }
-
-  function fillSavedSelect(select, placeholder, entries) {
-    select.replaceChildren();
-    const first = document.createElement("option");
-    first.value = "";
-    first.textContent = placeholder;
-    select.append(first);
-    for (const entry of entries) {
-      const option = document.createElement("option");
-      option.value = entry.value;
-      option.textContent = entry.label;
-      option.title = entry.value;
-      select.append(option);
-    }
-    select.value = "";
-  }
-
-  function renderRequestLists() {
-    const free = uniqueFreeTextHistory(prefs.freeTextHistory || []);
-    const freeEntries = [...free].reverse().map(record => ({
-      value:record.text,
-      label:(record.text === prefs.currentFreeText ? "Aktuellt · " : "") + optionPreview(record.text)
-    }));
-    fillSavedSelect(
-      freeTextHistorySelect,
-      "Fritext-historik (" + freeEntries.length + ")",
-      freeEntries
-    );
-
-    const youtube = alphabeticLinks((prefs.savedRequestLinks || []).filter(isYoutubeUrl));
-    fillSavedSelect(
-      youtubeLinksSelect,
-      "YouTube-länkar (" + youtube.length + ")",
-      youtube.map(url => ({value:url,label:url}))
-    );
-
-    const other = alphabeticLinks((prefs.savedRequestLinks || []).filter(url => !isYoutubeUrl(url)));
-    fillSavedSelect(
-      otherLinksSelect,
-      "Övriga länkar (" + other.length + ")",
-      other.map(url => ({value:url,label:url}))
-    );
-  }
-
-  async function saveCurrentRequest() {
-    const freeText=requestFreeText.value;
-    let enteredLinks;
-    try{enteredLinks=parseLinkBox(requestLinks.value);}catch(err){statusEl.textContent=err?.message||String(err);return false;}
-    if(!freeText.trim() && !enteredLinks.length && !(prefs.savedRequestLinks||[]).length){statusEl.textContent="Skriv ett önskemål eller lägg in minst en länk.";return false;}
-    const now=new Date().toISOString();
-    const freeHistory=uniqueFreeTextHistory(prefs.freeTextHistory||[]);
-    if(freeText && !freeHistory.some(x=>x.text===freeText)) freeHistory.push({text:freeText,savedAt:now});
-    const previousLinks=uniqueLinks(prefs.savedRequestLinks||[]);
-    const allLinks=uniqueLinks([...previousLinks,...enteredLinks]);
-    const linkRecords=allLinks.map(url=>({url,savedAt:previousLinks.includes(url)?"":now}));
-    prefs.freeTextHistory=uniqueFreeTextHistory(freeHistory);
-    prefs.savedRequestLinks=allLinks;
-    prefs.currentFreeText=freeText;
-    prefs.currentFreeTextSavedAt=now;
-    prefs.linkDraft=requestLinks.value;
-    savePrefs();renderRequestLists();
-    try{
-      const remote=await readRequestsFromData();
-      const mergedFree=uniqueFreeTextHistory([...remote.freeHistory,...prefs.freeTextHistory]);
-      const mergedLinkHistory=uniqueLinkHistory([...remote.linkHistory,...linkRecords]);
-      const requestChanged = freeText !== remote.currentFreeText
-        || enteredLinks.some(url => !remote.currentLinks.includes(url));
-      const nextCompleted = requestChanged ? false : remote.completed;
-      const nextStatusChangedAt = requestChanged ? now : remote.statusChangedAt;
-      prefs.savedRequestLinks=uniqueLinks(mergedLinkHistory.map(x=>x.url));
-      prefs.linkDraft="";
-      requestLinks.value="";
-      savePrefs();renderRequestLists();
-      await writeRequestsToData(freeText,now,mergedFree,mergedLinkHistory,remote.sha,nextCompleted,nextStatusChangedAt);
-      setRequestStatusUi(nextCompleted,nextStatusChangedAt);
-      await copyText(combinedRequestText(freeText,prefs.savedRequestLinks),"");
-      saveRequestMessage.textContent = "Önskemålen är hämtade. Kom ihåg att trycka på Uppdatera filtrering.";
-      saveRequestMessage.hidden = false;
-      return true;
-    }catch(err){statusEl.textContent="Önskemålet sparades lokalt, men inte i Data: "+(err?.message||String(err));return false;}
-  }
-
   async function detectOwnerMode() {
     ownerPanel.hidden = true;
-    ownerSplitter.hidden = true;
     privateViewControl.hidden = true;
     ownerAuthenticated = false;
     ownerMode = false;
@@ -3635,7 +3227,6 @@
         ownerAuthenticated = true;
         ownerMode = prefs.privateView !== false;
         setPrivacyUi();
-        renderRequestLists();
 
         try {
           privateNewsById = await readPrivateNewsMetadata();
@@ -3646,11 +3237,6 @@
           statusEl.textContent = "Ägardelen är öppnad, men privat dokumentmetadata kunde inte läsas: " + (err?.message || String(err));
         }
 
-        try {
-          await syncRequestsWithData();
-        } catch (err) {
-          statusEl.textContent = "Ägardelen är öppnad, men HämtaNyheter kunde inte synkroniseras med Data: " + (err?.message || String(err));
-        }
         return true;
       } else {
         ownerAuthenticated = false;
@@ -3664,7 +3250,6 @@
       ownerAuthenticated = false;
       ownerMode = false;
       ownerPanel.hidden = true;
-      ownerSplitter.hidden = true;
       privateViewControl.hidden = true;
       rulesArea.hidden = true;
       sourceFilter.value = "";
@@ -3814,7 +3399,7 @@
 
     contextBtn.disabled = true;
     try {
-      const response = await fetch(contextDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      const response = await fetch(contextDataUrl + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {
         headers: githubHeaders(ownerToken),
         cache:"no-store"
       });
@@ -3839,7 +3424,7 @@
     }
     userLogBtn.disabled = true;
     try {
-      const response = await fetch(userLogDataUrl + "?ref=" + encodeURIComponent(requestBranch) + "&t=" + Date.now(), {
+      const response = await fetch(userLogDataUrl + "?ref=" + encodeURIComponent(dataBranch) + "&t=" + Date.now(), {
         headers: githubHeaders(ownerToken),
         cache:"no-store"
       });
@@ -4076,51 +3661,7 @@
   for (const control of [dateStartFilter, dateEndFilter, webAddressFilter, summaryFilter, transcriptFilter]) {
     control.addEventListener("input", () => applyFilters(true));
   }
-  requestFreeText.addEventListener("input", () => {
-    prefs.currentFreeText = requestFreeText.value;
-    savePrefs();
-  });
-  requestLinks.addEventListener("input", () => {
-    prefs.linkDraft = requestLinks.value;
-    savePrefs();
-  });
-  savePromptBtn.addEventListener("click", async () => { await saveCurrentRequest(); });
-
-  requestCompletedCheckbox.addEventListener("change", async () => {
-    if (!ownerAuthenticated) return;
-    const desiredCompleted = requestCompletedCheckbox.checked;
-    const previousCompleted = requestCompleted;
-    const previousChangedAt = requestStatusChangedAt;
-    requestCompletedCheckbox.disabled = true;
-
-    try {
-      const remote = await readRequestsFromData();
-      const now = new Date().toISOString();
-      await writeRequestsToData(
-        remote.currentFreeText,
-        remote.currentSavedAt,
-        remote.freeHistory,
-        remote.linkHistory,
-        remote.sha,
-        desiredCompleted,
-        now
-      );
-      setRequestStatusUi(desiredCompleted, now);
-      statusEl.textContent = desiredCompleted
-        ? "Önskemålet är markerat som Färdigbehandlat."
-        : "Status är Nytt önskemål. Önskemålet kan nu behandlas igen när du skriver HämtaNyheter i chatten.";
-    } catch (err) {
-      setRequestStatusUi(previousCompleted, previousChangedAt);
-      statusEl.textContent = "Kunde inte ändra önskemålets status: " + (err?.message || String(err));
-    } finally {
-      requestCompletedCheckbox.disabled = false;
-    }
-  });
-
   document.addEventListener("pointerdown", event => {
-    if (!saveRequestMessage.hidden && event.target !== savePromptBtn && !savePromptBtn.contains(event.target)) {
-      saveRequestMessage.hidden = true;
-    }
     if (!noFilterResultsNotice.hidden && !noFilterResultsNotice.contains(event.target)) {
       noFilterResultsNotice.hidden = true;
     }
@@ -4152,11 +3693,6 @@
     savePrefs();
     setSectionCollapsed(rubrikOmrade, rubrikSplitter, prefs.rubrikCollapsed, "RubrikOmråde");
   });
-  ownerSplitter.addEventListener("click", () => {
-    prefs.ownerCollapsed = !prefs.ownerCollapsed;
-    savePrefs();
-    setSectionCollapsed(ownerPanel, ownerSplitter, prefs.ownerCollapsed, "HämtaNyheter");
-  });
   filterSplitter.addEventListener("click", () => {
     prefs.filterCollapsed = !prefs.filterCollapsed;
     savePrefs();
@@ -4165,10 +3701,6 @@
 
   setSectionCollapsed(rubrikOmrade, rubrikSplitter, prefs.rubrikCollapsed, "RubrikOmråde");
   setSectionCollapsed(fullTitlePanel, documentOverviewSplitter, prefs.documentOverviewCollapsed, "Dokumentöversikt");
-  requestFreeText.value = prefs.currentFreeText || "";
-  requestLinks.value = prefs.linkDraft || "";
-  setRequestStatusUi(false, "");
-  renderRequestLists();
   setSectionCollapsed(filterPanel, filterSplitter, prefs.filterCollapsed, "filtrering");
   setPrivacyUi();
   showMobileNavAtStartup();
@@ -4177,11 +3709,9 @@
   // VIP och övriga användare behåller sina sparade inställningar.
   if (isOwner) {
     prefs.rubrikCollapsed = false;
-    prefs.ownerCollapsed = false;
     prefs.filterCollapsed = false;
     prefs.documentOverviewCollapsed = false;
     setSectionCollapsed(rubrikOmrade, rubrikSplitter, false, "RubrikOmråde");
-    setSectionCollapsed(ownerPanel, ownerSplitter, false, "HämtaNyheter");
     setSectionCollapsed(filterPanel, filterSplitter, false, "filtrering");
     setSectionCollapsed(fullTitlePanel, documentOverviewSplitter, false, "Dokumentöversikt");
   }
