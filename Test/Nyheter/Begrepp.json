@@ -54,7 +54,7 @@
         "AI-modellen",
         "AI-modellens"
       ],
-      "forklaring": "Ett tränat datorsystem som kan upptäcka mönster och utföra uppgifter, exempelvis analysera text eller lösa problem. Modeller skiljer sig i förmåga och användningsområde."
+      "forklaring": "En AI-modell är ett datorsystem som bygger på artificiell intelligens (AI). Den har tränats på data för att lära sig mönster och kan exempelvis förstå och skriva text, tolka bilder eller lösa problem. Exempel på AI-modeller är GPT-4o (OpenAI), Claude 3.5 Sonnet (Anthropic) och Gemini 2.5 Pro (Google)."
     },
     {
       "id": "resonemangsmodell",
