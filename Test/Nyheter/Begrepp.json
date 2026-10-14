@@ -54,7 +54,7 @@
         "AI-modellen",
         "AI-modellens"
       ],
-      "forklaring": "En AI-modell är ett datorsystem som bygger på artificiell intelligens (AI). Den tränas på data för att lära sig mönster och kan exempelvis förstå text, analysera bilder och lösa problem.\n\nExempel på de senaste AI-modellerna (oktober 2026):\n• OpenAI: GPT-6 (ChatGPT) och GPT-6.1 Sol (Work, Codex och API).\n• Anthropic: Claude 5.5 (Opus, Sonnet och Haiku).\n• Google: Gemini 4 Argon."
+      "forklaring": "En AI-modell är en AI-produkt, som ligger till grund artificiell intelligens och som tränas genom maskininlärning och används genom mönsterigenkänning. Exempel på AI-modell är GPT-6 från OpenAI."
     },
     {
       "id": "resonemangsmodell",
