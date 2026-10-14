@@ -2243,7 +2243,7 @@
     }
   }
 
-  function appendGlossaryText(container, value) {
+  function appendGlossaryText(container, value, seenInDocument = null) {
     const str = String(value ?? "");
     if (!glossaryPattern) { container.append(document.createTextNode(str)); return; }
     let previousEnd = 0;
@@ -2254,7 +2254,7 @@
       // Hela ord, inte delar av längre ord.
       if (/[\p{L}\p{N}_]/u.test(preceding) || /[\p{L}\p{N}_]/u.test(following)) continue;
       const id = glossaryByPhrase.get(glossaryPhraseKey(match[0]));
-      if (!glossaryById.has(id)) continue;
+      if (!glossaryById.has(id) || seenInDocument?.has(id)) continue;
       if (start > previousEnd) container.append(document.createTextNode(str.slice(previousEnd,start)));
       const button = document.createElement("button");
       button.type = "button"; button.className = "glossary-term";
@@ -2264,6 +2264,7 @@
       button.setAttribute("aria-expanded","false");
       button.title = "Visa begreppsförklaring";
       container.append(button);
+      if (seenInDocument) seenInDocument.add(id);
       previousEnd = end;
     }
     if (previousEnd < str.length) container.append(document.createTextNode(str.slice(previousEnd)));
@@ -2339,17 +2340,17 @@
   window.addEventListener("resize",() => { if (!glossaryPopup.hidden) closeGlossary(); });
   window.addEventListener("scroll",() => { if (!glossaryPopup.hidden) closeGlossary(); },true);
 
-  function appendBoldText(container, text) {
+  function appendBoldText(container, text, seenInDocument = null) {
     const value = String(text || "");
     const tokenPattern = /(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g;
     let lastIndex = 0;
     let match;
     while ((match = tokenPattern.exec(value)) !== null) {
-      if (match.index > lastIndex) appendGlossaryText(container,value.slice(lastIndex,match.index));
+      if (match.index > lastIndex) appendGlossaryText(container,value.slice(lastIndex,match.index),seenInDocument);
       const token = match[0];
       if (token.startsWith("**")) {
         const strong = document.createElement("strong");
-        appendGlossaryText(strong,token.slice(2,-2));
+        appendGlossaryText(strong,token.slice(2,-2),seenInDocument);
         container.append(strong);
       } else {
         const parts = token.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
@@ -2359,12 +2360,12 @@
           link.target = "_blank"; link.rel = "noopener noreferrer";
           container.append(link);
         } else {
-          appendGlossaryText(container,token);
+          appendGlossaryText(container,token,seenInDocument);
         }
       }
       lastIndex = tokenPattern.lastIndex;
     }
-    if (lastIndex < value.length) appendGlossaryText(container,value.slice(lastIndex));
+    if (lastIndex < value.length) appendGlossaryText(container,value.slice(lastIndex),seenInDocument);
   }
 
   // Markdown från originaltext-registret renderas som HTML-element, aldrig som osäker innerHTML.
@@ -2461,7 +2462,7 @@
     flushParagraph();
   }
 
-  function renderStructuredArticleBody(container, text) {
+  function renderStructuredArticleBody(container, text, seenInDocument = null) {
     container.replaceChildren();
     const blocks = String(text || "").split("\n\n").map(x => x.trim()).filter(Boolean);
 
@@ -2469,7 +2470,7 @@
       if (block.startsWith("### ")) {
         const heading = document.createElement("div");
         heading.className = "article-subsection-heading";
-        appendBoldText(heading, block.slice(4));
+        appendBoldText(heading, block.slice(4), seenInDocument);
         container.append(heading);
         continue;
       }
@@ -2477,7 +2478,7 @@
       if (block.startsWith("## ")) {
         const heading = document.createElement("div");
         heading.className = "article-section-heading";
-        appendBoldText(heading, block.slice(3));
+        appendBoldText(heading, block.slice(3), seenInDocument);
         container.append(heading);
         continue;
       }
@@ -2491,7 +2492,7 @@
         list.className = ordered ? "article-ordered-list" : "article-unordered-list";
         for (const line of lines) {
           const item = document.createElement("li");
-          appendBoldText(item, line.replace(ordered ? /^\d+\.\s+/ : /^[-*]\s+/, ""));
+          appendBoldText(item, line.replace(ordered ? /^\d+\.\s+/ : /^[-*]\s+/, ""), seenInDocument);
           list.append(item);
         }
         container.append(list);
@@ -2500,7 +2501,7 @@
 
       const paragraph = document.createElement("div");
       paragraph.className = "article-paragraph";
-      appendBoldText(paragraph, block);
+      appendBoldText(paragraph, block, seenInDocument);
       container.append(paragraph);
     }
   }
@@ -2730,6 +2731,8 @@
       const archived = !!prefs.archived[key];
       const youtube = isYoutube(item);
       const detailedArticle = showSingle && !youtube;
+      // Varje begrepp markeras högst en gång inom samma dokument, även mellan ingress och brödtext.
+      const seenGlossaryTerms = new Set();
 
       const article = document.createElement("article");
       article.className = "news" + (archived ? " archived" : "") + (detailedArticle ? " article-detailed" : "");
@@ -2820,12 +2823,12 @@
 
       const summary = document.createElement("div");
       summary.className = detailedArticle ? "article-ingress" : "summary";
-      appendGlossaryText(summary, item.sammanfattning || "");
+      appendGlossaryText(summary, item.sammanfattning || "", seenGlossaryTerms);
       applyMetadataVisibility();
 
       const body = document.createElement("div");
       body.className = "article-body";
-      renderStructuredArticleBody(body, item.läsvy || item.lasvy || item.sammanfattning || "");
+      renderStructuredArticleBody(body, item.läsvy || item.lasvy || item.sammanfattning || "", seenGlossaryTerms);
 
       const selectionStats = document.createElement("div");
       selectionStats.className = "text-stats";
@@ -3013,7 +3016,7 @@
             const value = mode === "1"
               ? resolveOriginalHeading(source).body
               : item.ai_barn || item.ai_10aring || item.barntext || "";
-            if (String(value).trim()) { if (mode === "1") renderOriginalMarkdown(textBox, value); else renderStructuredArticleBody(textBox, value); }
+            if (String(value).trim()) { if (mode === "1") renderOriginalMarkdown(textBox, value); else renderStructuredArticleBody(textBox, value, seenGlossaryTerms); }
             else if (mode === "1") {
               textBox.textContent = "Originaltext saknas i det privata registret. ";
               if (source?.url) {
