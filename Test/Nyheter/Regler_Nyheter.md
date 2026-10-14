@@ -1,6 +1,6 @@
 # Regler för IT-Nyheter
 
-Senast uppdaterad: 2026-10-14 (begreppsförklaringar och Begrepp.json; tidigare regler bevarade)
+Senast uppdaterad: 2026-10-14 (ingress cirka 25 ord; begrepp markeras en gång per dokument; övriga regler bevarade)
 
 Detta dokument ersätter tidigare, motstridiga regler om PUBLIC-användare, omskrivna rubriker, originalknappar, filteråterställning och omladdning. Det finns **en ägare och ett antal VIP-användare**, inte en separat publik användargrupp.
 
@@ -48,7 +48,7 @@ GPT ska **välja relevant och värdefullt innehåll**, förklara svåra samband 
 
 1. GPT ska läsa originaltexten och skriva en **gemensam ingress** för knapp 1 och knapp 2.
 2. Ingressen ska vara en **självständig, korrekt sammanfattning** av originalnyheten, inte en kopia av AI-brödtexten.
-3. Riktlinjen är **cirka 100 ord**.
+3. Riktlinjen är **cirka 25 ord**. Ingressen ska vara kortfattad men återge nyhetens viktigaste fakta. Regeln gäller nya eller uttryckligen uppdaterade ingresser; äldre dokument ändras inte automatiskt.
 4. Språket ska vara tydligt, lättbegripligt och använda **lagom korta meningar**.
 5. Ta med nyhetens huvudbudskap och relevanta fakta: viktiga siffror, risker, vem som säger vad, tidsperioder, konsekvenser, slutsatser och nödvändiga reservationer.
 6. Bevara viktiga nyanser. Förenkling får inte ändra innebörden.
@@ -505,7 +505,7 @@ Standard för tidigare nyheter är **Ej verifierad**. Att automatisk textutvinni
 
 - IT-Nyheter läser ett gemensamt offentligt begreppsregister från `ChessApps-Pages/Test/Nyheter/Begrepp.json` vid appstart och vid omladdning (F5).
 - Format: `{"version":1,"senast_uppdaterad":"ÅÅÅÅ-MM-DD","begrepp":[{"id":"lean","term":"Lean","alternativ":["Lean 4"],"forklaring":"Kort begriplig förklaring."}]}`. Varje `id` ska vara unikt. `alternativ` används för olika stavningar och böjningar.
-- Begrepp som finns i registret markeras automatiskt i AI-textens ingress, mellanrubriker, stycken och listor utan att den lagrade texten ändras. Endast hela ord eller hela registrerade uttryck ska markeras. Vanliga Markdown-länkar ska förbli vanliga länkar.
+- Begrepp som finns i registret markeras automatiskt i AI-textens ingress, mellanrubriker, stycken och listor utan att den lagrade texten ändras. **Varje begrepp markeras bara vid sin första förekomst i samma dokument**, även om det återkommer i annan böjning eller både ingress och brödtext. När flera dokument visas var för sig får varje dokument en egen första markering. Endast hela ord eller hela registrerade uttryck ska markeras. Vanliga Markdown-länkar ska förbli vanliga länkar.
 - Markeringen är understruken och går att öppna med tryck/klick och tangentbord. En liten förklaringsruta visas utan att lämna nyheten. Den stängs med kryss, Escape eller tryck utanför.
 - Originaltextens innehåll och visning ska inte skrivas om av begreppsfunktionen. Markdown-kopiering ska kopiera samma rena Markdown som tidigare, utan popuprutor eller specialkoder.
 - Begreppsregistret är publikt: spara aldrig hemliga nycklar, tokenvärden eller privat information där. Texten ska sättas säkert som text, inte som HTML.
