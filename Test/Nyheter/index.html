@@ -79,6 +79,12 @@
     .filter-grid>label.filter-active,.full-title-box>label.filter-active{color:#fff;background:#cf222e;border-radius:7px;box-shadow:0 0 0 5px #cf222e}
     label.filter-active>input:not(.sortno),label.filter-active>select{border-color:#cf222e;background:#ffebe9;color:var(--text);box-shadow:0 0 0 2px rgba(207,34,46,.18)}\n    select.filter-active{border-color:#cf222e;background:#ffebe9;color:var(--text);box-shadow:0 0 0 2px rgba(207,34,46,.18)}
     .save-request-message{display:inline-block;margin:10px 0 0;padding:7px 10px;border:1px solid #54aeff;border-radius:7px;background:#ddf4ff;color:#0550ae;font-weight:650}
+    .owner-write-token-dialog{width:min(94vw,520px);max-width:94vw;padding:20px;border:1px solid #8c959f;border-radius:12px;background:#fff;color:var(--text);box-shadow:0 12px 36px rgba(31,35,40,.26)}
+    .owner-write-token-dialog::backdrop{background:rgba(0,0,0,.48)}
+    .owner-write-token-dialog h3{margin:0 0 10px}
+    .owner-write-token-dialog p{margin:8px 0 12px}
+    .owner-write-token-dialog input{margin-bottom:10px}
+    .owner-write-token-dialog .actions button{flex:1 1 160px}
     .request-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#f6f8fa}
     .request-status label{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;cursor:pointer}
     .request-status input{width:auto;margin:0}
@@ -405,6 +411,23 @@
 
   <div id="list"></div>
 
+  <dialog id="ownerPagesWriteDialog" class="owner-write-token-dialog" aria-labelledby="ownerPagesWriteHeading">
+    <h3 id="ownerPagesWriteHeading">Skrivbehörighet för radering</h3>
+    <p>Den nuvarande GitHub-tokenen kan inte skriva till <strong>ChessApps-Pages</strong>.
+      Skapa en separat fine-grained token på ditt GitHub-konto med tillgång endast till
+      <strong>ChessApps-Pages</strong> och behörigheten <strong>Contents: Read and write</strong>.</p>
+    <p><a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener noreferrer">Öppna GitHubs tokeninställningar</a></p>
+    <form id="ownerPagesWriteForm">
+      <label for="ownerPagesWriteInput">Token för ChessApps-Pages</label>
+      <input id="ownerPagesWriteInput" type="password" autocomplete="off" spellcheck="false" required>
+      <div class="actions">
+        <button type="submit">Spara och fortsätt raderingen</button>
+        <button id="ownerPagesWriteCancel" type="button">Avbryt</button>
+      </div>
+    </form>
+    <p class="small">Tokenen används endast av ägarläget för skrivning i ChessApps-Pages och sparas lokalt i den här webbläsaren. Den publiceras inte i GitHub.</p>
+  </dialog>
+
   <nav id="mobileDocumentNav" class="mobile-document-nav" aria-label="Bläddra mellan dokument" hidden>
     <div id="mobileDocumentModeStatus" class="mobile-document-mode-status" role="status" aria-live="polite">Aktuellt läge: Bläddra dokument</div>
     <button id="mobilePreviousDocument" type="button" aria-label="Föregående dokument">◀ Föregående</button>
@@ -469,6 +492,9 @@
   const contextDataUrl = "https://api.github.com/repos/tomaslennefors/Data/contents/Test/Nyheter/ITNyheter_PUBLIC_VIP_Sammanhang.md";
   const storageKey = "ITNyheter_Settings_V2";
   const tokenKey = "ChessApps_GitHubToken";
+  // Separat ägartoken för skrivning till det publika dokumentregistret.
+  // En token med åtkomst enbart till privata Data ska fortsätta fungera som förut.
+  const pagesWriteTokenKey = "ITNyheter_PagesWriteToken";
   const userIdKey = "ITNyheter_UserId";
   const userNameKey = "ITNyheter_UserName";
   const userRoleKey = "ITNyheter_UserRole";
@@ -1946,10 +1972,10 @@
     return {sha:file.sha, data:JSON.parse(decodeBase64Utf8(file.content))};
   }
 
-  async function writeDeletionRegister(url, file, data, id) {
+  async function writeDeletionRegister(url, file, data, id, token = ownerToken) {
     const response = await fetch(url, {
       method:"PUT",
-      headers:{...githubHeaders(ownerToken), "Content-Type":"application/json"},
+      headers:{...githubHeaders(token), "Content-Type":"application/json"},
       body:JSON.stringify({
         message:"IT-Nyheter: radera permanent dokument ID " + id,
         branch:requestBranch, sha:file.sha,
@@ -1957,12 +1983,55 @@
       })
     });
     if (!response.ok) {
-      throw new Error("Skrivning till GitHub misslyckades (HTTP " + response.status
-        + "). Ägartokenen behöver Contents: Read and write till aktuellt repository.");
+      const error = new Error("Skrivning till GitHub misslyckades (HTTP " + response.status
+        + "). Tokenen behöver Contents: Read and write till aktuellt repository.");
+      error.status = response.status;
+      throw error;
     }
     const confirmation = await response.json();
     if (!confirmation?.commit?.sha) throw new Error("GitHub har inte bekräftat någon commit.");
     return confirmation.commit.sha;
+  }
+
+  function askForPagesWriteToken() {
+    const dialog = document.getElementById("ownerPagesWriteDialog");
+    const form = document.getElementById("ownerPagesWriteForm");
+    const input = document.getElementById("ownerPagesWriteInput");
+    const cancel = document.getElementById("ownerPagesWriteCancel");
+    input.value = "";
+    return new Promise(resolve => {
+      let submittedToken = "";
+      const onSubmit = event => {
+        event.preventDefault();
+        submittedToken = input.value.trim();
+        if (submittedToken) dialog.close();
+      };
+      const onCancel = () => dialog.close();
+      const onClose = () => {
+        form.removeEventListener("submit", onSubmit);
+        cancel.removeEventListener("click", onCancel);
+        input.value = "";
+        resolve(submittedToken);
+      };
+      form.addEventListener("submit", onSubmit);
+      cancel.addEventListener("click", onCancel);
+      dialog.addEventListener("close", onClose, {once:true});
+      dialog.showModal();
+      input.focus();
+    });
+  }
+
+  async function verifyPagesWriteTokenOwner(token) {
+    const response = await fetch("https://api.github.com/user", {
+      headers:githubHeaders(token), cache:"no-store"
+    });
+    if (!response.ok) {
+      throw new Error("Den nya tokenen kunde inte verifieras mot GitHub (HTTP " + response.status + ").");
+    }
+    const profile = await response.json();
+    if (String(profile.login || "").toLowerCase() !== "tomaslennefors") {
+      throw new Error("Den nya tokenen tillhör inte dokumentarkivets ägare.");
+    }
   }
 
   function showPermanentDeleteStatus(message) {
@@ -2034,7 +2103,19 @@
       }
 
       showPermanentDeleteStatus("Raderar dokumentet i GitHub...");
-      await writeDeletionRegister(publicNewsDataUrl, publicFile, publicRemoval.data, id);
+      const configuredPagesToken = localStorage.getItem(pagesWriteTokenKey) || ownerToken;
+      try {
+        await writeDeletionRegister(publicNewsDataUrl, publicFile, publicRemoval.data, id, configuredPagesToken);
+      } catch (error) {
+        if (error.status !== 401 && error.status !== 403) throw error;
+        showPermanentDeleteStatus("GitHub nekade skrivning till ChessApps-Pages. Ange en ägartoken med skrivrätt för att fortsätta.");
+        const newPagesToken = await askForPagesWriteToken();
+        if (!newPagesToken) throw new Error("Raderingen avbröts. Inget publikt dokument har raderats.");
+        await verifyPagesWriteTokenOwner(newPagesToken);
+        // Försök igen med samma SHA, utan att upprepa användarens raderingsbekräftelse.
+        await writeDeletionRegister(publicNewsDataUrl, publicFile, publicRemoval.data, id, newPagesToken);
+        localStorage.setItem(pagesWriteTokenKey, newPagesToken);
+      }
       publicCommitted = true;
 
       const publishedFile = await readDeletionRegister(publicNewsDataUrl);
