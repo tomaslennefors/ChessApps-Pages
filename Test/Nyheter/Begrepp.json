@@ -199,6 +199,59 @@
         "sociala manipulationen"
       ],
       "forklaring": "Försök att påverka en människas uppfattningar eller handlingar genom vilseledning, falsk auktoritet, känslomässiga argument eller förtroendeskapande kontakter. AI kan användas för att anpassa och sprida sådana budskap."
+    },
+    {
+      "id": "teknisk-suveranitet",
+      "term": "Teknisk suveränitet",
+      "alternativ": [
+        "tekniska suveräniteten"
+      ],
+      "forklaring": "Förmågan att utveckla, kontrollera och vid behov ersätta viktiga tekniska tjänster och infrastrukturer utan att vara helt beroende av en utländsk leverantör eller stat. Det betyder inte att all teknik måste tillverkas inom det egna landet."
+    },
+    {
+      "id": "leverantorsberoende",
+      "term": "Leverantörsberoende",
+      "alternativ": [
+        "leverantörsberoendet"
+      ],
+      "forklaring": "När en verksamhet är så beroende av en viss leverantörs teknik, avtal eller dataformat att ett byte blir svårt, dyrt eller riskfyllt. Detta kallas även inlåsning om alternativ i praktiken är svåra att använda."
+    },
+    {
+      "id": "oppen-kallkod",
+      "term": "Öppen källkod",
+      "alternativ": [
+        "öppna källkoden"
+      ],
+      "forklaring": "Programkod som får granskas, användas och ofta ändras och delas enligt en angiven licens. Öppen källkod kan underlätta oberoende granskning och leverantörsbyte men garanterar inte säkerhet."
+    },
+    {
+      "id": "oppna-vikter",
+      "term": "Öppna vikter",
+      "alternativ": [
+        "öppna vikterna"
+      ],
+      "forklaring": "När en AI-modells tränade parametrar, dess vikter, är tillgängliga för andra att ladda ned och använda enligt en licens. Det innebär inte automatiskt att träningsdata, träningskod eller alla rättigheter är öppna."
+    },
+    {
+      "id": "aihpc",
+      "term": "EuroHPC",
+      "alternativ": [],
+      "forklaring": "EU:s gemensamma satsning på högpresterande datorkraft och superdatorer. Den stöder bland annat europeisk forskning, AI-utveckling och nätverket av AI-fabriker."
+    },
+    {
+      "id": "ai-fabrik",
+      "term": "AI-fabrik",
+      "alternativ": [
+        "AI-fabriker",
+        "AI-fabriken"
+      ],
+      "forklaring": "En europeisk samarbetsmiljö som kopplar samman superdatorkraft, data, AI-experter, forskning och företag för att träna och använda AI-modeller. Sverige har initiativet MIMER."
+    },
+    {
+      "id": "flermodellssystem",
+      "term": "Flermodellssystem",
+      "alternativ": [],
+      "forklaring": "En lösning som använder mer än en AI-modell, till exempel för att jämföra svar, dela upp uppgifter eller låta en modell granska en annan. Flera modeller kan fortfarande dela samma fel."
     }
   ]
 }
