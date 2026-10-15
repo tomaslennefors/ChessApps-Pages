@@ -148,6 +148,57 @@
         "AI-säkerheten"
       ],
       "forklaring": "Arbete med att förebygga att AI orsakar skada, till exempel genom tester, begränsningar, säkerhetsrutiner och kontroll av hur systemen används."
+    },
+    {
+      "id": "tidsstyrd-automatisering",
+      "term": "Tidsstyrd automatisering",
+      "alternativ": [
+        "tidsstyrda automatiseringar",
+        "schemalagd automatisering",
+        "schemalagda automatiseringar"
+      ],
+      "forklaring": "Ett program eller arbetsflöde som startas automatiskt på förutbestämda tider eller med ett visst intervall. Det kan anropa en AI-modell men behöver inte vara en AI-agent."
+    },
+    {
+      "id": "handelsestyrd-automatisering",
+      "term": "Händelsestyrd automatisering",
+      "alternativ": [
+        "händelsestyrda automatiseringar"
+      ],
+      "forklaring": "Ett program eller arbetsflöde som startar när en viss händelse inträffar, till exempel när ett mejl kommer in, en fil ändras eller ett larm utlöses. Det kan fungera utan någon AI-agent."
+    },
+    {
+      "id": "automatiserat-arbetsflode",
+      "term": "Automatiserat arbetsflöde",
+      "alternativ": [
+        "automatiserade arbetsflöden",
+        "automatiska arbetsflöden"
+      ],
+      "forklaring": "En kedja av bestämda programsteg som körs automatiskt. AI kan användas i ett eller flera steg, men flödet kan ändå vara regelstyrt i stället för agentstyrt."
+    },
+    {
+      "id": "promptinjektion",
+      "term": "Promptinjektion",
+      "alternativ": [
+        "promptinjektionen"
+      ],
+      "forklaring": "Ett försök att styra en AI-modells eller agents beteende genom instruktioner som gömts i data den läser, till exempel en webbsida, fil eller ett mejl. Informationen får inte ges samma rätt att styra systemet som användarens riktiga instruktioner."
+    },
+    {
+      "id": "deepfake",
+      "term": "Deepfake",
+      "alternativ": [
+        "deepfakes"
+      ],
+      "forklaring": "AI-skapat eller AI-manipulerat bild-, ljud- eller videomaterial som kan ge intryck av att en person sagt eller gjort något som personen inte har sagt eller gjort."
+    },
+    {
+      "id": "social-manipulation",
+      "term": "Social manipulation",
+      "alternativ": [
+        "sociala manipulationen"
+      ],
+      "forklaring": "Försök att påverka en människas uppfattningar eller handlingar genom vilseledning, falsk auktoritet, känslomässiga argument eller förtroendeskapande kontakter. AI kan användas för att anpassa och sprida sådana budskap."
     }
   ]
 }
