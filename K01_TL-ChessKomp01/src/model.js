@@ -1,3 +1,4 @@
+// Tidslogg: 2026-10-25 23:50 (Europe/Stockholm) – Lokal import av chess.js 1.4.0 från vendor/chess.js/chess.js.
 // Regler: chess.js 1.4.0, versionslåst officiell npm-distribution (ESM).
 import {Chess} from "../vendor/chess.js/chess.js";
 
