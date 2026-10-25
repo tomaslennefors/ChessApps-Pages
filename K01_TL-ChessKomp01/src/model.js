@@ -1,5 +1,5 @@
 // Regler: chess.js 1.4.0, versionslåst officiell npm-distribution (ESM).
-import {Chess} from "https://cdn.jsdelivr.net/npm/chess.js@1.4.0/dist/esm/chess.js";
+import {Chess} from "../vendor/chess.js/chess.js";
 
 export class GameModel {
     constructor() {this.engine = new Chess(); this.moves = []; this.ply = 0;}
