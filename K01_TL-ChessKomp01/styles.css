@@ -1,0 +1,30 @@
+:root {font-family:system-ui,"Segoe UI",sans-serif;background:#edf0f4;color:#253544;color-scheme:light}
+* {box-sizing:border-box}
+body {margin:0}
+button {font:inherit;cursor:pointer}
+button:disabled {cursor:default;opacity:.45}
+button:focus-visible {outline:3px solid #2473a8;outline-offset:2px}
+.tl-app {max-width:1260px;margin:auto;padding:16px 22px}
+.tl-header h1 {margin:0;font-size:clamp(1.5rem,2.5vw,2rem)}
+.tl-header p {margin:6px 0 16px;color:#5e7282;font-size:.9rem}
+.tl-grid {display:grid;grid-template-columns:minmax(0,1fr) 310px;align-items:start;gap:22px}
+.tl-board-wrap,.tl-controls {background:white;border:1px solid #d8dce1;border-radius:8px;padding:12px;box-shadow:0 3px 12px #182b3711}
+.tl-board {width:min(100%,850px);aspect-ratio:1;margin:auto;user-select:none}
+.tl-board .cm-chessboard {width:100%}
+.tl-controls {padding:19px}
+.tl-controls h2 {font-size:1.15rem;margin:0 0 12px}
+.tl-notation {font-size:1.55rem;font-weight:700;text-align:center;min-height:62px;background:#f6f8fa;border:1px solid #d2d7de;border-radius:6px;padding:13px}
+.tl-status {min-height:32px;color:#40556a;margin:14px 0 0}
+.tl-count {color:#647483;font-size:.85rem;text-align:right}
+.tl-nav {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:13px}
+.tl-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.tl-nav button,.tl-actions button {border:1px solid #c5d0d9;border-radius:6px;padding:10px 5px;min-height:45px;background:#f4f7fa;color:#24435d}
+.tl-nav button:hover:not(:disabled),.tl-actions button:hover:not(:disabled) {background:#e6eef6}
+.tl-actions button[data-act="play"] {background:#285e83;border-color:#285e83;color:white}
+.tl-hint {color:#677888;line-height:1.5;font-size:.84rem}
+.tl-message {min-height:1.4rem;color:#31663d;font-size:.9rem;margin-top:10px}
+.tl-app:not(.with-gui) {padding:0}
+.tl-app:not(.with-gui) .tl-header,.tl-app:not(.with-gui) .tl-controls,.tl-app:not(.with-gui) .tl-message {display:none}
+.tl-app:not(.with-gui) .tl-grid {display:block}
+.tl-app:not(.with-gui) .tl-board-wrap {padding:0;border:0;box-shadow:none}
+@media(max-width:850px) {.tl-app{padding:10px}.tl-grid{grid-template-columns:1fr;gap:12px}.tl-controls{padding:12px}.tl-board-wrap{padding:6px}}
